@@ -3,9 +3,9 @@ package SQL.Lib;
 public class DataDbf {
 
 
-    private HeaderDbf headerDbf;
-    private FieldDbf[] fieldsDbf;
-    private RecordDbf[] recordsDbf;
+    protected HeaderDbf headerDbf;
+    protected FieldDbf[] fieldsDbf;
+    protected RecordDbf[] recordsDbf;
 
     public DataDbf(HeaderDbf headerDbf,FieldDbf[] fieldDbf,RecordDbf[] recordDbf){
         this.headerDbf=headerDbf;
@@ -13,16 +13,5 @@ public class DataDbf {
         this.recordsDbf=recordDbf;
     }
 
-    public HeaderDbf getHeaderDbf() {
-        return headerDbf;
-    }
-
-    public FieldDbf[] getFieldsDbf() {
-        return fieldsDbf;
-    }
-
-    public RecordDbf[] getRecordsDbf() {
-        return recordsDbf;
-    }
 
 }

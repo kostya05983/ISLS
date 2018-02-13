@@ -17,7 +17,31 @@ public class HeaderDbf {
     private byte flagMDX;//флаг наличия индексного MDX- файла 29
     private byte NumberOfDriver;//29 Идентификатор кодовой страницы файла 30
 
-    private byte[] getByteCode(){
+
+    //Конструктор Виталина
+    public HeaderDbf(byte[] ArrayOfHeader)
+    {
+        this.signature=ArrayOfHeader[0];
+        this.year=ArrayOfHeader[1];
+        this.month=ArrayOfHeader[2];
+        this.day=ArrayOfHeader[3];
+        ByteBuffer wrapped=ByteBuffer.wrap(ArrayOfHeader,4,4);
+        this.numberOfRecords=wrapped.getInt();
+        wrapped.clear();
+        wrapped=ByteBuffer.wrap(ArrayOfHeader,8,2);
+        this.lengthOfTitle=wrapped.getShort();
+        wrapped.clear();
+        wrapped=ByteBuffer.wrap(ArrayOfHeader,10,2);
+        this.lengthOfRecord=wrapped.getShort();
+        wrapped.clear();
+        this.flagTransaction=ArrayOfHeader[12];
+        this.flagEncryption=ArrayOfHeader[13];
+        System.arraycopy(ArrayOfHeader,14,this.fieldMultiUserUse,0,15);
+        this.flagMDX=ArrayOfHeader[29];
+        this.NumberOfDriver=ArrayOfHeader[30];
+    }
+
+    protected byte[] getByteCode(){
         ByteBuffer byteBuffer=ByteBuffer.allocate(4);
 
         byte[] a=new byte[32];
