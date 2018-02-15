@@ -16,7 +16,7 @@ public class WriterDbf {
         }
     }
 
-    protected void  write(DataDbf dataDbf){
+    public void  write(DataDbf dataDbf){
         //Записываем заголовок файла
         try {
             randomAccessFile.write(dataDbf.headerDbf.getByteCode(), 0, 32);

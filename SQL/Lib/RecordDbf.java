@@ -4,13 +4,13 @@ public class RecordDbf {
     private byte headerByte;
     private byte[] data;
 
+
     public RecordDbf(byte headerByte,int sumOfRecordsByte){
         this.headerByte=headerByte;
         this.data=new byte[sumOfRecordsByte];
     }
-
     //Метод для пролучения всех байт
-    protected byte[] getByteCode(){
+    public byte[] getByteCode(){
         byte [] result=new byte[data.length+1];
 
         result[0]=headerByte;
@@ -21,5 +21,19 @@ public class RecordDbf {
 
         return result;
     }
+    public void setHeaderByte(byte headerByte) {
+        this.headerByte = headerByte;
+    }
 
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    public byte getHeaderByte() {
+        return headerByte;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
 }

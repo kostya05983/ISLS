@@ -3,9 +3,9 @@ package SQL.Lib;
 public class DataDbf {
 
 
-    protected HeaderDbf headerDbf;
-    protected FieldDbf[] fieldsDbf;
-    protected RecordDbf[] recordsDbf;
+    public HeaderDbf headerDbf;
+     public FieldDbf[] fieldsDbf;
+    public RecordDbf[] recordsDbf;
 
     public DataDbf(HeaderDbf headerDbf,FieldDbf[] fieldDbf,RecordDbf[] recordDbf){
         this.headerDbf=headerDbf;

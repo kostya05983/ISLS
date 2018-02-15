@@ -11,12 +11,13 @@ public class HeaderDbf {
     private int numberOfRecords;// число записей//4-7
     private short lengthOfTitle;//размер заголовка в байтах//8-9
     private short lengthOfRecord;//длина одной записи//10-11
-    private byte flagTransaction;//флагн на наличие незавершенной транзакции 12
-    private byte flagEncryption;//флаг шифрования таблицы 13
-    private byte[] fieldMultiUserUse=new byte[12];//зарезирвированная область для многопользовательского использовапния 14-28
-    private byte flagMDX;//флаг наличия индексного MDX- файла 29
-    private byte NumberOfDriver;//29 Идентификатор кодовой страницы файла 30
-
+    //12-13 зарезирвированно
+    private byte flagTransaction;//флагн на наличие незавершенной транзакции 14
+    private byte flagEncryption;//флаг шифрования таблицы 15
+    private byte[] fieldMultiUserUse=new byte[13];//зарезирвированная область для многопользовательского использовапния 16-27
+    private byte flagMDX;//флаг наличия индексного MDX- файла 28
+    private byte NumberOfDriver;//29 Идентификатор кодовой страницы файла 29
+    //30-31 зарезирвированная область
 
     //Конструктор Виталина
     public HeaderDbf(byte[] ArrayOfHeader)
@@ -34,14 +35,15 @@ public class HeaderDbf {
         wrapped=ByteBuffer.wrap(ArrayOfHeader,10,2);
         this.lengthOfRecord=wrapped.getShort();
         wrapped.clear();
-        this.flagTransaction=ArrayOfHeader[12];
-        this.flagEncryption=ArrayOfHeader[13];
-        System.arraycopy(ArrayOfHeader,14,this.fieldMultiUserUse,0,15);
-        this.flagMDX=ArrayOfHeader[29];
-        this.NumberOfDriver=ArrayOfHeader[30];
-    }
 
-    protected byte[] getByteCode(){
+        this.flagTransaction=ArrayOfHeader[14];
+        this.flagEncryption=ArrayOfHeader[15];
+        System.arraycopy(ArrayOfHeader,16,this.fieldMultiUserUse,0,13);
+        this.flagMDX=ArrayOfHeader[28];
+        this.NumberOfDriver=ArrayOfHeader[29];
+
+    }
+    public byte[] getByteCode(){
         ByteBuffer byteBuffer=ByteBuffer.allocate(4);
 
         byte[] a=new byte[32];
@@ -69,16 +71,120 @@ public class HeaderDbf {
         a[10]=byteBuffer.get(0);
         a[11]=byteBuffer.get(1);
 
-        a[12]=this.flagTransaction;
+        a[12]=0;
 
-        a[13]=this.flagEncryption;
+        a[13]=0;
 
-        for(int i=14;i<29;i++){
+        a[14]=this.flagTransaction;
+        a[15]=this.flagEncryption;
+
+        for(int i=16;i<28;i++){
             a[i]=this.fieldMultiUserUse[i-14];
         }
-        a[29]=this.flagMDX;
-        a[30]=this.NumberOfDriver;
+        a[28]=this.flagMDX;
+        a[29]=this.NumberOfDriver;
+        a[30]=0;
+        a[31]=0;
 
         return a;
     }
+    public void setSignature(byte signature) {
+        this.signature = signature;
+    }
+
+    public void setYear(byte year) {
+        this.year = year;
+    }
+
+    public void setMonth(byte month) {
+        this.month = month;
+    }
+
+    public void setDay(byte day) {
+        this.day = day;
+    }
+
+    public void setNumberOfRecords(int numberOfRecords) {
+        this.numberOfRecords = numberOfRecords;
+    }
+
+    public void setLengthOfTitle(short lengthOfTitle) {
+        this.lengthOfTitle = lengthOfTitle;
+    }
+
+    public void setLengthOfRecord(short lengthOfRecord) {
+        this.lengthOfRecord = lengthOfRecord;
+    }
+
+    public void setFlagTransaction(byte flagTransaction) {
+        this.flagTransaction = flagTransaction;
+    }
+
+    public void setFlagEncryption(byte flagEncryption) {
+        this.flagEncryption = flagEncryption;
+    }
+
+    public void setFieldMultiUserUse(byte[] fieldMultiUserUse) {
+        this.fieldMultiUserUse = fieldMultiUserUse;
+    }
+
+    public void setFlagMDX(byte flagMDX) {
+        this.flagMDX = flagMDX;
+    }
+
+    public void setNumberOfDriver(byte numberOfDriver) {
+        NumberOfDriver = numberOfDriver;
+    }
+
+    public byte getSignature() {
+        return signature;
+    }
+
+    public byte getYear() {
+        return year;
+    }
+
+    public byte getMonth() {
+        return month;
+    }
+
+    public byte getDay() {
+        return day;
+    }
+
+    public int getNumberOfRecords() {
+        return numberOfRecords;
+    }
+
+    public short getLengthOfTitle() {
+        return lengthOfTitle;
+    }
+
+    public short getLengthOfRecord() {
+        return lengthOfRecord;
+    }
+
+    public byte getFlagTransaction() {
+        return flagTransaction;
+    }
+
+    public byte getFlagEncryption() {
+        return flagEncryption;
+    }
+
+    public byte[] getFieldMultiUserUse() {
+        return fieldMultiUserUse;
+    }
+
+    public byte getFlagMDX() {
+        return flagMDX;
+    }
+
+    public byte getNumberOfDriver() {
+        return NumberOfDriver;
+    }
+
+
+
+
 }
