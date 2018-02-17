@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class SelectorRequest {
 
-    protected boolean checkcommand;
+   protected boolean checkcommand;
     protected Matcher Check;
     protected Pattern Create_P =  Pattern.compile("CREATE\\s+TABLE\\s+(\\w|[А-ЯЁ])+\\s*\\((\\s*(\\w|[А-ЯЁ])+\\s+(CHARACTER|FLOAT|INTEGER)\\(\\d+\\)(\\s|,)*)+\\s*\\);");//готов
     protected Pattern Insert_P = Pattern.compile("INSERT\\sINTO\\s+([\\wА-ЯЁ])+\\s+\\((\\s*[\\wА-ЯЁ\"]+(\\s|,)*)+\\)\\s+VALUE\\s+\\((\\s*[\\wА-ЯЁ\"]+(\\s|,)*)+\\);");//готов
@@ -16,6 +16,7 @@ public class SelectorRequest {
     protected Pattern Truncate_P = Pattern.compile("TRUNCATE\\s+TABLE\\s+[\\wА-ЯЁ]+\\s*;");//готов
     protected Pattern CreateIn_P = Pattern.compile("CREATE\\s+INDEX\\s+[\\wА-ЯЁ]+\\s+ON\\s[\\wА-ЯЁ]+\\s\\(([\\wА-ЯЁ]+(\\s|,)*)+\\)\\s*;");
     protected Pattern DropIn_P = Pattern.compile("DROP\\s+INDEX\\s+[\\wА-ЯЁ]+\\s+ON\\s[\\wА-ЯЁ]+\\s*;");
+    protected Pattern Alter_P = Pattern.compile("ALTER\\s+TABLE\\s+[\\wА-ЯЁ]+\\s+((DROP\\s+COLUMN)|ADD|MODIFY)\\s+[\\wА-ЯЁ]+\\s*;");
     protected String mystringfirst;
     public SelectorRequest(String mstring)
     {
@@ -36,55 +37,61 @@ public class SelectorRequest {
             if (Check.find() == true)
             {
                 checkcommand=true;
-                //ВЫЗОВ CREATE TABLE
+                //ВЫЗОВ CREATE TABLE с mystring
             }
             Check = Insert_P.matcher(strings_command[i]);
             if (Check.find() == true)
             {
                 checkcommand=true;
-                //ВЫЗОВ INSERT INTO
+                //ВЫЗОВ INSERT INTO с mystring
             }
             Check = Update_P.matcher(strings_command[i]);
             if (Check.find() == true)
             {
                 checkcommand=true;
-                //ВЫЗОВ UPDATE
+                //ВЫЗОВ UPDATE с mystring
             }
             Check = Delet_P.matcher(strings_command[i]);
             if (Check.find() == true)
             {
                 checkcommand=true;
-                //ВЫЗОВ DELETE
+                //ВЫЗОВ DELETE с mystring
             }
             Check = Select_P.matcher(strings_command[i]);
             if (Check.find() == true)
             {
                 checkcommand=true;
-                //ВЫЗОВ SELECT
+                //ВЫЗОВ SELECT с mystring
             }
             Check = Drop_P.matcher(strings_command[i]);
             if (Check.find() == true)
             {
                 checkcommand=true;
-               //ВЫЗОВ DROP TABLE
+               //ВЫЗОВ DROP TABLE с mystring
             }
             Check = Truncate_P.matcher(strings_command[i]);
             if (Check.find() == true)
             {
                 checkcommand=true;
-                //ВЫЗОВ TRUNCATE
+                //ВЫЗОВ TRUNCATE с mystring
             }
             Check = CreateIn_P.matcher(strings_command[i]);
             if (Check.find() == true)
             {
                 checkcommand=true;
-                //ВЫЗОВ CREATE INDEX
+                //ВЫЗОВ CREATE INDEX с mystring
             }
             Check = DropIn_P.matcher(strings_command[i]);
             if (Check.find() == true)
             {
                 checkcommand=true;
-                //ВЫЗОВ DROP INDEX
+                //ВЫЗОВ DROP INDEX с mystring
+            }
+            Check = Alter_P.matcher(strings_command[i]);
+            if (Check.find() == true)
+            {
+                checkcommand=true;
+                //ВЫЗОВ ALTER TABLE с mystring
             }
             if(checkcommand==false)
             {
