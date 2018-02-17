@@ -17,7 +17,7 @@ public class SelectorRequest {
     protected Pattern CreateIn_P = Pattern.compile("CREATE\\s+INDEX\\s+[\\wА-ЯЁ]+\\s+ON\\s[\\wА-ЯЁ]+\\s\\(([\\wА-ЯЁ]+(\\s|,)*)+\\)\\s*;");
     protected Pattern DropIn_P = Pattern.compile("DROP\\s+INDEX\\s+[\\wА-ЯЁ]+\\s+ON\\s[\\wА-ЯЁ]+\\s*;");
     protected String mystringfirst;
-    public Check(String mstring)
+    public SelectorRequest(String mstring)
     {
         mystringfirst=mstring;
         checkcommand=false;
