@@ -7,7 +7,10 @@ import java.io.RandomAccessFile;
 
 
 public class WriterDbf {
+
     private RandomAccessFile randomAccessFile;
+
+
     public WriterDbf(String nameOfFile){
         try {
             randomAccessFile=new RandomAccessFile(nameOfFile,"rw");
@@ -24,23 +27,19 @@ public class WriterDbf {
 
             //Записываем все поля
 
-                for (int i = 0; i < dataDbf.fieldsDbf.length; i++)
-                    randomAccessFile.write(dataDbf.fieldsDbf[i].getByteCode(), 0, 32);
+                for (int i = 0; i < dataDbf.fieldsDbf.size(); i++)
+                    randomAccessFile.write(dataDbf.fieldsDbf.get(i).getByteCode(), 0, 32);
 
-
-            //TODOrandomAccessFile.writeByte(); Тут должен быть терминальный байт,разработчики этого пакета забыли его вставить(
+                //Терминальный байт
             randomAccessFile.writeByte(13);
             //Записываем записи
-                for (int i = 0; i < dataDbf.recordsDbf.length; i++)
-                    randomAccessFile.write(dataDbf.recordsDbf[i].getByteCode(), 0, 32);
+                for (int i = 0; i < dataDbf.recordsDbf.size(); i++)
+                    randomAccessFile.write(dataDbf.recordsDbf.get(i).getByteCode(), 0, 32);
 
 
         }catch (IOException e){
             System.out.println(e);
         }
-
-
-
 
     }
 

@@ -4,6 +4,9 @@ public class RecordDbf {
     private byte headerByte;
     private byte[] data;
 
+    public RecordDbf(){
+
+    }
 
     public RecordDbf(byte headerByte,int sumOfRecordsByte){
         this.headerByte=headerByte;
@@ -24,6 +27,12 @@ public class RecordDbf {
 
     public void setByteCode(byte[] array){
         this.headerByte=array[0];
+        for(int i=1;i<array.length;i++)
+            this.data[i-1]=array[i];
+    }
+
+    public void setByteCode(byte header,byte[] array){
+        this.headerByte=header;
         for(int i=1;i<array.length;i++)
             this.data[i-1]=array[i];
     }

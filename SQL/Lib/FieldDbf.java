@@ -2,6 +2,8 @@ package SQL.Lib;
 
 import java.nio.ByteBuffer;
 
+import static jdk.vm.ci.meta.JavaKind.Char;
+
 public class FieldDbf {
     private byte[] nameFiled=new byte[11];//0-10 имя поля с 0x00 завершением
     private byte typeField;//Тип поля 11
@@ -14,6 +16,10 @@ public class FieldDbf {
     private byte flagMdx;//Включено или нет поле в mdx индекс 31
 
 
+
+    public FieldDbf(){
+
+    }
     public FieldDbf(byte[] Array) {
         System.arraycopy(Array,0,this.nameFiled,0,11);
         this.typeField=Array[11];
@@ -60,6 +66,12 @@ public class FieldDbf {
         this.nameFiled = nameFiled;
     }
 
+    public void setNameField(String name){//Проверка на размер поля
+        char[] array=name.toCharArray();
+        for(int i=0;i<array.length;i++)
+            nameFiled[i]=(byte)array[i];
+    }
+
     public void setTypeField(byte typeField) {
         this.typeField = typeField;
     }
@@ -103,4 +115,5 @@ public class FieldDbf {
     public byte getFlagMdx() {
         return flagMdx;
     }
+
 }

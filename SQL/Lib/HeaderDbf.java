@@ -12,7 +12,7 @@ public class HeaderDbf {
     private short lengthOfTitle;//размер заголовка в байтах//8-9
     private short lengthOfRecord;//длина одной записи//10-11
     //12-13 зарезирвированно
-    private byte flagTransaction;//флагн на наличие незавершенной транзакции 14
+    private byte flagTransaction;//флаг на наличие незавершенной транзакции 14
     private byte flagEncryption;//флаг шифрования таблицы 15
     private byte[] fieldMultiUserUse=new byte[13];//зарезирвированная область для многопользовательского использовапния 16-27
     private byte flagMDX;//флаг наличия индексного MDX- файла 28
