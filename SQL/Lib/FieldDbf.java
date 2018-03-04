@@ -1,8 +1,6 @@
 package SQL.Lib;
 
-import java.nio.ByteBuffer;
 
-import static jdk.vm.ci.meta.JavaKind.Char;
 
 public class FieldDbf {
     private byte[] nameFiled=new byte[11];//0-10 имя поля с 0x00 завершением

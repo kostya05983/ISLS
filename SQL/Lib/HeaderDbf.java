@@ -1,5 +1,7 @@
 package SQL.Lib;
 
+
+
 import java.nio.ByteBuffer;
 import java.util.Date;
 
@@ -19,6 +21,9 @@ public class HeaderDbf {
     private byte NumberOfDriver;//29 Идентификатор кодовой страницы файла 29
     //30-31 зарезирвированная область
 
+    public HeaderDbf(){
+
+    }
 
     public HeaderDbf(byte[] ArrayOfHeader)
     {
@@ -79,7 +84,7 @@ public class HeaderDbf {
         a[15]=this.flagEncryption;
 
         for(int i=16;i<28;i++){
-            a[i]=this.fieldMultiUserUse[i-14];
+            a[i]=this.fieldMultiUserUse[i-16];
         }
         a[28]=this.flagMDX;
         a[29]=this.NumberOfDriver;
@@ -88,6 +93,7 @@ public class HeaderDbf {
 
         return a;
     }
+    //TODO добавить отдельно сетер для даты
 
     public void setSignature(byte signature) {
         this.signature = signature;

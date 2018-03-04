@@ -34,7 +34,7 @@ public class WriterDbf {
             randomAccessFile.writeByte(13);
             //Записываем записи
                 for (int i = 0; i < dataDbf.recordsDbf.size(); i++)
-                    randomAccessFile.write(dataDbf.recordsDbf.get(i).getByteCode(), 0, 32);
+                    randomAccessFile.write(dataDbf.recordsDbf.get(i).getByteCode(), 0, dataDbf.recordsDbf.get(i).getByteCode().length);
 
 
         }catch (IOException e){

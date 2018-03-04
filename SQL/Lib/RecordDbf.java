@@ -12,14 +12,14 @@ public class RecordDbf {
         this.headerByte=headerByte;
         this.data=new byte[sumOfRecordsByte];
     }
-    //Метод для пролучения всех байт
+    //Метод для получения всех байт
     public byte[] getByteCode(){
         byte [] result=new byte[data.length+1];
 
         result[0]=headerByte;
 
         for(int i=1;i<data.length+1;i++){
-            result[i]=data[i];
+            result[i]=data[i-1];
         }
 
         return result;
@@ -33,8 +33,10 @@ public class RecordDbf {
 
     public void setByteCode(byte header,byte[] array){
         this.headerByte=header;
-        for(int i=1;i<array.length;i++)
-            this.data[i-1]=array[i];
+        this.data=new byte[array.length];
+
+        for(int i=0;i<array.length;i++)
+            this.data[i]=array[i];
     }
 
     public void setHeaderByte(byte headerByte) {
