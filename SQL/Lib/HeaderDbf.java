@@ -19,7 +19,7 @@ public class HeaderDbf {
     private byte NumberOfDriver;//29 Идентификатор кодовой страницы файла 29
     //30-31 зарезирвированная область
 
-    //Конструктор Виталина
+
     public HeaderDbf(byte[] ArrayOfHeader)
     {
         this.signature=ArrayOfHeader[0];
@@ -35,7 +35,6 @@ public class HeaderDbf {
         wrapped=ByteBuffer.wrap(ArrayOfHeader,10,2);
         this.lengthOfRecord=wrapped.getShort();
         wrapped.clear();
-
         this.flagTransaction=ArrayOfHeader[14];
         this.flagEncryption=ArrayOfHeader[15];
         System.arraycopy(ArrayOfHeader,16,this.fieldMultiUserUse,0,13);
@@ -43,6 +42,7 @@ public class HeaderDbf {
         this.NumberOfDriver=ArrayOfHeader[29];
 
     }
+
     public byte[] getByteCode(){
         ByteBuffer byteBuffer=ByteBuffer.allocate(4);
 
@@ -88,6 +88,7 @@ public class HeaderDbf {
 
         return a;
     }
+
     public void setSignature(byte signature) {
         this.signature = signature;
     }
@@ -183,8 +184,5 @@ public class HeaderDbf {
     public byte getNumberOfDriver() {
         return NumberOfDriver;
     }
-
-
-
 
 }

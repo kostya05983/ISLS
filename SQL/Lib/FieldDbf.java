@@ -13,9 +13,8 @@ public class FieldDbf {
     //21-30 зарезирвированная область
     private byte flagMdx;//Включено или нет поле в mdx индекс 31
 
-    //Конструктор Виталина
-    public FieldDbf(byte[] Array)
-    {
+
+    public FieldDbf(byte[] Array) {
         System.arraycopy(Array,0,this.nameFiled,0,11);
         this.typeField=Array[11];
         this.sizeField=Array[16];
@@ -23,13 +22,13 @@ public class FieldDbf {
         this.identificator=Array[20];
         this.flagMdx=Array[31];
     }
-    //Метод гетер всех байтов
+
     public byte[] getByteCode(){
         byte [] result=new byte[32];
 
-        for(int i=0;i<this.nameFiled.length;i++){
+        for(int i=0;i<this.nameFiled.length;i++)
             result[i]=this.nameFiled[i];
-        }
+
         result[11]=typeField;
 
 
@@ -39,13 +38,22 @@ public class FieldDbf {
         result[19]=0;
         result[20]=this.identificator;
 
-        for(int i=21;i<31;i++){
+        for(int i=21;i<31;i++)
             result[i]=0;
-        }
+
 
         result[31]=flagMdx;
 
         return result;
+    }
+
+    public void setByteCode(byte[] array){
+        System.arraycopy(array,0,this.nameFiled,0,11);
+        this.typeField=array[11];
+        this.sizeField=array[16];
+        this.numberOfCh=array[17];
+        this.identificator=array[20];
+        this.flagMdx=array[31];
     }
 
     public void setNameFiled(byte[] nameFiled) {
@@ -55,8 +63,6 @@ public class FieldDbf {
     public void setTypeField(byte typeField) {
         this.typeField = typeField;
     }
-
-
 
     public void setSizeField(byte sizeField) {
         this.sizeField = sizeField;
@@ -69,8 +75,6 @@ public class FieldDbf {
     public void setIdentificator(byte identificator) {
         this.identificator = identificator;
     }
-
-
 
     public void setFlagMdx(byte flagMdx) {
         this.flagMdx = flagMdx;

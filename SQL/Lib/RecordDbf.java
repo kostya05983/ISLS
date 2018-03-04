@@ -21,6 +21,13 @@ public class RecordDbf {
 
         return result;
     }
+
+    public void setByteCode(byte[] array){
+        this.headerByte=array[0];
+        for(int i=1;i<array.length;i++)
+            this.data[i-1]=array[i];
+    }
+
     public void setHeaderByte(byte headerByte) {
         this.headerByte = headerByte;
     }

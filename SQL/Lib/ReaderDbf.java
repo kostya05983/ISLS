@@ -15,6 +15,7 @@ public class ReaderDbf {
             System.out.println(e);
         }
     }
+
     public DataDbf read(){
         byte[] buf=new byte[32];
 
