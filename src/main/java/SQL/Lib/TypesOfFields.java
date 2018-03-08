@@ -2,17 +2,15 @@ package SQL.Lib;
 
 public enum TypesOfFields {
 
-    Integer('N',4),
-    Float('F',4),
-    Character('C',2);
+    Integer('N'),
+    Float('F'),
+    Character('C');
 
 public byte code;
-public int size;
 
-
-private TypesOfFields(char code,int size){
+private TypesOfFields(char code){
     this.code=(byte)code;
-    this.size=size;
+
 }
 
 }
