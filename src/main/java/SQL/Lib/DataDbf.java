@@ -24,6 +24,16 @@ public class DataDbf {
         this.recordsDbf=new ArrayList<>();
     }
 
+    public DataDbf(HeaderDbf headerDbf,ArrayList<FieldDbf> fieldDbf){
+        this.headerDbf=headerDbf;
+        this.fieldsDbf=fieldDbf;
+    }
+    private short transferByteToUnsigned(byte b){
+        if(b<=0){
+            return (short)(127+(128+b));
+        }
+        return b;
+    }
     public Column[] getAllColumns(){
         ArrayList<Column> arrayList=new ArrayList<>();
         String[][] table=new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
@@ -32,8 +42,8 @@ public class DataDbf {
         for(int i=0;i<recordsDbf.size();i++) {
             start=0;
             for (int j = 0; j < fieldsDbf.size(); j++) {
-                table[j][i] = recordsDbf.get(i).getPartOfRecord(start, fieldsDbf.get(j).getSizeField(),fieldsDbf.get(j).getTypeOfField());
-                start += fieldsDbf.get(j).getSizeField();
+                table[j][i] = recordsDbf.get(i).getPartOfRecord(start, transferByteToUnsigned(fieldsDbf.get(j).getSizeField()));
+                start += transferByteToUnsigned(fieldsDbf.get(j).getSizeField());
             }
         }
         for(int i=0;i<fieldsDbf.size();i++){

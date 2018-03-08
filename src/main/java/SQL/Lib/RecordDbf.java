@@ -69,22 +69,9 @@ public class RecordDbf {
         return data;
     }
 
-    protected String getPartOfRecord(int start,int size,TypesOfFields type){//TODO исключения,хотя они не нужны если остальная часть будет слажено работать
-        String result="";
+    protected String getPartOfRecord(int start,int size){//TODO исключения,хотя они не нужны если остальная часть будет слажено работать
         byte[] buf=new byte[size];
         System.arraycopy(data,start,buf,0,size);
-        ByteBuffer byteBuffer=ByteBuffer.allocate(4);
-        switch (type){
-            case Character:result=new String(buf);
-            break;
-            case Integer:byteBuffer.put(buf);
-            result=String.valueOf(byteBuffer.getInt(0));
-            break;
-            case Float:byteBuffer.put(buf);
-            result=String.valueOf(byteBuffer.getFloat());
-            break;
-        }
-
-        return result;
+        return new String(buf);
     }
 }

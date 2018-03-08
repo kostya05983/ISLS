@@ -21,7 +21,7 @@ public class FirstTestForLib {
         headerDbf.setNumberOfDriver((byte)1);
 
 
-        //Поля TODO Ошибка в записи,записи почему-то одинаковые??
+        //Поля
         ArrayList<FieldDbf> arrayList=new ArrayList<>();
 
         FieldDbf fieldDbf=new FieldDbf();
@@ -74,9 +74,9 @@ public class FirstTestForLib {
         datanew[2]=(byte)'s';
         datanew[3]=(byte)'n';
 
-        byteBuffer.putInt(111111);
+
         for(int i=0;i<4;i++){
-            datanew[i+10]=byteBuffer.get(i);
+            datanew[i+10]=(byte)'1';
         }
 
         RecordDbf recordDb=new RecordDbf();
@@ -95,6 +95,8 @@ public class FirstTestForLib {
         dataDbf=readerDbf.read();
 
         Column[] coulmns=dataDbf.getAllColumns();
+
+
 
         System.out.println("eee");
 
