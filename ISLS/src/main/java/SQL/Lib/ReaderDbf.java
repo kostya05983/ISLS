@@ -3,6 +3,7 @@ package SQL.Lib;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 
 public class ReaderDbf {
 
@@ -18,17 +19,46 @@ public class ReaderDbf {
 
     public DataDbf read(){
         byte[] buf=new byte[32];
-
+        long position=32;
         try {
             randomAccessFile.read(buf);
+
+            HeaderDbf headerDbf = new HeaderDbf(buf);
+
+            //Читаем поля пока не встретим терминальный знак
+            ArrayList<FieldDbf> fieldsDbf=new ArrayList<>();
+            FieldDbf fieldDbf;
+            int sizeOfRecord=0;
+
+            while (randomAccessFile.readByte()!=13) {
+                randomAccessFile.seek(position);
+                randomAccessFile.read(buf);
+                System.out.println(randomAccessFile.getChannel().position());
+                fieldDbf=new FieldDbf(buf);
+                fieldsDbf.add(fieldDbf);
+                sizeOfRecord+=buf[16];//Находим длину записи
+                position+=32;
+            }
+
+            byte[] bufRecord=new byte[sizeOfRecord];
+            RecordDbf recordDbf;
+            ArrayList<RecordDbf> recordsDbf=new ArrayList<>();
+            while(randomAccessFile.readByte()!=27){
+                randomAccessFile.seek(position);
+                randomAccessFile.read(bufRecord);
+                recordDbf=new RecordDbf((byte)'*',bufRecord);
+                recordsDbf.add(recordDbf);
+                position+=sizeOfRecord;
+            }
+            DataDbf dataDbf=new DataDbf(headerDbf,fieldsDbf,recordsDbf);
+            return dataDbf;
+
         }catch (IOException e){
-            System.out.println(e);
+            e.printStackTrace();
+            return null;
         }
-        HeaderDbf headerDbf=new HeaderDbf(buf);
 
-        //Читаем поля пока не встретим терминальный знак
 
-        return null;
     }
 
 }

@@ -5,26 +5,47 @@ import java.util.ArrayList;
 
 public class DataDbf {
 
-
     public HeaderDbf headerDbf;
     public ArrayList<FieldDbf> fieldsDbf;
     public ArrayList<RecordDbf> recordsDbf;
+
+
+
 
     public DataDbf(HeaderDbf headerDbf, ArrayList<FieldDbf> fieldDbf, ArrayList<RecordDbf> recordDbf){
         this.headerDbf=headerDbf;
         this.fieldsDbf=fieldDbf;
         this.recordsDbf=recordDbf;
     }
+
     public DataDbf(HeaderDbf headerDbf){
         this.headerDbf=headerDbf;
         this.fieldsDbf=new ArrayList<>();
         this.recordsDbf=new ArrayList<>();
     }
-    public Column[] getAllColumns(){
 
-        return null;
+    public Column[] getAllColumns(){//TODO test
+        ArrayList<Column> arrayList=new ArrayList<>();
+        String[][] table=new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
+        int start=0;
+
+        for(int i=0;i<recordsDbf.size();i++)
+            for(int j=0;j<fieldsDbf.size();j++){
+            table[j][i]=recordsDbf.get(i).getPartOfRecord(start,fieldsDbf.get(i).getSizeField());
+                start+=fieldsDbf.get(i).getSizeField();
+            }
+
+        for(int i=0;i<fieldsDbf.size();i++){
+            arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(),fieldsDbf.get(i).getNameFiled().toString(),table[i]));
+        }
+
+        Column[] columns=new Column[arrayList.size()];
+        columns=arrayList.toArray(columns);
+
+        return columns;
     }
-    public void setAllColumns(Column[] columns){//TODO рефактор
+
+    public void setAllColumns(Column[] columns){//TODO рефактор test
         if(!(fieldsDbf==null)) {
             fieldsDbf.clear();
             recordsDbf.clear();
@@ -64,7 +85,6 @@ public class DataDbf {
             recordsDbf.add(recordDbf);
         }
 
-
     }
 
     private int sizeBuffer(){
@@ -85,6 +105,5 @@ public class DataDbf {
             }
         return b;
     }
-
 
 }

@@ -18,6 +18,7 @@ public class FieldDbf {
     public FieldDbf(){
 
     }
+
     public FieldDbf(byte[] Array) {
         System.arraycopy(Array,0,this.nameFiled,0,11);
         this.typeField=Array[11];
@@ -33,8 +34,7 @@ public class FieldDbf {
         for(int i=0;i<this.nameFiled.length;i++)
             result[i]=this.nameFiled[i];
 
-        result[11]=typeField;
-
+        result[11]=this.typeField;
 
         result[16]=this.sizeField;
         result[17]=this.numberOfCh;
@@ -113,5 +113,16 @@ public class FieldDbf {
     public byte getFlagMdx() {
         return flagMdx;
     }
+
+   protected TypesOfFields getTypeOfField(){
+        switch(typeField){
+            case 'C':return TypesOfFields.Character;
+            case 'F':return TypesOfFields.Float;
+            case 'N':return TypesOfFields.Integer;
+
+            default:return null;
+        }
+
+   }
 
 }

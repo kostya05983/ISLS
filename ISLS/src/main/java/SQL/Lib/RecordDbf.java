@@ -12,7 +12,12 @@ public class RecordDbf {
         this.headerByte=headerByte;
         this.data=new byte[sumOfRecordsByte];
     }
-    //Метод для получения всех байт
+
+    public RecordDbf(byte headerByte,byte[] data){
+        this.headerByte=headerByte;
+        this.data=data;
+    }
+
     public byte[] getByteCode(){
         byte [] result=new byte[data.length+1];
 
@@ -53,5 +58,13 @@ public class RecordDbf {
 
     public byte[] getData() {
         return data;
+    }
+
+    protected String getPartOfRecord(int start,int size){//TODO исключения,хотя они не нужны если остальная часть будет слажено работать
+        String result="";
+        for(int i=start;i<(start+size);i++)
+            result+=String.valueOf(data[i]);
+
+        return result;
     }
 }

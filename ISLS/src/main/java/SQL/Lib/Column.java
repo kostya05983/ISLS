@@ -10,6 +10,9 @@ public class Column {
         this.title=title;
         this.data=data;
     }
+    public Column(String title){
+        this.title=title;
+    }
     protected int max(){
         int max=data[0].getBytes().length;
         for(int i=0;i<data.length;i++){
