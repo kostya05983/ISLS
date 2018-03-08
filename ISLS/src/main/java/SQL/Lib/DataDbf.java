@@ -24,19 +24,20 @@ public class DataDbf {
         this.recordsDbf=new ArrayList<>();
     }
 
-    public Column[] getAllColumns(){//TODO test
+    public Column[] getAllColumns(){
         ArrayList<Column> arrayList=new ArrayList<>();
         String[][] table=new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
-        int start=0;
+        int start;
 
-        for(int i=0;i<recordsDbf.size();i++)
-            for(int j=0;j<fieldsDbf.size();j++){
-            table[j][i]=recordsDbf.get(i).getPartOfRecord(start,fieldsDbf.get(i).getSizeField());
-                start+=fieldsDbf.get(i).getSizeField();
+        for(int i=0;i<recordsDbf.size();i++) {
+            start=0;
+            for (int j = 0; j < fieldsDbf.size(); j++) {
+                table[j][i] = recordsDbf.get(i).getPartOfRecord(start, fieldsDbf.get(j).getSizeField(),fieldsDbf.get(j).getTypeOfField());
+                start += fieldsDbf.get(j).getSizeField();
             }
-
+        }
         for(int i=0;i<fieldsDbf.size();i++){
-            arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(),fieldsDbf.get(i).getNameFiled().toString(),table[i]));
+            arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(),new String(fieldsDbf.get(i).getNameFiled()),table[i]));
         }
 
         Column[] columns=new Column[arrayList.size()];
@@ -44,6 +45,8 @@ public class DataDbf {
 
         return columns;
     }
+
+
 
     public void setAllColumns(Column[] columns){//TODO рефактор test
         if(!(fieldsDbf==null)) {

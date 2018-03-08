@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class SelectorRequest {
 
-   protected boolean checkcommand;
+    protected boolean checkcommand;
     protected Matcher Check;
     protected Pattern Create_P =  Pattern.compile("CREATE\\s+TABLE\\s+(\\w|[А-ЯЁ])+\\s*\\((\\s*(\\w|[А-ЯЁ])+\\s+(CHARACTER|FLOAT|INTEGER)\\(\\d+\\)(\\s|,)*)+\\s*\\);");//готов
     protected Pattern Insert_P = Pattern.compile("INSERT\\sINTO\\s+([\\wА-ЯЁ])+\\s+\\((\\s*[\\wА-ЯЁ\"]+(\\s|,)*)+\\)\\s+VALUE\\s+\\((\\s*[\\wА-ЯЁ\"]+(\\s|,)*)+\\);");//готов

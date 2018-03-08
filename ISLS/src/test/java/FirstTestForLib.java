@@ -26,7 +26,7 @@ public class FirstTestForLib {
 
         FieldDbf fieldDbf=new FieldDbf();
 
-        fieldDbf.setNameField("Дрова");
+        fieldDbf.setNameField("Drova");
         fieldDbf.setTypeField(TypesOfFields.Character.code);
         fieldDbf.setSizeField((byte)10);
         fieldDbf.setNumberOfCh((byte)0);
@@ -35,29 +35,29 @@ public class FirstTestForLib {
 
         arrayList.add(fieldDbf);
 
-        fieldDbf.setNameField("Количество");
-        fieldDbf.setTypeField(TypesOfFields.Integer.code);
-        fieldDbf.setSizeField((byte)4);
-        fieldDbf.setNumberOfCh((byte)1);
-        fieldDbf.setIdentificator((byte)1);
-        fieldDbf.setFlagMdx((byte)0);
+        FieldDbf fieldDbf1=new FieldDbf();
+        fieldDbf1.setNameField("Amount");
+        fieldDbf1.setTypeField(TypesOfFields.Integer.code);
+        fieldDbf1.setSizeField((byte)4);
+        fieldDbf1.setNumberOfCh((byte)1);
+        fieldDbf1.setIdentificator((byte)1);
+        fieldDbf1.setFlagMdx((byte)0);
 
-        arrayList.add(fieldDbf);
+        arrayList.add(fieldDbf1);
 
         ArrayList<RecordDbf> recordDbfs=new ArrayList<>();
         byte[] data=new byte[14];
-        ByteBuffer byteBuffer=ByteBuffer.allocate(100);
-        byteBuffer.putChar('Б');
-        byteBuffer.putChar('е');
-        byteBuffer.putChar('р');
-        byteBuffer.putChar('е');
-        byteBuffer.putChar('з');
-        //byteBuffer.putChar('а');
+       ByteBuffer byteBuffer=ByteBuffer.allocate(100);
 
-        for(int i=0;i<5;i++)
-            data[i]=byteBuffer.get(i);
+       data[0]=(byte)'B';
+       data[1]=(byte)'E';
+       data[2]=(byte)'R';
+       data[3]=(byte)'E';
 
-        data[9]=3;
+        System.out.println((byte)'B');
+
+
+        //data[9]=3;
 
         RecordDbf recordDbf=new RecordDbf();
         recordDbf.setHeaderByte((byte)'*');
@@ -66,23 +66,24 @@ public class FirstTestForLib {
         recordDbfs.add(recordDbf);
 
        byteBuffer.clear();
-        byteBuffer.putChar('С');
-        byteBuffer.putChar('о');
-        byteBuffer.putChar('с');
-        byteBuffer.putChar('н');
-        byteBuffer.putChar('а');
 
 
-        for(int i=0;i<5;i++)
-            data[i]=byteBuffer.get(i);
+        byte[] datanew=new byte[14];
+        datanew[0]=(byte)'S';
+        datanew[1]=(byte)'o';
+        datanew[2]=(byte)'s';
+        datanew[3]=(byte)'n';
 
-        data[9]=5;
+        byteBuffer.putInt(111111);
+        for(int i=0;i<4;i++){
+            datanew[i+10]=byteBuffer.get(i);
+        }
 
-        RecordDbf recordDb;
-        recordDbf.setHeaderByte((byte)'*');
-        recordDbf.setData(data);
+        RecordDbf recordDb=new RecordDbf();
+        recordDb.setHeaderByte((byte)'*');
+        recordDb.setData(datanew);
 
-        recordDbfs.add(recordDbf);
+        recordDbfs.add(recordDb);
 
         DataDbf dataDbf=new DataDbf(headerDbf,arrayList,recordDbfs);
 
@@ -92,6 +93,8 @@ public class FirstTestForLib {
         ReaderDbf readerDbf=new ReaderDbf("test.dbf");
 
         dataDbf=readerDbf.read();
+
+        Column[] coulmns=dataDbf.getAllColumns();
 
         System.out.println("eee");
 

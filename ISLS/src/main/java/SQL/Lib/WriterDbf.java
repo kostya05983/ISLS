@@ -36,7 +36,7 @@ public class WriterDbf {
                 for (int i = 0; i < dataDbf.recordsDbf.size(); i++)
                     randomAccessFile.write(dataDbf.recordsDbf.get(i).getByteCode(), 0, dataDbf.recordsDbf.get(i).getByteCode().length);
 
-            randomAccessFile.writeByte(27);
+            randomAccessFile.writeByte(12);
         }catch (IOException e){
             System.out.println(e);
         }

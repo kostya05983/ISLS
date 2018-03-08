@@ -39,14 +39,16 @@ public class ReaderDbf {
                 sizeOfRecord+=buf[16];//Находим длину записи
                 position+=32;
             }
+            position++;
+            sizeOfRecord++;
 
             byte[] bufRecord=new byte[sizeOfRecord];
             RecordDbf recordDbf;
             ArrayList<RecordDbf> recordsDbf=new ArrayList<>();
-            while(randomAccessFile.readByte()!=27){
+            while(randomAccessFile.readByte()!=12){
                 randomAccessFile.seek(position);
                 randomAccessFile.read(bufRecord);
-                recordDbf=new RecordDbf((byte)'*',bufRecord);
+                recordDbf=new RecordDbf(bufRecord);
                 recordsDbf.add(recordDbf);
                 position+=sizeOfRecord;
             }
