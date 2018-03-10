@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class FirstTestForLib {
 
     public static void main(String[] args) {
-        //Заголовок //TODO Проверить конструктор лишний байт на multiUse
+        //Заголовок 
         HeaderDbf headerDbf=new HeaderDbf();
         headerDbf.setSignature((byte)2);
         headerDbf.setYear((byte)18);
@@ -92,7 +92,7 @@ public class FirstTestForLib {
 
         ReaderDbf readerDbf=new ReaderDbf("test.dbf");
 
-        dataDbf=readerDbf.read();
+        dataDbf=readerDbf.read(null);
 
         Column[] coulmns=dataDbf.getAllColumns();
 

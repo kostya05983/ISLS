@@ -17,7 +17,7 @@ public class ReaderDbf {
         }
     }
 
-    public DataDbf read(){
+    public DataDbf read(DataDbf datadbf){
         byte[] buf=new byte[32];
         long position=32;
         try {
@@ -52,8 +52,8 @@ public class ReaderDbf {
                 recordsDbf.add(recordDbf);
                 position+=sizeOfRecord;
             }
-            DataDbf dataDbf=new DataDbf(headerDbf,fieldsDbf,recordsDbf);
-            return dataDbf;
+            datadbf=new DataDbf(headerDbf,fieldsDbf,recordsDbf);
+            return datadbf;
 
         }catch (IOException e){
             e.printStackTrace();

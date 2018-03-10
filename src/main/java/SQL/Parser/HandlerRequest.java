@@ -16,6 +16,7 @@ public class HandlerRequest {
 
         return null;
     }
+
     public void createTable(String request){//Работа с байтами
         request=request.substring(request.indexOf(" ")+1);
         request=request.substring(request.indexOf(" ")+1);
@@ -99,27 +100,35 @@ public class HandlerRequest {
         DataDbf dataDbf=new DataDbf(headerDbf,fieldDbfs);
         WriterDbf writerDbf=new WriterDbf(tableName+".dbf");
     }
+
     protected void createIndex(String request){//работа с байтами
 
     }
+
     protected void insertInto(String request){//можно сделать примитив
 
     }
+
     protected void update(String request){//Можно сделать примитив
 
     }
+
     protected void delete(String request){//можнос делать примитив
 
     }
+
     protected void alterTable(String request){
 
     }
+
     protected void truncate(String request){
 
     }
+
     protected void dropTable(String request){//рабоат с байтами
 
     }
+
     protected void dropIndex(String request){//работа с байтами
 
     }

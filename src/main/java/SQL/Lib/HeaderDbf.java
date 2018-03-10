@@ -42,7 +42,7 @@ public class HeaderDbf {
         wrapped.clear();
         this.flagTransaction=ArrayOfHeader[14];
         this.flagEncryption=ArrayOfHeader[15];
-        System.arraycopy(ArrayOfHeader,16,this.fieldMultiUserUse,0,13);
+        System.arraycopy(ArrayOfHeader,16,this.fieldMultiUserUse,0,12);
         this.flagMDX=ArrayOfHeader[28];
         this.NumberOfDriver=ArrayOfHeader[29];
 
