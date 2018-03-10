@@ -15,10 +15,10 @@ public class Example {
         ReaderDbf readerDbf=new ReaderDbf(name+".dbf");
 
         DataDbf dataDbf=new DataDbf();
+
+        dataDbf=readerDbf.read();
+
         readerDbf.close();
-        dataDbf=readerDbf.read(dataDbf);
-
-
         dataDbf.headerDbf.setDay((byte)10);
         dataDbf.headerDbf.setMonth((byte)3);
         dataDbf.headerDbf.setYear((byte)18);
@@ -31,9 +31,6 @@ public class Example {
 
 
         dataDbf.setAllColumns(columns);
-
-//        HeaderDbf headerDbf;
-//        headerDbf=dataDbf.headerDbf;
 
 
 

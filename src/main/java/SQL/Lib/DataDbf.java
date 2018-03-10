@@ -11,7 +11,6 @@ public class DataDbf {
 
 
 
-
     public DataDbf(HeaderDbf headerDbf, ArrayList<FieldDbf> fieldDbf, ArrayList<RecordDbf> recordDbf){
         this.headerDbf=headerDbf;
         this.fieldsDbf=fieldDbf;
@@ -28,15 +27,18 @@ public class DataDbf {
         this.headerDbf=headerDbf;
         this.fieldsDbf=fieldDbf;
     }
+
     public DataDbf(){
 
     }
+
     private short transferByteToUnsigned(byte b){
         if(b<=0){
             return (short)(127+(128+b));
         }
         return b;
     }
+
     public Column[] getAllColumns(){
         ArrayList<Column> arrayList=new ArrayList<>();
         String[][] table=new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
@@ -58,7 +60,6 @@ public class DataDbf {
 
         return columns;
     }
-
 
 
     public void setAllColumns(Column[] columns){//TODO рефактор test

@@ -17,7 +17,7 @@ public class ReaderDbf {
         }
     }
 
-    public DataDbf read(DataDbf datadbf){
+    public DataDbf read(){
         byte[] buf=new byte[32];
         long position=32;
         try {
@@ -52,7 +52,7 @@ public class ReaderDbf {
                 recordsDbf.add(recordDbf);
                 position+=sizeOfRecord;
             }
-            datadbf=new DataDbf(headerDbf,fieldsDbf,recordsDbf);
+            DataDbf datadbf=new DataDbf(headerDbf,fieldsDbf,recordsDbf);
             return datadbf;
 
         }catch (IOException e){
@@ -62,6 +62,7 @@ public class ReaderDbf {
 
 
     }
+
     public void close(){
         try {
             randomAccessFile.close();
