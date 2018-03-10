@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class FirstTestForLib {
 
     public static void main(String[] args) {
-        //Заголовок 
+        //Заголовок
         HeaderDbf headerDbf=new HeaderDbf();
         headerDbf.setSignature((byte)2);
         headerDbf.setYear((byte)18);

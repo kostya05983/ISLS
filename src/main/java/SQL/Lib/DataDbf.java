@@ -28,6 +28,9 @@ public class DataDbf {
         this.headerDbf=headerDbf;
         this.fieldsDbf=fieldDbf;
     }
+    public DataDbf(){
+
+    }
     private short transferByteToUnsigned(byte b){
         if(b<=0){
             return (short)(127+(128+b));
