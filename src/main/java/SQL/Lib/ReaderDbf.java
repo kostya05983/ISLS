@@ -62,5 +62,12 @@ public class ReaderDbf {
 
 
     }
+    public void close(){
+        try {
+            randomAccessFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
