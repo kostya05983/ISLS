@@ -10,9 +10,17 @@
           <option name="url" value="https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxx@bitbucket.org/kostya05983/isls.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://bitbucket.org/kostya05983/isls.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="git@bitbucket.org:kostya05983/isls.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
-    <option name="cloneParentDir" value="C:\Users\x\Desktop" />
+    <option name="cloneParentDir" value="C:\Users\x\Desktop\v" />
   </component>
   <component name="HgRememberedInputs">
     <option name="visitedUrls">
@@ -23,6 +31,6 @@
         </UrlAndUserName>
       </list>
     </option>
-    <option name="cloneParentDir" value="C:\Users\x\Desktop" />
+    <option name="cloneParentDir" value="C:\Users\x\Desktop\kostya05983-isls-2ddee5d5448d" />
   </component>
 </application>
