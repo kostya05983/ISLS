@@ -21,20 +21,37 @@ public class WriterDbf {
 
     public void  write(DataDbf dataDbf){
         try {
+            int sumOfBytes=0;
             //Записываем заголовок файла
 
                 randomAccessFile.write(dataDbf.headerDbf.getByteCode(), 0, 32);
 
             //Записываем все поля
 
-                for (int i = 0; i < dataDbf.fieldsDbf.size(); i++)
+                for (int i = 0; i < dataDbf.fieldsDbf.size(); i++) {
+                    sumOfBytes+=dataDbf.fieldsDbf.get(i).getSizeField();
                     randomAccessFile.write(dataDbf.fieldsDbf.get(i).getByteCode(), 0, 32);
-
+                }
                 //Терминальный байт
             randomAccessFile.writeByte(13);
+
+            sumOfBytes++;
+
+            int buf=sumOfBytes;
             //Записываем записи
-                for (int i = 0; i < dataDbf.recordsDbf.size(); i++)
+                for (int i = 0; i < dataDbf.recordsDbf.size(); i++) {
+                    buf=sumOfBytes;
+                    if(dataDbf.recordsDbf.get(i).getByteCode().length==sumOfBytes)
                     randomAccessFile.write(dataDbf.recordsDbf.get(i).getByteCode(), 0, dataDbf.recordsDbf.get(i).getByteCode().length);
+                    else
+                    {
+                        randomAccessFile.write(dataDbf.recordsDbf.get(i).getByteCode(), 0, dataDbf.recordsDbf.get(i).getByteCode().length);
+                        buf-=dataDbf.recordsDbf.get(i).getByteCode().length;
+                        for(int j=0;j<buf;j++){
+                            randomAccessFile.write(0);
+                        }
+                    }
+                }
 
             randomAccessFile.writeByte(12);
         }catch (IOException e){

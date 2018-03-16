@@ -1,5 +1,6 @@
 package SQL.Lib;
 
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 
 public class RecordDbf {
@@ -72,6 +73,14 @@ public class RecordDbf {
     protected String getPartOfRecord(int start,int size){//TODO исключения,хотя они не нужны если остальная часть будет слажено работать
         byte[] buf=new byte[size];
         System.arraycopy(data,start,buf,0,size);
-        return new String(buf);
+        int i=0;
+        for(i=0;i<buf.length;i++){
+            if(buf[i]==0)
+                break;
+        }
+        byte[] result=new byte[i];
+        System.arraycopy(buf,0,result,0,i);
+
+        return new String(result);
     }
 }

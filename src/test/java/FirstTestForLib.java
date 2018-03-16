@@ -92,10 +92,14 @@ public class FirstTestForLib {
 
         ReaderDbf readerDbf=new ReaderDbf("test.dbf");
 
-        dataDbf=readerDbf.read(null);
+        dataDbf=readerDbf.read();
 
         Column[] coulmns=dataDbf.getAllColumns();
 
+        System.out.println(coulmns[0].data[0]);
+        System.out.println(coulmns[0].data[1]);
+        System.out.println(coulmns[1].data[0]);
+        System.out.println(coulmns[1].data[1]);
 
 
         System.out.println("eee");
