@@ -52,7 +52,7 @@ public class DataDbf {
             }
         }
         for(int i=0;i<fieldsDbf.size();i++){
-            arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(),new String(fieldsDbf.get(i).getNameFiled()),table[i]));
+            arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(),new String(fieldsDbf.get(i).getNameFiled()),table[i],fieldsDbf.get(i).getSizeField()));
         }
 
         Column[] columns=new Column[arrayList.size()];
@@ -61,19 +61,36 @@ public class DataDbf {
         return columns;
     }
 
+    private String intitalizeNullString(int size){
+        String result="";
+        for(int i=0;i<size;i++){
+            result+=(char)0;
+        }
+        return result;
+    }
 
-    public void setAllColumns(Column[] columns){//TODO рефактор test
+    public void setAllColumns(Column[] columns){//TODO  test
         if(!(fieldsDbf==null)) {
             fieldsDbf.clear();
             recordsDbf.clear();
         }
+        if(fieldsDbf==null) {
+            fieldsDbf=new ArrayList<>();
+            recordsDbf=new ArrayList<>();
+        }
+        for(int i=0;i<columns.length;i++){
+                for(int j=0;j<columns[i].data.length;j++)
+                    if(columns[i].data[j]==null)
+                columns[i].data[j]=intitalizeNullString(columns[i].size);
+        }
 
-        FieldDbf fieldDbf=new FieldDbf();
+        FieldDbf fieldDbf;
         String[][] buf=new String[columns.length][];
         for(int i=0;i<columns.length;i++){
+            fieldDbf=new FieldDbf();
             fieldDbf.setNameField(columns[i].title);
             fieldDbf.setTypeField(columns[i].type.code);
-            fieldDbf.setSizeField((byte)columns[i].max());//Размер поля в бинарном формате
+            fieldDbf.setSizeField((byte)columns[i].size);//Размер поля в бинарном формате
             fieldDbf.setNumberOfCh((byte)i);
             fieldsDbf.add(fieldDbf);
             buf[i]=columns[i].data;
@@ -82,10 +99,11 @@ public class DataDbf {
         String tmp;
         buf=transportMatrix(buf);
 
-        RecordDbf recordDbf=new RecordDbf();
+        RecordDbf recordDbf;
         ByteBuffer byteBuffer;
         byte[] tmpByte;
         for(int i=0;i<buf.length;i++){//Пишем записи
+            recordDbf=new RecordDbf();
             byteBuffer=ByteBuffer.allocate(sizeBuffer());
             for(int j=0;j<buf[i].length;j++){//Пишем запись
                 tmpByte = buf[i][j].getBytes();
