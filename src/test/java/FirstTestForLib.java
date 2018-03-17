@@ -58,6 +58,9 @@ public class FirstTestForLib {
 
 
         //data[9]=3;
+        for(int i=0;i<4;i++){
+            data[i+10]=(byte)'2';
+        }
 
         RecordDbf recordDbf=new RecordDbf();
         recordDbf.setHeaderByte((byte)'*');

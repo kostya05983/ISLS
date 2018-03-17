@@ -15,6 +15,7 @@ public class HandlerRequest {
     protected String[] select(String request){
 
         return null;
+
     }
 
     public void createTable(String request){//Работа с байтами

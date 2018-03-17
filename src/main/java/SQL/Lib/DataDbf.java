@@ -107,8 +107,7 @@ public class DataDbf {
             byteBuffer=ByteBuffer.allocate(sizeBuffer());
             for(int j=0;j<buf[i].length;j++){//Пишем запись
                 tmpByte = buf[i][j].getBytes();
-                System.out.println(fieldsDbf.get(i).getSizeField());
-                for(int k=0;k<fieldsDbf.get(i).getSizeField();k++){//пишем одун ячейку
+                for(int k=0;k<fieldsDbf.get(j).getSizeField();k++){//пишем одун ячейку
                     if(k<tmpByte.length)
                         byteBuffer.put(tmpByte[k]);
                     else
@@ -132,10 +131,11 @@ public class DataDbf {
         return sum;
     }
 
-    private String[][] transportMatrix(String[][] a) {
-        String[][] b = new String[a.length][a.length];
-        for (int i = 0; i < a.length; ++i)
-            for (int j = 0; j < a.length; ++j) {
+    public String[][] transportMatrix(String[][] a) {
+        String[][] b = new String[a[0].length][a.length];
+
+        for (int i = 0; i < a[0].length; i++)
+            for (int j = 0; j < a.length; j++) {
                 b[i][j] = a[j][i];
             }
         return b;
