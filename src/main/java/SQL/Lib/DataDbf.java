@@ -62,11 +62,11 @@ public class DataDbf {
     }
 
     private String intitalizeNullString(int size){
-        String result="";
+        StringBuilder result= new StringBuilder();
         for(int i=0;i<size;i++){
-            result+=(char)0;
+            result.append((char) 0);
         }
-        return result;
+        return result.toString();
     }
 
     public void setAllColumns(Column[] columns){//TODO  test
@@ -78,10 +78,10 @@ public class DataDbf {
             fieldsDbf=new ArrayList<>();
             recordsDbf=new ArrayList<>();
         }
-        for(int i=0;i<columns.length;i++){
-                for(int j=0;j<columns[i].data.length;j++)
-                    if(columns[i].data[j]==null)
-                columns[i].data[j]=intitalizeNullString(columns[i].size);
+        for (Column column : columns) {
+            for (int j = 0; j < column.data.length; j++)
+                if (column.data[j] == null)
+                    column.data[j] = intitalizeNullString(column.size);
         }
 
         FieldDbf fieldDbf;
@@ -102,19 +102,19 @@ public class DataDbf {
         RecordDbf recordDbf;
         ByteBuffer byteBuffer;
         byte[] tmpByte;
-        for(int i=0;i<buf.length;i++){//Пишем записи
-            recordDbf=new RecordDbf();
-            byteBuffer=ByteBuffer.allocate(sizeBuffer());
-            for(int j=0;j<buf[i].length;j++){//Пишем запись
-                tmpByte = buf[i][j].getBytes();
-                for(int k=0;k<fieldsDbf.get(j).getSizeField();k++){//пишем одун ячейку
-                    if(k<tmpByte.length)
+        for (String[] aBuf : buf) {//Пишем записи
+            recordDbf = new RecordDbf();
+            byteBuffer = ByteBuffer.allocate(sizeBuffer());
+            for (int j = 0; j < aBuf.length; j++) {//Пишем запись
+                tmpByte = aBuf[j].getBytes();
+                for (int k = 0; k < fieldsDbf.get(j).getSizeField(); k++) {//пишем одун ячейку
+                    if (k < tmpByte.length)
                         byteBuffer.put(tmpByte[k]);
                     else
-                        byteBuffer.put((byte)0);
+                        byteBuffer.put((byte) 0);
                 }
             }
-            recordDbf.setByteCode((byte)' ',byteBuffer.array());
+            recordDbf.setByteCode((byte) ' ', byteBuffer.array());
             byteBuffer.clear();
             recordsDbf.add(recordDbf);
         }
@@ -124,8 +124,8 @@ public class DataDbf {
     private int sizeBuffer(){
         int sum=0;
 
-        for(int i=0;i<fieldsDbf.size();i++){
-            sum+=fieldsDbf.get(i).getSizeField();
+        for (FieldDbf aFieldsDbf : fieldsDbf) {
+            sum += aFieldsDbf.getSizeField();
         }
 
         return sum;

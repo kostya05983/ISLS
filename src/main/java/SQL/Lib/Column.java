@@ -25,11 +25,12 @@ public class Column {
     public Column(String title){
         this.title=title;
     }
+
     protected int max(){
         int max=data[0].getBytes().length;
-        for(int i=0;i<data.length;i++){
-            if(max<data[i].length())
-                max=data[i].getBytes().length;
+        for (String aData : data) {
+            if (max < aData.length())
+                max = aData.getBytes().length;
         }
         return max;
     }
