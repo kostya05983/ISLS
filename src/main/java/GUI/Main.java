@@ -2,6 +2,7 @@ package GUI;
 
 import SQL.Lib.Column;
 import SQL.Lib.TypesOfFields;
+import SQL.Parser.SelectorRequest;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,8 +21,9 @@ import java.util.List;
 
 import static javafx.scene.layout.AnchorPane.*;
 
-public class Main extends Application {
+public class Main extends Application implements Runnable {
 
+    private SelectorRequest selectorRequest;
     private TableView tableView = new TableView();
     private TextArea textIn = new TextArea();
     private Button button = new Button("ТЫК");
@@ -170,7 +172,15 @@ public class Main extends Application {
 
 
 
-    public static void main(String[] args) {
-        launch(args);
+    public  void run() {
+        launch("");
+    }
+
+    public SelectorRequest getSelectorRequest() {
+        return selectorRequest;
+    }
+
+    public void setSelectorRequest(SelectorRequest selectorRequest) {
+        this.selectorRequest = selectorRequest;
     }
 }

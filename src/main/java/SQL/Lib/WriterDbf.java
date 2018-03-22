@@ -15,7 +15,7 @@ public class WriterDbf {
         try {
             randomAccessFile=new RandomAccessFile(nameOfFile,"rw");
         }catch (FileNotFoundException e){
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -55,7 +55,7 @@ public class WriterDbf {
 
             randomAccessFile.writeByte(12);
         }catch (IOException e){
-            System.out.println(e);
+            e.printStackTrace();
         }
 
     }
