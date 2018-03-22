@@ -14,6 +14,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static javafx.scene.layout.AnchorPane.*;
 
 public class Main extends Application {
@@ -59,16 +63,17 @@ public class Main extends Application {
         setBottomAnchor(textOut, 20.0);
         textOut.setEditable(false);
 
-        ///////////////////////////////////////////////////
         //таблица TableView
         setRightAnchor(tableView,20.0);
         setLeftAnchor(tableView, 20.0);
         setBottomAnchor(tableView, 20.0);
 
-        //Stage toast = new Stage();
+
+        ///////////////////////////////////////////////////////////
+        //тестовый кусок кода
+        ///////////////////////////////////////////////////////////
         Column[] buf=new Column[2];
 
-        // Column buf1=new Column();
         buf[0]=new Column();
         buf[0].size=5;
         buf[0].data=new String[2];
@@ -81,7 +86,9 @@ public class Main extends Application {
         buf[1].data=new String[]{"11111","22222"};
 
         setAllColumns(buf);
-        ///////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////
 
         //привязанные к краям панельки
         AnchorPane anchor1 = new AnchorPane();
@@ -105,24 +112,28 @@ public class Main extends Application {
         initialize();
     }
 
-    private void setAllColumns(Column[] columns){
+    public void setAllColumns(Column[] columns){
         TableColumn[] tableColumns=new TableColumn[columns.length];
         for(int i=0;i<tableColumns.length;i++){
-            tableColumns[i]=new TableColumn(columns[i].title);
+            tableColumns[i]=new TableColumn<List<String>,String>(columns[i].title);
+            tableColumns[i].setCellValueFactory(new OurCallBack(i));
         }
-
         tableView.getColumns().addAll(tableColumns);
 
-        ObservableList<String> data= FXCollections.observableArrayList();
-
-        for (Column column : columns) {//Он почему-то не хочет их отображать) Хотя в лист они добавляются
-            for (int j = 0; j < column.data.length; j++)
-                data.add(j, column.data[j]);
+        ObservableList<List<String>> data= FXCollections.observableArrayList();
+        List<String> record;
+        for(int i=0;i<columns[0].data.length;i++){
+            record=new ArrayList<>();
+            for (Column column : columns) {
+                record.add(column.data[i]);
+            }
+            data.add(record);
         }
-
         tableView.setItems(data);
+
     }
-    
+
+
     //обработчик нажатий
     private void initialize()
     {
