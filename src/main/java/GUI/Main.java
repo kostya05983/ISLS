@@ -32,7 +32,7 @@ public class Main extends Application {
         primaryStage.setTitle("ISLS");
 
         //наши лэйблы
-        Label name = new Label("Interpretator subset of language SQL");//наш лэйбл (потом его изменю)
+        Label name = new Label("Interpretor subset of language SQL");//наш лэйбл (потом его изменю)
         name.setId("Title-text");
         BorderPane toLabel = new BorderPane();//панелька, при помщи которой можно поставить в центр
         toLabel.setCenter(name);//двигаем панельку в центр
