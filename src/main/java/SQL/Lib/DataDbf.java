@@ -44,6 +44,7 @@ public class DataDbf {
         String[][] table=new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
         int start;
 
+        if(recordsDbf!=null)
         for(int i=0;i<recordsDbf.size();i++) {
             start=0;
             for (int j = 0; j < fieldsDbf.size(); j++) {

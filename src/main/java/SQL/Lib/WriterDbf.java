@@ -1,6 +1,7 @@
 package SQL.Lib;
 
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -10,8 +11,9 @@ public class WriterDbf {
 
     private RandomAccessFile randomAccessFile;
 
-
     public WriterDbf(String nameOfFile){
+        File file=new File(nameOfFile);
+        file.delete();
         try {
             randomAccessFile=new RandomAccessFile(nameOfFile,"rw");
         }catch (FileNotFoundException e){
@@ -20,6 +22,8 @@ public class WriterDbf {
     }
 
     public void  write(DataDbf dataDbf){
+
+
         try {
             int sumOfBytes=0;
             //Записываем заголовок файла
@@ -39,6 +43,7 @@ public class WriterDbf {
 
             int buf=sumOfBytes;
             //Записываем записи
+            if(dataDbf.recordsDbf!=null)
                 for (int i = 0; i < dataDbf.recordsDbf.size(); i++) {
                     buf=sumOfBytes;
                     if(dataDbf.recordsDbf.get(i).getByteCode().length==sumOfBytes)

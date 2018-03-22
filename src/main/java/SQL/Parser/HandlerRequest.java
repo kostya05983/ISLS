@@ -2,6 +2,7 @@ package SQL.Parser;
 
 import GUI.Main;
 import SQL.Lib.*;
+import javafx.application.Platform;
 
 
 import java.io.Writer;
@@ -14,6 +15,10 @@ import java.util.regex.Pattern;
 public class HandlerRequest {
 
     private Main main;
+
+    public HandlerRequest(Main main){
+        this.main=main;
+    }
 
     protected String[] select(String request){
 
@@ -54,7 +59,7 @@ public class HandlerRequest {
             }
 
             sizes.add(size);
-            if(type.toLowerCase().equals("char"))
+            if(type.toLowerCase().equals("character"))
                 types.add(TypesOfFields.Character);
             if(type.toLowerCase().equals("integer")) {
                 types.add(TypesOfFields.Integer);
@@ -106,8 +111,15 @@ public class HandlerRequest {
         writerDbf.write(dataDbf);
         writerDbf.close();
 
-        main.setAllColumns(dataDbf.getAllColumns());
-        main.outText("Успешно");
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                main.clearTable();
+                main.setAllColumns(dataDbf.getAllColumns());
+                main.outText("Успешно");
+            }
+        });
+
     }
 
     protected void createIndex(String request){//работа с байтами
@@ -280,6 +292,14 @@ public class HandlerRequest {
         WriterDbf writerDbf = new WriterDbf(Name_Table + ".dbf");
         writerDbf.write(dataDbf);
         writerDbf.close();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                main.clearTable();
+                main.setAllColumns(dataDbf.getAllColumns());
+                main.outText("Успешно");
+            }
+        });
     }
 
     protected void truncate(String request){
@@ -295,6 +315,7 @@ public class HandlerRequest {
         }
         dataDBF.headerDbf.setNumberOfRecords(0);
         setDBF(dataDBF,table_name);
+
     }
 
     protected void dropTable(String request){//рабоат с байтами

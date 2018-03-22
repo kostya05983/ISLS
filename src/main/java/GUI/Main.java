@@ -1,9 +1,9 @@
 package GUI;
 
 import SQL.Lib.Column;
-import SQL.Lib.TypesOfFields;
 import SQL.Parser.SelectorRequest;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -91,6 +91,12 @@ public class Main extends Application implements Runnable {
         initialize();
     }
 
+    public void clearTable(){
+        int size=tableView.getColumns().size();
+        for(int i=0;i<size;i++)
+            tableView.getColumns().remove(0);
+    }
+
     public void setAllColumns(Column[] columns){
         TableColumn[] tableColumns=new TableColumn[columns.length];
         for(int i=0;i<tableColumns.length;i++){
@@ -111,6 +117,7 @@ public class Main extends Application implements Runnable {
         tableView.setItems(data);
 
     }
+
 
     //обработчик нажатий
     private void initialize()
