@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class ReaderDbf {
 
-    RandomAccessFile randomAccessFile;
+    private RandomAccessFile randomAccessFile;
 
     public ReaderDbf(String nameOfFile){
         try{
@@ -52,8 +52,7 @@ public class ReaderDbf {
                 recordsDbf.add(recordDbf);
                 position+=sizeOfRecord;
             }
-            DataDbf datadbf=new DataDbf(headerDbf,fieldsDbf,recordsDbf);
-            return datadbf;
+            return new DataDbf(headerDbf,fieldsDbf,recordsDbf);
 
         }catch (IOException e){
             e.printStackTrace();

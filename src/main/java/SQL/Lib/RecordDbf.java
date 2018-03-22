@@ -1,7 +1,5 @@
 package SQL.Lib;
 
-import java.lang.reflect.Array;
-import java.nio.ByteBuffer;
 
 public class RecordDbf {
     private byte headerByte;
@@ -24,8 +22,7 @@ public class RecordDbf {
     public RecordDbf(byte[] array){
         this.data=new byte[array.length-1];
         this.headerByte=array[0];
-        for(int i=1;i<array.length;i++)
-            this.data[i-1]=array[i];
+        System.arraycopy(array, 1, this.data, 0, array.length - 1);
     }
 
     public byte[] getByteCode(){
@@ -33,25 +30,21 @@ public class RecordDbf {
 
         result[0]=headerByte;
 
-        for(int i=1;i<data.length+1;i++){
-            result[i]=data[i-1];
-        }
+        System.arraycopy(data, 0, result, 1, data.length + 1 - 1);
 
         return result;
     }
 
     public void setByteCode(byte[] array){
         this.headerByte=array[0];
-        for(int i=1;i<array.length;i++)
-            this.data[i-1]=array[i];
+        System.arraycopy(array, 1, this.data, 0, array.length - 1);
     }
 
     public void setByteCode(byte header,byte[] array){
         this.headerByte=header;
         this.data=new byte[array.length];
 
-        for(int i=0;i<array.length;i++)
-            this.data[i]=array[i];
+        System.arraycopy(array, 0, this.data, 0, array.length);
     }
 
     public void setHeaderByte(byte headerByte) {
@@ -73,8 +66,8 @@ public class RecordDbf {
     protected String getPartOfRecord(int start,int size){//TODO исключения,хотя они не нужны если остальная часть будет слажено работать
         byte[] buf=new byte[size];
         System.arraycopy(data,start,buf,0,size);
-        int i=0;
-        for(i=0;i<buf.length;i++){
+        int i;
+        for(i = 0;i<buf.length;i++){
             if(buf[i]==0)
                 break;
         }

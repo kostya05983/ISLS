@@ -1,70 +1,117 @@
 package GUI;
 
-
 import SQL.Lib.Column;
 import SQL.Lib.TypesOfFields;
+import SQL.Parser.SelectorRequest;
 import javafx.application.Application;
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main extends Application {
-    private TableView table=new TableView();
+import static javafx.scene.layout.AnchorPane.*;
+
+public class Main extends Application implements Runnable {
+
+    private SelectorRequest selectorRequest;
+    private TableView tableView = new TableView();
+    private TextArea textIn = new TextArea();
+    private Button button = new Button("ТЫК");
+    private TextArea textOut = new TextArea("Здесь вывод действи библиотеки будет");
 
     public void start(Stage primaryStage) {
 
-        primaryStage.setTitle("APP");
+        primaryStage.setTitle("ISLS");
 
-        FlowPane flowPane=new FlowPane(Orientation.VERTICAL);
+        //наши лэйблы
+        Label name = new Label("Interpretor subset of language SQL");//наш лэйбл (потом его изменю)
+        name.setId("Title-text");
+        BorderPane toLabel = new BorderPane();//панелька, при помщи которой можно поставить в центр
+        toLabel.setCenter(name);//двигаем панельку в центр
+        BorderPane.setMargin(name, new Insets(10.0));//делаем отступы для лэйбла
 
-        TextField textIn = new TextField();
-        TextField textOut = new TextField();
+        Label command = new Label ("Command:");
+        setLeftAnchor(command,15.0);
 
-        //Stage toast = new Stage();
+        Label output = new Label("Output:");
+        setLeftAnchor(output, 25.0);
+        setTopAnchor(output, 20.0);
+
+        //элемент для ввода
+        setLeftAnchor(textIn, 90.0);
+        setRightAnchor(textIn, 20.0);
+        textIn.setMinHeight(50);
+
+        //кнопка
+        button.setMinWidth(50);
+        button.setMinWidth(50);
+        setLeftAnchor(button, 25.0);
+        setTopAnchor(button, 30.0);
+
+        //элемент для вывода
+        setLeftAnchor(textOut, 90.0);
+        setTopAnchor(textOut, 20.0);
+        setRightAnchor(textOut, 20.0);
+        setBottomAnchor(textOut, 20.0);
+        textOut.setEditable(false);
+
+        //таблица TableView
+        setRightAnchor(tableView,20.0);
+        setLeftAnchor(tableView, 20.0);
+        setBottomAnchor(tableView, 20.0);
+
+
+        ///////////////////////////////////////////////////////////
+        //тестовый кусок кода
+        ///////////////////////////////////////////////////////////
         Column[] buf=new Column[2];
 
-        // Column buf1=new Column();
         buf[0]=new Column();
         buf[0].size=5;
-        buf[0].data=new String[]{"3333","44444"};
-        buf[0].title=new String("lol");
+        buf[0].data=new String[2];
+        buf[0].title= "lol";
         buf[0].type= TypesOfFields.Character;
         buf[1]=new Column();
         buf[1].size=5;
         buf[1].type=TypesOfFields.Character;
-        buf[1].title=new String("lolo");
+        buf[1].title= "lolo";
         buf[1].data=new String[]{"11111","22222"};
 
         setAllColumns(buf);
+        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////
 
+        //привязанные к краям панельки
+        AnchorPane anchor1 = new AnchorPane();
+        AnchorPane anchor2 = new AnchorPane();
+        AnchorPane anchor3 = new AnchorPane();
 
-        Button button=new Button("ОЛОЛ");
-        flowPane.setPadding(new Insets(100,100,100,100));
-        flowPane.getChildren().addAll(textIn, textOut, table, button);
+        //добавление элементов в системы вёрстки
+        VBox list = new VBox();//корневой список
+        anchor1.getChildren().addAll(command, textIn, button);
+        anchor2.getChildren().addAll(output, textOut);
+        anchor3.getChildren().add(tableView);
+        list.getChildren().addAll(toLabel, anchor1, anchor2, anchor3);
 
-
-
-        Scene scene=new Scene(flowPane);
+        //добавление элементов в окно и вызов окна
+        Scene scene=new Scene(list);
         primaryStage.setScene(scene);
-        primaryStage.setHeight(800);
-        primaryStage.setWidth(800);
-
+        primaryStage.setHeight(730);
+        primaryStage.setWidth(900);
+        scene.getStylesheets().add("window_style.css");
         primaryStage.show();
+        initialize();
     }
 
     public void setAllColumns(Column[] columns){
@@ -73,22 +120,67 @@ public class Main extends Application {
             tableColumns[i]=new TableColumn<List<String>,String>(columns[i].title);
             tableColumns[i].setCellValueFactory(new OurCallBack(i));
         }
-        table.getColumns().addAll(tableColumns);
-
+        tableView.getColumns().addAll(tableColumns);
 
         ObservableList<List<String>> data= FXCollections.observableArrayList();
         List<String> record;
         for(int i=0;i<columns[0].data.length;i++){
             record=new ArrayList<>();
-            for(int j=0;j<columns.length;j++) {
-                record.add(columns[j].data[i]);
+            for (Column column : columns) {
+                record.add(column.data[i]);
             }
             data.add(record);
         }
-        table.setItems(data);
+        tableView.setItems(data);
 
     }
-    public static void main(String[] args) {
-        launch(args);
+
+
+    //обработчик нажатий
+    private void initialize()
+    {
+        button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> textGoToRelise() );
+
+        textIn.setOnKeyPressed(event ->
+        {
+            if ((event.getCode().getName().equals("F1") ||
+                    event.getCode().getName().equals("F5")) ||
+                    (event.getCode() == KeyCode.ENTER && event.isControlDown()))
+            {
+                textGoToRelise();
+            }
+        });
+    }
+
+    //функция отправки команд на обработку
+    private void textGoToRelise()
+    {
+        String text = textIn.getText();
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //Переменную текст нужно отправить в метод Славы по ссылке,
+        //затем вызываете откуда угодно эту строку(ниже) с текстом для вывода
+        //на вход идёт переменая типа String
+        outText(text);
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    }
+
+    //функция вывода результатов работы библиотеки
+    public void outText(String text)
+    {
+        textOut.setText(text);
+    }
+
+
+
+    public  void run() {
+        launch("");
+    }
+
+    public SelectorRequest getSelectorRequest() {
+        return selectorRequest;
+    }
+
+    public void setSelectorRequest(SelectorRequest selectorRequest) {
+        this.selectorRequest = selectorRequest;
     }
 }

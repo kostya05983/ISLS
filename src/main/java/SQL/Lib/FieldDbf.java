@@ -31,8 +31,7 @@ public class FieldDbf {
     public byte[] getByteCode(){
         byte [] result=new byte[32];
 
-        for(int i=0;i<this.nameFiled.length;i++)
-            result[i]=this.nameFiled[i];
+        System.arraycopy(this.nameFiled, 0, result, 0, this.nameFiled.length);
 
         result[11]=this.typeField;
 
