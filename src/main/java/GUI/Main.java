@@ -2,19 +2,24 @@ package GUI;
 
 import SQL.Lib.Column;
 import SQL.Parser.SelectorRequest;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +32,19 @@ public class Main extends Application implements Runnable {
     private TextArea textIn = new TextArea();
     private Button button = new Button("ТЫК");
     private TextArea textOut = new TextArea("Здесь вывод действи библиотеки будет");
+
+    private Duration animationDuration = new Duration(2000);
+
+    private Timeline timeline = new Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(tableView.maxHeightProperty(), 10)),
+            //new KeyFrame(Duration.ZERO, new KeyValue(tableView.maxWidthProperty(), 10)),
+            new KeyFrame(animationDuration, new KeyValue(tableView.maxHeightProperty(), 350))
+            //new KeyFrame(animationDuration, new KeyValue(tableView.maxWidthProperty(), 300.0))
+    );
+
+    private AnchorPane anchor3 = new AnchorPane();
+
+    private static final Tooltip customTooltip = new Tooltip();
 
     public void start(Stage primaryStage) {
 
@@ -50,12 +68,16 @@ public class Main extends Application implements Runnable {
         setLeftAnchor(textIn, 90.0);
         setRightAnchor(textIn, 20.0);
         textIn.setMinHeight(50);
+        //подсказка при наведении на ввод
+        textIn.setTooltip(new Tooltip("Сюда вводи команды"));
 
         //кнопка
         button.setMinWidth(50);
         button.setMinWidth(50);
         setLeftAnchor(button, 25.0);
         setTopAnchor(button, 30.0);
+        //подсказка при наведении на кнопку
+        button.setTooltip(new Tooltip("Используй Ctrl+Enter или F1 или F5"));
 
         //элемент для вывода
         setLeftAnchor(textOut, 90.0);
@@ -63,16 +85,19 @@ public class Main extends Application implements Runnable {
         setRightAnchor(textOut, 20.0);
         setBottomAnchor(textOut, 20.0);
         textOut.setEditable(false);
+        //подсказка при наведении на вывод
+        textOut.setTooltip(new Tooltip("Здесь выводится результат работы библиотеки"));
 
         //таблица TableView
         setRightAnchor(tableView,20.0);
         setLeftAnchor(tableView, 20.0);
         setBottomAnchor(tableView, 20.0);
+        tableView.setMaxSize(10, 10);
 
         //привязанные к краям панельки
         AnchorPane anchor1 = new AnchorPane();
         AnchorPane anchor2 = new AnchorPane();
-        AnchorPane anchor3 = new AnchorPane();
+        //AnchorPane anchor3 = new AnchorPane();
 
         //добавление элементов в системы вёрстки
         VBox list = new VBox();//корневой список
@@ -84,11 +109,11 @@ public class Main extends Application implements Runnable {
         //добавление элементов в окно и вызов окна
         Scene scene=new Scene(list);
         primaryStage.setScene(scene);
-        primaryStage.setHeight(730);
         primaryStage.setWidth(900);
+        primaryStage.setHeight(730);
         scene.getStylesheets().add("window_style.css");
-        primaryStage.show();
         initialize();
+        primaryStage.show();
     }
 
     public void clearTable(){
@@ -115,14 +140,13 @@ public class Main extends Application implements Runnable {
             data.add(record);
         }
         tableView.setItems(data);
-
+        customTooltip.hide();
     }
-
 
     //обработчик нажатий
     private void initialize()
     {
-        button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> textGoToRelise() );
+        button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> textGoToRelise());
 
         textIn.setOnKeyPressed(event ->
         {
@@ -138,6 +162,10 @@ public class Main extends Application implements Runnable {
     //функция отправки команд на обработку
     private void textGoToRelise()
     {
+        //запуск анимации
+        timeline.play();
+        showTooltip(anchor3, tableView, "Мы работаем над этим...", null);
+        /////////////////
         String text = textIn.getText();
         SelectorRequest selectorRequest=new SelectorRequest(text,this);
         Thread thread=new Thread(selectorRequest);
@@ -150,8 +178,47 @@ public class Main extends Application implements Runnable {
         textOut.setText(text);
     }
 
-    public  void run() {
+    //из вне вызывать эту функцию без параметра (для неопознанных ошибок)
+    public void error()
+    {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("ERROR");
+        alert.setHeaderText(null);
+        alert.setContentText("Упс, что-то пошло не так! :(");
+        alert.showAndWait();
+    }
+
+    //из вне вызывать эту функцию с входным параметром типа string
+    public void error(String text_error)
+    {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("ERROR");
+        alert.setHeaderText("Упс, произошла ошибка!");
+        alert.setContentText(text_error);
+        alert.showAndWait();
+    }
+
+    private static void showTooltip(AnchorPane owner, Control control, String tooltipText,
+                                    ImageView tooltipGraphic)
+    {
+        Point2D p = control.localToScene(350.0, 50.0);
+        customTooltip.setText(tooltipText);
+
+        control.setTooltip(customTooltip);
+        customTooltip.setAutoHide(true);
+
+        customTooltip.show(owner, p.getX()
+                + control.getScene().getX() + control.getScene().getWindow().getX(), p.getY()
+                + control.getScene().getY() + control.getScene().getWindow().getY());
+    }
+
+    public void run() {
         launch("");
     }
 
+    private void loading()
+    {
+        //сюда надо анимацию загрузки
+        //над этим надо ещё подумать, может и текущей анимации хватит
+    }
 }

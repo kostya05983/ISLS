@@ -1,5 +1,7 @@
 package SQL.Lib;
 
+import javafx.scene.control.Alert;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -13,7 +15,8 @@ public class ReaderDbf {
         try{
             randomAccessFile=new RandomAccessFile(nameOfFile,"r");
         }catch(FileNotFoundException e){
-            System.out.println(e);
+            //System.out.println(e);
+            out_stack_error(e.getLocalizedMessage(), e.getMessage());
         }
     }
 
@@ -33,7 +36,8 @@ public class ReaderDbf {
             while (randomAccessFile.readByte()!=13) {
                 randomAccessFile.seek(position);
                 randomAccessFile.read(buf);
-                System.out.println(randomAccessFile.getChannel().position());
+                //System.out.println(randomAccessFile.getChannel().position());
+                out_stack_error("RandomAccessFile error on pos:",Long.toString(randomAccessFile.getChannel().position()));
                 fieldDbf=new FieldDbf(buf);
                 fieldsDbf.add(fieldDbf);
                 sizeOfRecord+=buf[16];//Находим длину записи
@@ -55,7 +59,8 @@ public class ReaderDbf {
             return new DataDbf(headerDbf,fieldsDbf,recordsDbf);
 
         }catch (IOException e){
-            e.printStackTrace();
+            //e.printStackTrace();
+            out_stack_error(e.getLocalizedMessage(), e.getMessage());
             return null;
         }
 
@@ -66,8 +71,18 @@ public class ReaderDbf {
         try {
             randomAccessFile.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            out_stack_error(e.getLocalizedMessage(), e.getMessage());
         }
+    }
+
+    private void out_stack_error(String textHeader, String textContent)
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("ReaderDbf info");
+        alert.setHeaderText(textHeader);
+        alert.setContentText(textContent);
+        alert.showAndWait();
     }
 
 }

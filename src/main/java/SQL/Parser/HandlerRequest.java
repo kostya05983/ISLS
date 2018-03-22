@@ -5,7 +5,6 @@ import SQL.Lib.*;
 import javafx.application.Platform;
 
 
-import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
@@ -48,7 +47,10 @@ public class HandlerRequest {
             type=request.substring(0,request.indexOf(")")+2);
             request=request.substring(request.indexOf(")")+2);
             if(type.contains(",") &&type.indexOf(",")!=type.length()-1){
-                System.out.println(type.substring(type.indexOf("("),type.indexOf(",")));
+                //System.out.println(type.substring(type.indexOf("("),type.indexOf(",")));
+                String type_F = type.substring(type.indexOf("("),type.indexOf(","));
+                Platform.runLater(() ->
+                        main.outText(type_F));
                 size+=Short.parseShort(type.substring(type.indexOf("(")+1,type.indexOf(",")));
                 size++;
                 size+=Short.parseShort(type.substring(type.indexOf(",")+1,type.indexOf(")")));
@@ -74,8 +76,7 @@ public class HandlerRequest {
 
         short sum=0;
 
-        for(int i=0;i<sizes.size();i++)
-            sum+=sizes.get(i);
+        for (Byte size1 : sizes) sum += size1;
 
         GregorianCalendar gregorianCalendar=new GregorianCalendar();
         gregorianCalendar.setTimeInMillis(System.currentTimeMillis());
@@ -222,7 +223,10 @@ public class HandlerRequest {
             {
                 //Добавление с помощью setAllColumns
                 boolean check = false;
-                System.out.println("ADD");
+
+                //System.out.println("ADD");
+                Platform.runLater(() ->
+                        main.outText("ADD"));
                 for(int i = 0; i < dataDbf.fieldsDbf.size(); i++) {
                     String namef = new String(dataDbf.fieldsDbf.get(i).getNameFiled());
                     namef = namef.trim();
@@ -242,7 +246,8 @@ public class HandlerRequest {
                     dataDbf.setAllColumns(newcolumns);
                 }
                 else
-                    System.out.println("error");//поле с таким именем уже существует
+                    Platform.runLater(() ->
+                            main.error("Поле с таким именем уже\nсуществует"));
                 break;
             }
             case 2://DROP работает
@@ -253,7 +258,9 @@ public class HandlerRequest {
                     namef = namef.trim();
                     if (Name_Column.compareTo(namef) == 0) {
                         check = 1;
-                        System.out.println("FIND");
+                        Platform.runLater(() ->
+                                main.outText("FIND"));
+                        //System.out.println("FIND");
                         dataDbf.fieldsDbf.remove(i);
                         dataDbf.recordsDbf.remove(i);
                         break;
@@ -262,12 +269,15 @@ public class HandlerRequest {
                         check = 2;
                 }
                 if(check == 2)
-                    System.out.println("error");//не найдена колонка
+                    Platform.runLater(() ->
+                            main.error("Не найдена колонка"));
                 break;
             }
             case 3://MODIFY работает до размера в 10
             {
-                System.out.println("MODIFY");
+                //System.out.println("MODIFY");
+                Platform.runLater(() ->
+                        main.outText("MODIFY"));
                 int check = 0;
                 for(int i = 0; i<dataDbf.fieldsDbf.size(); i++)
                 {
@@ -275,7 +285,9 @@ public class HandlerRequest {
                     namef = namef.trim();
                     if (Name_Column.compareTo(namef) == 0) {
                         check = 1;
-                        System.out.println("FIND");
+                        //System.out.println("FIND");
+                        Platform.runLater(() ->
+                                main.outText("FIND"));
                         dataDbf.fieldsDbf.get(i).setTypeField(Type_Column.code);
                         dataDbf.fieldsDbf.get(i).setSizeField((byte)size_data);
                         break;
@@ -284,7 +296,8 @@ public class HandlerRequest {
                         check = 2;
                 }
                 if(check == 2)
-                    System.out.println("error");//не найдена колонка
+                    Platform.runLater(() ->
+                            main.error("Не найдена колонка"));
                 break;
             }
         }
@@ -544,7 +557,7 @@ public class HandlerRequest {
         return  m.matches();
     }
 
-    private static void deleteRecords(String str,DataDbf dataDbf){
+    private void deleteRecords(String str,DataDbf dataDbf){
         if(str.contains("=")){
             deletE(str,"=",dataDbf);
         }
@@ -574,12 +587,13 @@ public class HandlerRequest {
                 deletE(str, " IN ", dataDbf);
             }
             else{
-                //ошибка ''
+                Platform.runLater(() ->
+                        main.error("Ошибка в deleteRecords"));
             }
         }
     }
 
-    private static void deletE(String condition,String operator,DataDbf dataDbf){
+    private void deletE(String condition,String operator,DataDbf dataDbf){
         String columnName=condition.substring(0,condition.indexOf(operator)).trim();
         for (Column c:dataDbf.getAllColumns()
                 ) {
@@ -595,7 +609,8 @@ public class HandlerRequest {
                             }
                         }
                         else{
-                            //ошибка ''
+                            Platform.runLater(() ->
+                                    main.error("Ошибка в deletE"));
                         }
                         break;
                     case Integer:

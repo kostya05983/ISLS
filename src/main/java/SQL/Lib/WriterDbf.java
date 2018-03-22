@@ -1,6 +1,8 @@
 package SQL.Lib;
 
 
+import javafx.scene.control.Alert;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,6 +10,7 @@ import java.io.RandomAccessFile;
 
 
 public class WriterDbf {
+
 
     private RandomAccessFile randomAccessFile;
 
@@ -17,7 +20,8 @@ public class WriterDbf {
         try {
             randomAccessFile=new RandomAccessFile(nameOfFile,"rw");
         }catch (FileNotFoundException e){
-            e.printStackTrace();
+            //e.printStackTrace();
+            out_stack_error(e.getLocalizedMessage(), e.getMessage());
         }
     }
 
@@ -41,7 +45,7 @@ public class WriterDbf {
 
             sumOfBytes++;
 
-            int buf=sumOfBytes;
+            int buf; //=sumOfBytes;
             //Записываем записи
             if(dataDbf.recordsDbf!=null)
                 for (int i = 0; i < dataDbf.recordsDbf.size(); i++) {
@@ -60,7 +64,8 @@ public class WriterDbf {
 
             randomAccessFile.writeByte(12);
         }catch (IOException e){
-            e.printStackTrace();
+            //e.printStackTrace();
+            out_stack_error(e.getLocalizedMessage(), e.getMessage());
         }
 
     }
@@ -68,8 +73,18 @@ public class WriterDbf {
         try {
             randomAccessFile.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            out_stack_error(e.getLocalizedMessage(), e.getMessage());
         }
+    }
+
+    private void out_stack_error(String textHeader, String textContent)
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("WriterDbf info");
+        alert.setHeaderText(textHeader);
+        alert.setContentText(textContent);
+        alert.showAndWait();
     }
 
 }
