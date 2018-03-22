@@ -3,7 +3,6 @@ package SQL.Lib;
 
 
 import java.nio.ByteBuffer;
-import java.util.Date;
 
 public class HeaderDbf {
     private byte signature;//0
@@ -83,9 +82,7 @@ public class HeaderDbf {
         a[14]=this.flagTransaction;
         a[15]=this.flagEncryption;
 
-        for(int i=16;i<28;i++){
-            a[i]=this.fieldMultiUserUse[i-16];
-        }
+        System.arraycopy(this.fieldMultiUserUse, 0, a, 16, 12);
         a[28]=this.flagMDX;
         a[29]=this.NumberOfDriver;
         a[30]=0;
