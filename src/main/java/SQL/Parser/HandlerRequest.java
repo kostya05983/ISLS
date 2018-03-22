@@ -275,7 +275,6 @@ public class HandlerRequest {
         writerDbf.close();
     }
 
-
     protected void truncate(String request){
         String table_name;
         table_name=request.substring(request.indexOf(" TABLE ")+6,request.indexOf(";")).trim();
