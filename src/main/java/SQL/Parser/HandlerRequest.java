@@ -1,5 +1,6 @@
 package SQL.Parser;
 
+import GUI.Main;
 import SQL.Lib.*;
 
 
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
 
 public class HandlerRequest {
 
+    private Main main;
 
     protected String[] select(String request){
 
@@ -40,7 +42,7 @@ public class HandlerRequest {
 
             type=request.substring(0,request.indexOf(")")+2);
             request=request.substring(request.indexOf(")")+2);
-            if(type.indexOf(",")>=0&&type.indexOf(",")!=type.length()-1){
+            if(type.contains(",") &&type.indexOf(",")!=type.length()-1){
                 System.out.println(type.substring(type.indexOf("("),type.indexOf(",")));
                 size+=Short.parseShort(type.substring(type.indexOf("(")+1,type.indexOf(",")));
                 size++;
@@ -101,6 +103,11 @@ public class HandlerRequest {
 
         DataDbf dataDbf=new DataDbf(headerDbf,fieldDbfs);
         WriterDbf writerDbf=new WriterDbf(tableName+".dbf");
+        writerDbf.write(dataDbf);
+        writerDbf.close();
+
+        main.setAllColumns(dataDbf.getAllColumns());
+        main.outText("Успешно");
     }
 
     protected void createIndex(String request){//работа с байтами

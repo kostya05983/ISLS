@@ -23,7 +23,6 @@ import static javafx.scene.layout.AnchorPane.*;
 
 public class Main extends Application implements Runnable {
 
-    private SelectorRequest selectorRequest;
     private TableView tableView = new TableView();
     private TextArea textIn = new TextArea();
     private Button button = new Button("ТЫК");
@@ -70,28 +69,6 @@ public class Main extends Application implements Runnable {
         setLeftAnchor(tableView, 20.0);
         setBottomAnchor(tableView, 20.0);
 
-
-        ///////////////////////////////////////////////////////////
-        //тестовый кусок кода
-        ///////////////////////////////////////////////////////////
-        Column[] buf=new Column[2];
-
-        buf[0]=new Column();
-        buf[0].size=5;
-        buf[0].data=new String[2];
-        buf[0].title= "lol";
-        buf[0].type= TypesOfFields.Character;
-        buf[1]=new Column();
-        buf[1].size=5;
-        buf[1].type=TypesOfFields.Character;
-        buf[1].title= "lolo";
-        buf[1].data=new String[]{"11111","22222"};
-
-        setAllColumns(buf);
-        ////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////
-
         //привязанные к краям панельки
         AnchorPane anchor1 = new AnchorPane();
         AnchorPane anchor2 = new AnchorPane();
@@ -135,7 +112,6 @@ public class Main extends Application implements Runnable {
 
     }
 
-
     //обработчик нажатий
     private void initialize()
     {
@@ -156,12 +132,9 @@ public class Main extends Application implements Runnable {
     private void textGoToRelise()
     {
         String text = textIn.getText();
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //Переменную текст нужно отправить в метод Славы по ссылке,
-        //затем вызываете откуда угодно эту строку(ниже) с текстом для вывода
-        //на вход идёт переменая типа String
-        outText(text);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        SelectorRequest selectorRequest=new SelectorRequest(text,this);
+        Thread thread=new Thread(selectorRequest);
+        thread.start();
     }
 
     //функция вывода результатов работы библиотеки
@@ -170,17 +143,8 @@ public class Main extends Application implements Runnable {
         textOut.setText(text);
     }
 
-
-
     public  void run() {
         launch("");
     }
 
-    public SelectorRequest getSelectorRequest() {
-        return selectorRequest;
-    }
-
-    public void setSelectorRequest(SelectorRequest selectorRequest) {
-        this.selectorRequest = selectorRequest;
-    }
 }
