@@ -15,7 +15,7 @@ public class SelectorRequest implements Runnable{
     private Pattern Update_P = Pattern.compile("UPDATE");//готов
     private Pattern Delet_P = Pattern.compile("DELETE\\s+FROM");//готов
     private Pattern Select_P = Pattern.compile("SELECT");//готов
-    private Pattern Drop_P = Pattern.compile("DROP\\s+TABLE");//готов
+    private Pattern Drop_P = Pattern.compile("\\s*DROP\\s+TABLE\\s+((\\w)+\\s*)");//готов
     private Pattern Truncate_P = Pattern.compile("TRUNCATE\\s+TABLE");//готов
     private Pattern CreateIn_P = Pattern.compile("CREATE\\s+INDEX");
     private Pattern DropIn_P = Pattern.compile("DROP\\s+INDEX");
