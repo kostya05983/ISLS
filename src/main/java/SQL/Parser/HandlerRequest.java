@@ -112,13 +112,10 @@ public class HandlerRequest {
         writerDbf.write(dataDbf);
         writerDbf.close();
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                main.clearTable();
-                main.setAllColumns(dataDbf.getAllColumns());
-                main.outText("Успешно");
-            }
+        Platform.runLater(() -> {
+            main.clearTable();
+            main.setAllColumns(dataDbf.getAllColumns());
+            main.outText("Успешно");
         });
 
     }
@@ -305,13 +302,11 @@ public class HandlerRequest {
         WriterDbf writerDbf = new WriterDbf(Name_Table + ".dbf");
         writerDbf.write(dataDbf);
         writerDbf.close();
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                main.clearTable();
-                main.setAllColumns(dataDbf.getAllColumns());
-                main.outText("Успешно");
-            }
+
+        Platform.runLater(() -> {
+            main.clearTable();
+            main.setAllColumns(dataDbf.getAllColumns());
+            main.outText("Успешно");
         });
     }
 
@@ -331,17 +326,24 @@ public class HandlerRequest {
 
     }
 
-    protected void dropTable(String request){//рабоат с байтами
+    protected void dropTable(String request){
+        request=request.trim();
+        request=request.substring(request.indexOf(" ")).trim();
+        request=request.substring(request.indexOf(" ")).trim();
+
+        WriterDbf writerDbf=new WriterDbf();
+        writerDbf.deleteFile(request);
+
+        Platform.runLater(() -> {
+            main.clearTable();
+            main.outText("Успешно");
+        });
+    }
+
+    protected void dropIndex(String request){
 
     }
 
-    protected void dropIndex(String request){//работа с байтами
-
-    }
-
-    protected void Example(String request){
-
-    }
 
     private static boolean checkChar(String condition,String cellData,String operator){
         boolean b=false;

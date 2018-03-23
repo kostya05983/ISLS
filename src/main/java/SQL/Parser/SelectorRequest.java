@@ -74,7 +74,7 @@ public class SelectorRequest implements Runnable{
             if (Check.find())
             {
                 checkcommand=true;
-                //ВЫЗОВ DROP TABLE с mystring
+                handlerRequest.dropTable(mystring);
             }
             Check = Truncate_P.matcher(strings_command[i]);
             if (Check.find())

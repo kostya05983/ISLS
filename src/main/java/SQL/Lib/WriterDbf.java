@@ -25,6 +25,9 @@ public class WriterDbf {
         }
     }
 
+    public WriterDbf(){
+    }
+
     public void  write(DataDbf dataDbf){
 
 
@@ -78,8 +81,7 @@ public class WriterDbf {
         }
     }
 
-    private void out_stack_error(String textHeader, String textContent)
-    {
+    private void out_stack_error(String textHeader, String textContent) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("WriterDbf info");
         alert.setHeaderText(textHeader);
@@ -87,4 +89,9 @@ public class WriterDbf {
         alert.showAndWait();
     }
 
+    public void deleteFile(String name){
+        File file=new File(name+".dbf");
+        file.delete();
+
+    }
 }

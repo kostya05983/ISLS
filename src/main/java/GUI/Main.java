@@ -164,7 +164,7 @@ public class Main extends Application implements Runnable {
     {
         //запуск анимации
         timeline.play();
-        showTooltip(anchor3, tableView, "Мы работаем над этим...", null);
+        //showTooltip(anchor3, tableView, "Мы работаем над этим...", null);
         /////////////////
         String text = textIn.getText();
         SelectorRequest selectorRequest=new SelectorRequest(text,this);
