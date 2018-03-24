@@ -3,6 +3,8 @@ package SQL.Lib;
 
 
 import java.nio.ByteBuffer;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class HeaderDbf {
     private byte signature;//0
@@ -186,6 +188,14 @@ public class HeaderDbf {
 
     public byte getNumberOfDriver() {
         return NumberOfDriver;
+    }
+
+    public void setData(){
+        GregorianCalendar gregorianCalendar=new GregorianCalendar();
+        gregorianCalendar.setTimeInMillis(System.currentTimeMillis());
+        this.year=((byte)(gregorianCalendar.get(Calendar.YEAR)%1000));
+        this.month=((byte)gregorianCalendar.get(Calendar.MONTH));
+        this.day=((byte)gregorianCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
 }

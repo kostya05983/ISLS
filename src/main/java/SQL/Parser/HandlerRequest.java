@@ -15,7 +15,7 @@ public class HandlerRequest {
 
     private Main main;
 
-    public HandlerRequest(Main main){
+    HandlerRequest(Main main){
         this.main=main;
     }
 
@@ -78,16 +78,12 @@ public class HandlerRequest {
 
         for (Byte size1 : sizes) sum += size1;
 
-        GregorianCalendar gregorianCalendar=new GregorianCalendar();
-        gregorianCalendar.setTimeInMillis(System.currentTimeMillis());
+
 
         HeaderDbf headerDbf=new HeaderDbf();
 
-        headerDbf.setSignature((byte)5);//Номер версии
-
-        headerDbf.setYear((byte)(gregorianCalendar.get(Calendar.YEAR)%1000));
-        headerDbf.setMonth((byte)gregorianCalendar.get(Calendar.MONTH));
-        headerDbf.setDay((byte)gregorianCalendar.get(Calendar.DAY_OF_MONTH));
+        headerDbf.setSignature((byte)4);//Номер версии
+        headerDbf.setData();
         headerDbf.setNumberOfRecords(0);
         headerDbf.setLengthOfTitle((short)(32*fieldsNames.size()));
         headerDbf.setLengthOfRecord(sum);
@@ -207,12 +203,7 @@ public class HandlerRequest {
         readerDbf.close();
         //Изменение заголовка
         //Настройка даты
-        GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.setTimeInMillis(System.currentTimeMillis());
-        dataDbf.headerDbf.setYear((byte)(gregorianCalendar.get(Calendar.YEAR)%1000));
-        dataDbf.headerDbf.setMonth((byte)gregorianCalendar.get(Calendar.MONTH));
-        dataDbf.headerDbf.setDay((byte)gregorianCalendar.get(Calendar.DAY_OF_MONTH));
-
+        dataDbf.headerDbf.setData();
         //-------------------------------------------------------------------------------------------------------
         switch (type)
         {

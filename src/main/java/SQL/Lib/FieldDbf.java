@@ -97,9 +97,7 @@ public class FieldDbf {
         return typeField;
     }
 
-    public byte getSizeField() {
-        return sizeField;
-    }
+    public byte getSizeField() { return sizeField; }
 
     public byte getNumberOfCh() {
         return numberOfCh;

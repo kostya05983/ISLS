@@ -6,11 +6,6 @@ public class Column {
     public String data[];
     public int size;
 
-//    public Column(TypesOfFields type,String title,String data[]){
-//        this.type=type;
-//        this.title=title;
-//        this.data=data;
-//    }
     public Column(){
 
     }

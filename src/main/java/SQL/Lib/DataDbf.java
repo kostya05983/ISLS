@@ -70,7 +70,7 @@ public class DataDbf {
         return result.toString();
     }
 
-    public void setAllColumns(Column[] columns){//TODO  test
+    public void setAllColumns(Column[] columns){
         if(!(fieldsDbf==null)) {
             fieldsDbf.clear();
             recordsDbf.clear();
@@ -141,5 +141,6 @@ public class DataDbf {
             }
         return b;
     }
+
 
 }
