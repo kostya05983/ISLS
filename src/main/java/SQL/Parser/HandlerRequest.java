@@ -20,12 +20,10 @@ public class HandlerRequest {
     }
 
     protected String[] select(String request){
-
         return null;
-
     }
 
-    public void createTable(String request){//Работа с байтами
+    public void createTable(String request){
         request=request.substring(request.indexOf(" ")+1);
         request=request.substring(request.indexOf(" ")+1);
         String tableName=request.substring(0,request.indexOf("(")).trim();
@@ -39,6 +37,8 @@ public class HandlerRequest {
         request=request.trim();
         byte size=0;
 
+        request=request.replaceAll("[)]+\\s+[;]",");");
+
         while(!request.equals(");")) {
             size=0;
             fieldsNames.add( request.substring(0,request.indexOf(" ")));
@@ -47,7 +47,6 @@ public class HandlerRequest {
             type=request.substring(0,request.indexOf(")")+2);
             request=request.substring(request.indexOf(")")+2);
             if(type.contains(",") &&type.indexOf(",")!=type.length()-1){
-                //System.out.println(type.substring(type.indexOf("("),type.indexOf(",")));
                 String type_F = type.substring(type.indexOf("("),type.indexOf(","));
                 Platform.runLater(() ->
                         main.outText(type_F));
@@ -82,7 +81,7 @@ public class HandlerRequest {
 
         HeaderDbf headerDbf=new HeaderDbf();
 
-        headerDbf.setSignature((byte)4);//Номер версии
+        headerDbf.setSignature((byte)4);
         headerDbf.setData();
         headerDbf.setNumberOfRecords(0);
         headerDbf.setLengthOfTitle((short)(32*fieldsNames.size()));
