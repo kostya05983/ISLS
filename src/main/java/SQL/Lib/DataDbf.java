@@ -108,7 +108,7 @@ public class DataDbf {
             byteBuffer = ByteBuffer.allocate(sizeBuffer());
             for (int j = 0; j < aBuf.length; j++) {//Пишем запись
                 tmpByte = aBuf[j].getBytes();
-                for (int k = 0; k < fieldsDbf.get(j).getSizeField(); k++) {//пишем одун ячейку
+                for (int k = 0; k < fieldsDbf.get(j).getSizeField(); k++) {//пишем одну ячейку
                     if (k < tmpByte.length)
                         byteBuffer.put(tmpByte[k]);
                     else
