@@ -1,9 +1,10 @@
 package SQL.Lib.AdditionalInstruments;
 
-public class BTree<Key extends Comparable<Key>,Value> {
+import java.io.Serializable;
+
+public class BTree<Key extends Comparable<Key>,Value> implements Serializable {
     //Колличество веток в узле,должно быть больше двух
     private static final int M=4;
-
     private Node root;
     private int height;
     private int amountPairs;
@@ -114,7 +115,6 @@ public class BTree<Key extends Comparable<Key>,Value> {
         else         return split(h);
     }
 
-    // split node in half
     private Node split(Node h) {
         Node t = new Node(M/2);
         h.amountChildren = M/2;
