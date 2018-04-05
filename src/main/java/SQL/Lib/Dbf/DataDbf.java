@@ -1,4 +1,6 @@
-package SQL.Lib;
+package SQL.Lib.Dbf;
+
+import SQL.Lib.AdditionalInstruments.Column;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;

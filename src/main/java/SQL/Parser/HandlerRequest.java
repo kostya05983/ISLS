@@ -1,7 +1,10 @@
 package SQL.Parser;
 
 import GUI.Main;
-import SQL.Lib.*;
+import SQL.Lib.AdditionalInstruments.Column;
+import SQL.Lib.DataHandler.ReaderDbf;
+import SQL.Lib.DataHandler.WriterDbf;
+import SQL.Lib.Dbf.*;
 import javafx.application.Platform;
 
 

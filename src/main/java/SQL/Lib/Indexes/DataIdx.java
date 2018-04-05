@@ -1,11 +1,11 @@
-package SQL.Lib;
+package SQL.Lib.Indexes;
 
 public class DataIdx {
     private int rootPointer;
     private int freePointer;
     private int endPointer;
     private short keyLength;
-    private byte featuressIndex;
+    private byte featuresIndex;
     private byte signature;
     private byte[] keyExpression=new byte[220];
     private byte[] forExpression=new byte[220];
@@ -42,12 +42,12 @@ public class DataIdx {
         this.keyLength = keyLength;
     }
 
-    public byte getFeaturessIndex() {
-        return featuressIndex;
+    public byte getFeaturesIndex() {
+        return featuresIndex;
     }
 
-    public void setFeaturessIndex(byte featuressIndex) {
-        this.featuressIndex = featuressIndex;
+    public void setFeaturesIndex(byte featuresIndex) {
+        this.featuresIndex = featuresIndex;
     }
 
     public byte getSignature() {

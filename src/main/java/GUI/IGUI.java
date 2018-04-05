@@ -1,7 +1,6 @@
 package GUI;
 
-import SQL.Lib.Column;
-import SQL.Parser.SelectorRequest;
+import SQL.Lib.AdditionalInstruments.Column;
 
 public interface IGUI {
     void setAllCoumns(Column[] columns);

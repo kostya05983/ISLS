@@ -1,4 +1,8 @@
-import SQL.Lib.*;
+import SQL.Lib.AdditionalInstruments.Column;
+import SQL.Lib.DataHandler.ReaderDbf;
+import SQL.Lib.DataHandler.WriterDbf;
+import SQL.Lib.Dbf.DataDbf;
+import SQL.Lib.Dbf.TypesOfFields;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

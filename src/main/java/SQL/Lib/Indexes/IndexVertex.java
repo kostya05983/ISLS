@@ -1,4 +1,4 @@
-package SQL.Lib;
+package SQL.Lib.Indexes;
 
 public class IndexVertex {
     private byte attribute;

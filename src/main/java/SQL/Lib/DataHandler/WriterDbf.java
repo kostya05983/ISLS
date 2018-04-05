@@ -1,6 +1,7 @@
-package SQL.Lib;
+package SQL.Lib.DataHandler;
 
 
+import SQL.Lib.Dbf.DataDbf;
 import javafx.scene.control.Alert;
 
 import java.io.File;
@@ -67,16 +68,17 @@ public class WriterDbf {
 
             randomAccessFile.writeByte(12);
         }catch (IOException e){
-            //e.printStackTrace();
             out_stack_error(e.getLocalizedMessage(), e.getMessage());
         }
+
+    }
+    public void write(){
 
     }
     public void close(){
         try {
             randomAccessFile.close();
         } catch (IOException e) {
-            //e.printStackTrace();
             out_stack_error(e.getLocalizedMessage(), e.getMessage());
         }
     }

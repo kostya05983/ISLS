@@ -1,4 +1,4 @@
-package SQL.Lib;
+package SQL.Lib.Dbf;
 
 
 public class RecordDbf {
@@ -63,7 +63,7 @@ public class RecordDbf {
         return data;
     }
 
-    protected String getPartOfRecord(int start,int size){//TODO исключения,хотя они не нужны если остальная часть будет слажено работать
+    String getPartOfRecord(int start, int size){
         byte[] buf=new byte[size];
         System.arraycopy(data,start,buf,0,size);
         int i;

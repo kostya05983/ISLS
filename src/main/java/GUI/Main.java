@@ -1,6 +1,6 @@
 package GUI;
 
-import SQL.Lib.Column;
+import SQL.Lib.AdditionalInstruments.Column;
 import SQL.Parser.SelectorRequest;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;

@@ -1,4 +1,6 @@
-package SQL.Lib;
+package SQL.Lib.AdditionalInstruments;
+
+import SQL.Lib.Dbf.TypesOfFields;
 
 public class Column {
     public TypesOfFields type;

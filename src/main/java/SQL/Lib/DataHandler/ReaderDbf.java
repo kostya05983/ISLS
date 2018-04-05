@@ -1,5 +1,9 @@
-package SQL.Lib;
+package SQL.Lib.DataHandler;
 
+import SQL.Lib.Dbf.DataDbf;
+import SQL.Lib.Dbf.FieldDbf;
+import SQL.Lib.Dbf.HeaderDbf;
+import SQL.Lib.Dbf.RecordDbf;
 import javafx.scene.control.Alert;
 
 import java.io.FileNotFoundException;
@@ -15,7 +19,6 @@ public class ReaderDbf {
         try{
             randomAccessFile=new RandomAccessFile(nameOfFile,"r");
         }catch(FileNotFoundException e){
-            //System.out.println(e);
             out_stack_error(e.getLocalizedMessage(), e.getMessage());
         }
     }

@@ -1,6 +1,9 @@
-import SQL.Lib.*;
-
-import javax.xml.crypto.Data;
+import SQL.Lib.AdditionalInstruments.Column;
+import SQL.Lib.DataHandler.ReaderDbf;
+import SQL.Lib.DataHandler.WriterDbf;
+import SQL.Lib.Dbf.DataDbf;
+import SQL.Lib.Dbf.HeaderDbf;
+import SQL.Lib.Dbf.TypesOfFields;
 
 public class TestForColumns {
     public static void main(String[] args) {
