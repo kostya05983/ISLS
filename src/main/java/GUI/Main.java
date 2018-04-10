@@ -123,6 +123,9 @@ public class Main extends Application implements Runnable {
     }
 
     public void setAllColumns(Column[] columns){
+        //запуск анимации
+        timeline.play();
+
         TableColumn[] tableColumns=new TableColumn[columns.length];
         for(int i=0;i<tableColumns.length;i++){
             tableColumns[i]=new TableColumn<List<String>,String>(columns[i].title);
@@ -162,8 +165,6 @@ public class Main extends Application implements Runnable {
     //функция отправки команд на обработку
     private void textGoToRelise()
     {
-        //запуск анимации
-        timeline.play();
         //showTooltip(anchor3, tableView, "Мы работаем над этим...", null);
         /////////////////
         String text = textIn.getText();
