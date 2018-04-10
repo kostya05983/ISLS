@@ -81,12 +81,18 @@ public class DataDbf {
             fieldsDbf=new ArrayList<>();
             recordsDbf=new ArrayList<>();
         }
+
+        short lentgthRecord=0;
         for (Column column : columns) {
-            for (int j = 0; j < column.data.length; j++)
+            for (int j = 0; j < column.data.length; j++) {
+                lentgthRecord+=column.size;
                 if (column.data[j] == null)
                     column.data[j] = intitalizeNullString(column.size);
+            }
         }
-//TODO проставить хедер а то индексы не будут пахать
+        headerDbf.setLengthOfRecord(lentgthRecord);
+        headerDbf.setLengthOfTitle((short)(columns.length*32));
+
         FieldDbf fieldDbf;
         String[][] buf=new String[columns.length][];
         for(int i=0;i<columns.length;i++){

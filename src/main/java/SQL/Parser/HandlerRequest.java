@@ -212,7 +212,7 @@ public class HandlerRequest {
                 Platform.runLater(() ->
                         main.outText("ADD"));
                 for(int i = 0; i < dataDbf.fieldsDbf.size(); i++) {
-                    String namef = new String(dataDbf.fieldsDbf.get(i).getNameFiled());
+                    String namef = new String(dataDbf.fieldsDbf.get(i).getNameField());
                     namef = namef.trim();
                     if (Name_Column.compareTo(namef) == 0) {
                         check = true;
@@ -238,7 +238,7 @@ public class HandlerRequest {
             {
                 int check = 0;
                 for(int i = 0; i<dataDbf.fieldsDbf.size(); i++) {
-                    String namef = new String(dataDbf.fieldsDbf.get(i).getNameFiled());
+                    String namef = new String(dataDbf.fieldsDbf.get(i).getNameField());
                     namef = namef.trim();
                     if (Name_Column.compareTo(namef) == 0) {
                         check = 1;
@@ -264,7 +264,7 @@ public class HandlerRequest {
                 int check = 0;
                 for(int i = 0; i<dataDbf.fieldsDbf.size(); i++)
                 {
-                    String namef = new String(dataDbf.fieldsDbf.get(i).getNameFiled());
+                    String namef = new String(dataDbf.fieldsDbf.get(i).getNameField());
                     namef = namef.trim();
                     if (Name_Column.compareTo(namef) == 0) {
                         check = 1;

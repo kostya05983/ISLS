@@ -140,7 +140,7 @@ public class HandlerRequestTest {
                 int check = 0;
                 for(int i = 0; i<dataDbf.fieldsDbf.size(); i++) {
                     //int i = 0;
-                    String namef = new String(dataDbf.fieldsDbf.get(i).getNameFiled());
+                    String namef = new String(dataDbf.fieldsDbf.get(i).getNameField());
                     namef = namef.trim();
                     //System.out.println(namef);
                     if (Name_Column.compareTo(namef) == 0) {
@@ -163,7 +163,7 @@ public class HandlerRequestTest {
                 int check = 0;
                 for(int i = 0; i<dataDbf.fieldsDbf.size(); i++)
                 {
-                    String namef = new String(dataDbf.fieldsDbf.get(i).getNameFiled());
+                    String namef = new String(dataDbf.fieldsDbf.get(i).getNameField());
                     namef = namef.trim();
                     if (Name_Column.compareTo(namef) == 0) {
                         check = 1;
@@ -191,7 +191,7 @@ public class HandlerRequestTest {
         DataDbf dataDbf = new DataDbf();
         dataDbf = readerDbf.read();
         for(int i = 0; i<dataDbf.fieldsDbf.size(); i++) {
-            String namef = new String(dataDbf.fieldsDbf.get(i).getNameFiled());
+            String namef = new String(dataDbf.fieldsDbf.get(i).getNameField());
             System.out.println("Field:" + namef);
             String namer = new String(dataDbf.recordsDbf.get(i).getByteCode());
             System.out.println("Record:" + namer);

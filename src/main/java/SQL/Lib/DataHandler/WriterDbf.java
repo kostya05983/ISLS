@@ -2,6 +2,7 @@ package SQL.Lib.DataHandler;
 
 
 import SQL.Lib.Dbf.DataDbf;
+import SQL.Lib.Indexes.DataIdx;
 import javafx.scene.control.Alert;
 
 import java.io.File;
@@ -21,7 +22,6 @@ public class WriterDbf {
         try {
             randomAccessFile=new RandomAccessFile(nameOfFile,"rw");
         }catch (FileNotFoundException e){
-            //e.printStackTrace();
             out_stack_error(e.getLocalizedMessage(), e.getMessage());
         }
     }
@@ -30,8 +30,6 @@ public class WriterDbf {
     }
 
     public void  write(DataDbf dataDbf){
-
-
         try {
             int sumOfBytes=0;
             //Записываем заголовок файла
@@ -39,7 +37,6 @@ public class WriterDbf {
                 randomAccessFile.write(dataDbf.headerDbf.getByteCode(), 0, 32);
 
             //Записываем все поля
-
                 for (int i = 0; i < dataDbf.fieldsDbf.size(); i++) {
                     sumOfBytes+=dataDbf.fieldsDbf.get(i).getSizeField();
                     randomAccessFile.write(dataDbf.fieldsDbf.get(i).getByteCode(), 0, 32);
@@ -49,7 +46,7 @@ public class WriterDbf {
 
             sumOfBytes++;
 
-            int buf; //=sumOfBytes;
+            int buf;
             //Записываем записи
             if(dataDbf.recordsDbf!=null)
                 for (int i = 0; i < dataDbf.recordsDbf.size(); i++) {
@@ -70,11 +67,17 @@ public class WriterDbf {
         }catch (IOException e){
             out_stack_error(e.getLocalizedMessage(), e.getMessage());
         }
-
     }
-    public void write(){
 
+    public void write(DataIdx dataIdx){
+        try {
+            randomAccessFile.write(dataIdx.getHeaderIdx().getByteCode());
+            randomAccessFile.write(dataIdx.getbTreeIdx().getByteCode());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
     public void close(){
         try {
             randomAccessFile.close();

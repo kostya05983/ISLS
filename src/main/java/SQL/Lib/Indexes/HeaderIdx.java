@@ -20,6 +20,9 @@ public class HeaderIdx {
         featuresIndex=(byte)1;
         System.arraycopy(field.getBytes(),0,keyExpression,0,field.getBytes().length);
     }
+    public HeaderIdx(){
+
+    }
 
     public int getRootPointer() {
         return rootPointer;
@@ -83,5 +86,30 @@ public class HeaderIdx {
 
     public void setForExpression(byte[] forExpression) {
         this.forExpression = forExpression;
+    }
+
+    public byte[] getByteCode(){
+        ByteBuffer result=ByteBuffer.allocate(512);
+        result.putInt(rootPointer);
+        result.putInt(freePointer);
+        result.putInt(endPointer);
+        result.putShort(keyLength);
+        result.put(featuresIndex);
+        result.put(signature);
+        result.put(keyExpression);
+        result.put(forExpression);
+        return result.array();
+    }
+
+    public void setByteCode(byte[] byteCode){
+        ByteBuffer byteBuffer=ByteBuffer.wrap(byteCode);
+        rootPointer=byteBuffer.getInt(0);
+        freePointer=byteBuffer.getInt(4);
+        endPointer=byteBuffer.getInt(8);
+        keyLength=byteBuffer.getShort(12);
+        featuresIndex=byteBuffer.get(14);
+        signature=byteBuffer.get(15);
+        byteBuffer.get(keyExpression,16,220);
+        byteBuffer.get(forExpression,236,220);
     }
 }

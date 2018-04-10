@@ -4,6 +4,9 @@ import SQL.Lib.Dbf.DataDbf;
 import SQL.Lib.Dbf.FieldDbf;
 import SQL.Lib.Dbf.HeaderDbf;
 import SQL.Lib.Dbf.RecordDbf;
+import SQL.Lib.Indexes.BTreeIdx;
+import SQL.Lib.Indexes.DataIdx;
+import SQL.Lib.Indexes.HeaderIdx;
 import javafx.scene.control.Alert;
 
 import java.io.FileNotFoundException;
@@ -62,12 +65,25 @@ public class ReaderDbf {
             return new DataDbf(headerDbf,fieldsDbf,recordsDbf);
 
         }catch (IOException e){
-            //e.printStackTrace();
             out_stack_error(e.getLocalizedMessage(), e.getMessage());
             return null;
         }
+    }
 
-
+    public DataIdx readIdx(){
+        HeaderIdx headerIdx=new HeaderIdx();
+        BTreeIdx bTreeIdx=new BTreeIdx();
+        byte[] buffer=new byte[512];
+        try {
+            randomAccessFile.read(buffer);
+            headerIdx.setByteCode(buffer);
+            buffer=new byte[headerIdx.getEndPointer()-512];
+            randomAccessFile.readFully(buffer,512,buffer.length);
+            bTreeIdx.setByteCode(buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new DataIdx(headerIdx,bTreeIdx);
     }
 
     public void close(){

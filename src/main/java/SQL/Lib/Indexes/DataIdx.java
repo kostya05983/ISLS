@@ -6,11 +6,21 @@ import java.util.Random;
 
 public class DataIdx {
 
+    private HeaderIdx headerIdx;
+    private BTreeIdx bTreeIdx;
+
+
     public DataIdx(String field, DataDbf dataDbf,int amount){
        String key=generateKey(field,amount);
        headerIdx=new HeaderIdx(field);
+       headerIdx.setEndPointer(field.length()*512);
        bTreeIdx=new BTreeIdx(field.split(""),dataDbf.getPositions(field));
        bTreeIdx.init();
+    }
+
+    public DataIdx(HeaderIdx headerIdx,BTreeIdx bTreeIdx){
+        this.headerIdx=headerIdx;
+        this.bTreeIdx=bTreeIdx;
     }
 
     private String generateKey(String field,int amount){
@@ -27,6 +37,19 @@ public class DataIdx {
         }
     }
 
-    private HeaderIdx headerIdx;
-    private BTreeIdx bTreeIdx;
+    public HeaderIdx getHeaderIdx() {
+        return headerIdx;
+    }
+
+    public void setHeaderIdx(HeaderIdx headerIdx) {
+        this.headerIdx = headerIdx;
+    }
+
+    public BTreeIdx getbTreeIdx() {
+        return bTreeIdx;
+    }
+
+    public void setbTreeIdx(BTreeIdx bTreeIdx) {
+        this.bTreeIdx = bTreeIdx;
+    }
 }
