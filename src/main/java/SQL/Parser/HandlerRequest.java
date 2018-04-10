@@ -118,15 +118,15 @@ public class HandlerRequest {
 
     }
 
-    protected void createIndex(String request){//работа с байтами
+    protected void createIndex(String request){
 
     }
 
-    protected void insertInto(String request){//можно сделать примитив
+    protected void insertInto(String request){
 
     }
 
-    protected void update(String request){//Можно сделать примитив
+    protected void update(String request){
 
     }
 
@@ -193,12 +193,6 @@ public class HandlerRequest {
             if (Type_Data.toUpperCase().compareTo("INTEGER") == 0)
                 Type_Column = TypesOfFields.Integer;
         }
-        //System.out.println(Name_Table);
-        //System.out.println(Name_Column);
-        //System.out.println(Type_Data);
-        //System.out.println(size_data);
-        //-------------------------------------------------------------------------------------------------------
-
 
         ReaderDbf readerDbf = new ReaderDbf(Name_Table+".dbf");
         DataDbf dataDbf = readerDbf.read();
@@ -206,7 +200,7 @@ public class HandlerRequest {
         //Изменение заголовка
         //Настройка даты
         dataDbf.headerDbf.setData();
-        //-------------------------------------------------------------------------------------------------------
+
         switch (type)
         {
             case 1://ADD работает
@@ -265,7 +259,6 @@ public class HandlerRequest {
             }
             case 3://MODIFY работает до размера в 10
             {
-                //System.out.println("MODIFY");
                 Platform.runLater(() ->
                         main.outText("MODIFY"));
                 int check = 0;
@@ -306,7 +299,7 @@ public class HandlerRequest {
     protected void truncate(String request){
         String table_name;
         table_name=request.substring(request.indexOf(" TABLE ")+6,request.indexOf(";")).trim();
-        DataDbf dataDBF=new DataDbf();
+        DataDbf dataDBF;
         ReaderDbf reader=new ReaderDbf(table_name + ".dbf");
         dataDBF=reader.read();
         reader.close();
@@ -316,7 +309,6 @@ public class HandlerRequest {
         }
         dataDBF.headerDbf.setNumberOfRecords(0);
         setDBF(dataDBF,table_name);
-
     }
 
     protected void dropTable(String request){

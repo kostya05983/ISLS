@@ -40,53 +40,51 @@ public class SelectorRequest implements Runnable{
             if (Check.find()) {
                 checkcommand=true;
                 handlerRequest.createTable(strings_command[i]);
-                //ВЫЗОВ CREATE TABLE
             }
             Check = Insert_P.matcher(strings_command_upper[i]);
             if (Check.find()) {
                 checkcommand=true;
-                //ВЫЗОВ INSERT INTO
+                handlerRequest.insertInto(strings_command[i]);
             }
             Check = Update_P.matcher(strings_command_upper[i]);
             if (Check.find()) {
                 checkcommand=true;
-                //ВЫЗОВ UPDATE
+                handlerRequest.update(strings_command[i]);
             }
             Check = Delet_P.matcher(strings_command_upper[i]);
             if (Check.find()) {
                 checkcommand=true;
-                //ВЫЗОВ DELETE
+                handlerRequest.delete(strings_command[i]);
             }
             Check = Select_P.matcher(strings_command_upper[i]);
             if (Check.find()) {
                 checkcommand=true;
-                //ВЫЗОВ SELECT
+                handlerRequest.select(strings_command[i]);
             }
             Check = Drop_P.matcher(strings_command_upper[i]);
             if (Check.find()) {
                 checkcommand=true;
-                //ВЫЗОВ DROP TABLE
+                handlerRequest.dropTable(strings_command[i]);
             }
             Check = Truncate_P.matcher(strings_command_upper[i]);
             if (Check.find()) {
                 checkcommand=true;
-                //ВЫЗОВ TRUNCATE
+                handlerRequest.truncate(strings_command[i]);
             }
             Check = CreateIn_P.matcher(strings_command_upper[i]);
             if (Check.find()) {
                 checkcommand=true;
-                //ВЫЗОВ CREATE INDEX
+                handlerRequest.createIndex(strings_command[i]);
             }
             Check = DropIn_P.matcher(strings_command_upper[i]);
             if (Check.find()) {
                 checkcommand=true;
-                //ВЫЗОВ DROP INDEX
+                handlerRequest.dropIndex(strings_command[i]);
             }
             Check = Alter_P.matcher(strings_command_upper[i]);
             if (Check.find()) {
                 checkcommand=true;
                 handlerRequest.alterTable(strings_command[i]);
-                //ВЫЗОВ ALTER TABLE
             }
             if(!checkcommand) {
                 //СООБЩЕНИЕ О ТОМ ЧТО КОМАНДА НЕ РАСПОЗНАНА ИЛИ ОШИБОЧНА

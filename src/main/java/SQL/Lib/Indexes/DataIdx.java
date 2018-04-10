@@ -1,77 +1,31 @@
 package SQL.Lib.Indexes;
 
+import SQL.Lib.Dbf.DataDbf;
+
+import java.util.Random;
+
 public class DataIdx {
-    private int rootPointer;
-    private int freePointer;
-    private int endPointer;
-    private short keyLength;
-    private byte featuresIndex;
-    private byte signature;
-    private byte[] keyExpression=new byte[220];
-    private byte[] forExpression=new byte[220];
 
-    public int getRootPointer() {
-        return rootPointer;
+    public DataIdx(String field, DataDbf dataDbf,int amount){
+       String key=generateKey(field,amount);
+       headerIdx=new HeaderIdx(field);
+       bTreeIdx=new BTreeIdx(field.split(""),dataDbf);
+       bTreeIdx.init();
     }
 
-    public void setRootPointer(int rootPointer) {
-        this.rootPointer = rootPointer;
+    private String generateKey(String field,int amount){
+        if((field.length()-2)>(amount/62)&&field.length()>=3) {
+            return field;
+        }else{
+            Random random=new Random(System.currentTimeMillis());
+            StringBuilder stringBuilder=new StringBuilder();
+            for(int i=0;i<amount/62;i++){
+                stringBuilder.append((char)(random.nextDouble()*25+65));
+            }
+            return stringBuilder.toString();
+        }
     }
 
-    public int getFreePointer() {
-        return freePointer;
-    }
-
-    public void setFreePointer(int freePointer) {
-        this.freePointer = freePointer;
-    }
-
-    public int getEndPointer() {
-        return endPointer;
-    }
-
-    public void setEndPointer(int endPointer) {
-        this.endPointer = endPointer;
-    }
-
-    public short getKeyLength() {
-        return keyLength;
-    }
-
-    public void setKeyLength(short keyLength) {
-        this.keyLength = keyLength;
-    }
-
-    public byte getFeaturesIndex() {
-        return featuresIndex;
-    }
-
-    public void setFeaturesIndex(byte featuresIndex) {
-        this.featuresIndex = featuresIndex;
-    }
-
-    public byte getSignature() {
-        return signature;
-    }
-
-    public void setSignature(byte signature) {
-        this.signature = signature;
-    }
-
-    public byte[] getKeyExpression() {
-        return keyExpression;
-    }
-
-    public void setKeyExpression(byte[] keyExpression) {
-        this.keyExpression = keyExpression;
-    }
-
-    public byte[] getForExpression() {
-        return forExpression;
-    }
-
-    public void setForExpression(byte[] forExpression) {
-        this.forExpression = forExpression;
-    }
-
+    private HeaderIdx headerIdx;
+    private BTreeIdx bTreeIdx;
 }
