@@ -9,7 +9,7 @@ public class DataIdx {
     public DataIdx(String field, DataDbf dataDbf,int amount){
        String key=generateKey(field,amount);
        headerIdx=new HeaderIdx(field);
-       bTreeIdx=new BTreeIdx(field.split(""),dataDbf);
+       bTreeIdx=new BTreeIdx(field.split(""),dataDbf.getPositions(field));
        bTreeIdx.init();
     }
 
@@ -19,7 +19,8 @@ public class DataIdx {
         }else{
             Random random=new Random(System.currentTimeMillis());
             StringBuilder stringBuilder=new StringBuilder();
-            for(int i=0;i<amount/62;i++){
+            stringBuilder.append(field);
+            for(int i=0;i<amount/62-field.length();i++){
                 stringBuilder.append((char)(random.nextDouble()*25+65));
             }
             return stringBuilder.toString();

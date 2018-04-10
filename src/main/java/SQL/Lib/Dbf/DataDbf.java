@@ -55,7 +55,7 @@ public class DataDbf {
             }
         }
         for(int i=0;i<fieldsDbf.size();i++){
-            arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(),new String(fieldsDbf.get(i).getNameFiled()),table[i],fieldsDbf.get(i).getSizeField()));
+            arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(),new String(fieldsDbf.get(i).getNameField()),table[i],fieldsDbf.get(i).getSizeField()));
         }
 
         Column[] columns=new Column[arrayList.size()];
@@ -86,7 +86,7 @@ public class DataDbf {
                 if (column.data[j] == null)
                     column.data[j] = intitalizeNullString(column.size);
         }
-
+//TODO проставить хедер а то индексы не будут пахать
         FieldDbf fieldDbf;
         String[][] buf=new String[columns.length][];
         for(int i=0;i<columns.length;i++){
@@ -142,6 +142,21 @@ public class DataDbf {
                 b[i][j] = a[j][i];
             }
         return b;
+    }
+
+    public int[] getPositions(String field){
+        int positionH=0;
+        int[] positions=new int[recordsDbf.size()];
+        for (FieldDbf aFieldsDbf : fieldsDbf) {
+            positionH += aFieldsDbf.getSizeField();
+            if (new String(aFieldsDbf.getNameField()).equals(field)) {
+                for (int j = 0; j < positions.length; j++) {
+                    positions[j] = (headerDbf.getLengthOfTitle() + positionH + headerDbf.getLengthOfRecord() * j);
+                }
+                return positions;
+            }
+        }
+        return null;
     }
 
 

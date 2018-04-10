@@ -2,7 +2,7 @@ package SQL.Lib.Dbf;
 
 
 public class FieldDbf {
-    private byte[] nameFiled=new byte[11];//0-10 имя поля с 0x00 завершением
+    private byte[] nameField=new byte[11];//0-10 имя поля с 0x00 завершением
     private byte typeField;//Тип поля 11
     //зарезирвированная область 12-15
     private byte sizeField;//16 размер поля
@@ -19,7 +19,7 @@ public class FieldDbf {
     }
 
     public FieldDbf(byte[] Array) {
-        System.arraycopy(Array,0,this.nameFiled,0,11);
+        System.arraycopy(Array,0,this.nameField,0,11);
         this.typeField=Array[11];
         this.sizeField=Array[16];
         this.numberOfCh=Array[17];
@@ -30,7 +30,7 @@ public class FieldDbf {
     public byte[] getByteCode(){
         byte [] result=new byte[32];
 
-        System.arraycopy(this.nameFiled, 0, result, 0, this.nameFiled.length);
+        System.arraycopy(this.nameField, 0, result, 0, this.nameField.length);
 
         result[11]=this.typeField;
 
@@ -50,7 +50,7 @@ public class FieldDbf {
     }
 
     public void setByteCode(byte[] array){
-        System.arraycopy(array,0,this.nameFiled,0,11);
+        System.arraycopy(array,0,this.nameField,0,11);
         this.typeField=array[11];
         this.sizeField=array[16];
         this.numberOfCh=array[17];
@@ -59,13 +59,13 @@ public class FieldDbf {
     }
 
     public void setNameFiled(byte[] nameFiled) {
-        this.nameFiled = nameFiled;
+        this.nameField = nameFiled;
     }
 
     public void setNameField(String name){//Проверка на размер поля
         char[] array=name.toCharArray();
         for(int i=0;i<array.length;i++)
-            nameFiled[i]=(byte)array[i];
+            nameField[i]=(byte)array[i];
     }
 
     public void setTypeField(byte typeField) {
@@ -88,8 +88,8 @@ public class FieldDbf {
         this.flagMdx = flagMdx;
     }
 
-    public byte[] getNameFiled() {
-        return nameFiled;
+    public byte[] getNameField() {
+        return nameField;
     }
 
     public byte getTypeField() {
