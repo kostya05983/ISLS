@@ -14,9 +14,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
-public class ReaderDbf {
-
-    private RandomAccessFile randomAccessFile;
+public class ReaderDbf extends DataHandler{
 
     public ReaderDbf(String nameOfFile){
         try{
@@ -42,8 +40,7 @@ public class ReaderDbf {
             while (randomAccessFile.readByte()!=13) {
                 randomAccessFile.seek(position);
                 randomAccessFile.read(buf);
-                //System.out.println(randomAccessFile.getChannel().position());
-                out_stack_error("RandomAccessFile error on pos:",Long.toString(randomAccessFile.getChannel().position()));
+//                out_stack_error("RandomAccessFile error on pos:",Long.toString(randomAccessFile.getChannel().position()));
                 fieldDbf=new FieldDbf(buf);
                 fieldsDbf.add(fieldDbf);
                 sizeOfRecord+=buf[16];//Находим длину записи
@@ -78,7 +75,8 @@ public class ReaderDbf {
             randomAccessFile.read(buffer);
             headerIdx.setByteCode(buffer);
             buffer=new byte[headerIdx.getEndPointer()-512];
-            randomAccessFile.readFully(buffer,512,buffer.length);
+
+            randomAccessFile.read(buffer);
             bTreeIdx.setByteCode(buffer);
         } catch (IOException e) {
             e.printStackTrace();
@@ -94,14 +92,4 @@ public class ReaderDbf {
             out_stack_error(e.getLocalizedMessage(), e.getMessage());
         }
     }
-
-    private void out_stack_error(String textHeader, String textContent)
-    {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("ReaderDbf info");
-        alert.setHeaderText(textHeader);
-        alert.setContentText(textContent);
-        alert.showAndWait();
-    }
-
 }

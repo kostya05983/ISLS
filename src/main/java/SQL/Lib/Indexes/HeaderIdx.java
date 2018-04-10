@@ -109,7 +109,8 @@ public class HeaderIdx {
         keyLength=byteBuffer.getShort(12);
         featuresIndex=byteBuffer.get(14);
         signature=byteBuffer.get(15);
-        byteBuffer.get(keyExpression,16,220);
-        byteBuffer.get(forExpression,236,220);
+        System.arraycopy(byteBuffer.array(),16,keyExpression,0,220);
+        System.arraycopy(byteBuffer.array(),236,keyExpression,0,220);
+
     }
 }

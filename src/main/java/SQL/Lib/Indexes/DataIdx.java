@@ -10,11 +10,11 @@ public class DataIdx {
     private BTreeIdx bTreeIdx;
 
 
-    public DataIdx(String field, DataDbf dataDbf,int amount){
-       String key=generateKey(field,amount);
-       headerIdx=new HeaderIdx(field);
-       headerIdx.setEndPointer(field.length()*512);
-       bTreeIdx=new BTreeIdx(field.split(""),dataDbf.getPositions(field));
+    public DataIdx(String fieldName, DataDbf dataDbf){
+       String key=generateKey(fieldName,dataDbf.recordsDbf.size());
+       headerIdx=new HeaderIdx(fieldName);
+       headerIdx.setEndPointer(fieldName.length()*512+512);
+       bTreeIdx=new BTreeIdx(fieldName.split(""),dataDbf.getPositions(fieldName));
        bTreeIdx.init();
     }
 

@@ -11,10 +11,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 
-public class WriterDbf {
-
-
-    private RandomAccessFile randomAccessFile;
+public class WriterDbf extends DataHandler {
 
     public WriterDbf(String nameOfFile){
         File file=new File(nameOfFile);
@@ -72,31 +69,21 @@ public class WriterDbf {
     public void write(DataIdx dataIdx){
         try {
             randomAccessFile.write(dataIdx.getHeaderIdx().getByteCode());
+            byte[] buffer=dataIdx.getHeaderIdx().getByteCode();
             randomAccessFile.write(dataIdx.getbTreeIdx().getByteCode());
+            buffer=dataIdx.getbTreeIdx().getByteCode();
+            System.out.println("fkd");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void close(){
-        try {
-            randomAccessFile.close();
-        } catch (IOException e) {
-            out_stack_error(e.getLocalizedMessage(), e.getMessage());
-        }
-    }
 
-    private void out_stack_error(String textHeader, String textContent) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("WriterDbf info");
-        alert.setHeaderText(textHeader);
-        alert.setContentText(textContent);
-        alert.showAndWait();
     }
 
     public void deleteFile(String name){
         File file=new File(name+".dbf");
         file.delete();
-
     }
 }

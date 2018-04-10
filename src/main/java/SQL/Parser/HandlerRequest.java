@@ -5,9 +5,11 @@ import SQL.Lib.AdditionalInstruments.Column;
 import SQL.Lib.DataHandler.ReaderDbf;
 import SQL.Lib.DataHandler.WriterDbf;
 import SQL.Lib.Dbf.*;
+import SQL.Lib.Indexes.DataIdx;
 import javafx.application.Platform;
 
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
@@ -18,7 +20,7 @@ public class HandlerRequest {
 
     private Main main;
 
-    HandlerRequest(Main main){
+    public HandlerRequest(Main main){
         this.main=main;
     }
 
@@ -118,8 +120,39 @@ public class HandlerRequest {
 
     }
 
-    protected void createIndex(String request){
+    public void createIndex(String request) throws Exception {
+        request=request.substring(request.toLowerCase().indexOf("index")+6);
+        String indexName=request.substring(0,request.indexOf(" "));
+        request=request.substring(request.toLowerCase().indexOf("on")+3);
+        String tableName=request.substring(0,request.indexOf(" "));
+        request=request.substring(request.indexOf("(")+1);
+        request=request.replaceAll(" ","");
+        String nameField=request.substring(0,request.indexOf(")"));
 
+        DataDbf dataDbf;
+        ReaderDbf readerDbf=new ReaderDbf(tableName+".dbf");
+        dataDbf=readerDbf.read();
+        readerDbf.close();
+
+        boolean flag=false;
+        dataDbf.headerDbf.setFlagMDX((byte)1);
+        for(int i=0;i<dataDbf.fieldsDbf.size();i++){
+            if(dataDbf.getPartOfRecord(dataDbf.fieldsDbf.get(i).getNameField()).equals(nameField)){
+                flag=true;
+                dataDbf.fieldsDbf.get(i).setFlagMdx((byte)1);
+                break;
+            }
+        }
+        if(!flag) throw new Exception();
+
+        WriterDbf writerDbf=new WriterDbf(tableName+".dbf");
+        writerDbf.write(dataDbf);
+        writerDbf.close();
+
+        DataIdx dataIdx=new DataIdx(nameField,dataDbf);
+        writerDbf=new WriterDbf(indexName+".idx");
+        writerDbf.write(dataIdx);
+        writerDbf.close();
     }
 
     protected void insertInto(String request){
@@ -131,19 +164,25 @@ public class HandlerRequest {
     }
 
     protected void delete(String request){//можнос делать примитив
-        String table_name=request.substring(request.indexOf(" FROM ")+5,request.indexOf("\n")).trim();
-        ArrayList<String> conditions = new ArrayList<>(getConditions(request));//Все условия, которые после WHERE
+        String table_name=request.substring(request.indexOf(" FROM ")+5).trim();
+        table_name=table_name.substring(0,table_name.indexOf(" ")).trim();
+        Where wh=new Where();
         DataDbf dataDBF=new DataDbf();
         ReaderDbf reader=new ReaderDbf(table_name + ".dbf");
         dataDBF=reader.read();
         reader.close();
         Column[] columns=dataDBF.getAllColumns();
-        for (String s:conditions
+        ArrayList<Integer> recs = new ArrayList<>(wh.getRecs(request,dataDBF));
+        for (Integer ind:recs
                 ) {
-            deleteRecords(s,dataDBF);
+            dataDBF.recordsDbf.remove(ind);
+            dataDBF.headerDbf.setNumberOfRecords(dataDBF.headerDbf.getLengthOfRecord()-1);
         }
         dataDBF.setAllColumns(columns);
         setDBF(dataDBF,table_name);
+        WriterDbf writerDbf = new WriterDbf(table_name + ".dbf");
+        writerDbf.write(dataDBF);
+        writerDbf.close();
     }
 
     protected void alterTable(String request){
@@ -325,300 +364,23 @@ public class HandlerRequest {
         });
     }
 
-    protected void dropIndex(String request){
+    public void dropIndex(String request){
+        request=request.substring(request.toLowerCase().indexOf("index")+6);
+        String indexName=request.substring(0,request.indexOf(" "));
+        request=request.substring(request.toLowerCase().indexOf("on")+3).trim();
+        String tableName=request.substring(0,request.indexOf(";"));
 
-    }
+        ReaderDbf readerDbf=new ReaderDbf(tableName+".dbf");
+        DataDbf dataDbf=readerDbf.read();
+        dataDbf.headerDbf.setFlagMDX((byte)0);
+        readerDbf.close();
+        WriterDbf writerDbf=new WriterDbf(tableName+".dbf");
+        writerDbf.write(dataDbf);
+        writerDbf.close();
 
-
-    private static boolean checkChar(String condition,String cellData,String operator){
-        boolean b=false;
-        switch (operator) {
-            case "=":
-                b = condition.substring(condition.indexOf("'") + 1, condition.lastIndexOf("'")).equals(cellData);
-                break;
-            case "<>":
-                b = !(condition.substring(condition.indexOf("'") + 1, condition.lastIndexOf("'")).equals(cellData));
-                break;
-            case "<":
-                b = condition.substring(condition.indexOf("'") + 1, condition.lastIndexOf("'")).compareTo(cellData) > 0;
-                break;
-            case ">":
-                b = condition.substring(condition.indexOf("'") + 1, condition.lastIndexOf("'")).compareTo(cellData) < 0;
-                break;
-            case "<=":
-                b = condition.substring(condition.indexOf("'") + 1, condition.lastIndexOf("'")).compareTo(cellData) >= 0;
-                break;
-            case ">=":
-                b = condition.substring(condition.indexOf("'") + 1, condition.lastIndexOf("'")).compareTo(cellData) <= 0;
-                break;
-            case " BETWEEN ":
-                String val1 = condition.substring(condition.indexOf(" BETWEEN ") + 9, condition.indexOf(" AND ")).trim();
-                String val2 = condition.substring(condition.indexOf(" AND ") + 5).trim();
-                b = (cellData.compareTo(val1) >= 0 && cellData.compareTo(val2) <= 0) || (cellData.compareTo(val1) <= 0 && cellData.compareTo(val2) >= 0);
-                break;
-            case " LIKE ":
-                String strReg = "^" + condition.substring(condition.indexOf("'") + 1,
-                        condition.lastIndexOf("'")).replace("%", "*").replace("_", ".") + "$";
-                b = regLike(strReg, cellData);
-                break;
-            case " IN ":
-                ArrayList<String> val = new ArrayList<>();
-                String v = condition.substring(condition.indexOf("(") + 1, condition.indexOf(")")).trim();
-                while (val.contains(",")) {
-                    val.add(v.substring(0, v.indexOf(",")));
-                    v = v.substring(v.indexOf(",") + 1).trim();
-                }
-                val.add(v);
-                for (String vv : val
-                        ) {
-                    if (vv.substring(vv.indexOf("'") + 1, vv.lastIndexOf("'")).equals(cellData)) {
-                        b = true;
-                    }
-                }
-                break;
-        }
-        return b;
-    }
-
-    private static boolean checkInt(String condition,String cellData,String operator){
-        boolean b=false;
-        BigInteger cond=new BigInteger(condition.substring(condition.indexOf(operator) + operator.length()).trim());
-        BigInteger cell = new BigInteger(cellData);
-        switch (operator) {
-            case "=":
-                b = cond.compareTo(cell)==0;
-                break;
-            case "<>":
-                b = cond.compareTo(cell)!=0;
-                break;
-            case "<":
-                b = cond.compareTo(cell) ==1;
-                break;
-            case ">":
-                b = cond.compareTo(cell) ==-1;
-                break;
-            case "<=":
-                b = cond.compareTo(cell) != -1;
-                break;
-            case ">=":
-                b = cond.compareTo(cell) != 1;
-                break;
-            case " BETWEEN ":
-                BigInteger val1 = new BigInteger(condition.substring(condition.indexOf(" BETWEEN ") + 9, condition.indexOf(" AND ")).trim());
-                BigInteger val2 = new BigInteger(condition.substring(condition.indexOf(" AND ") + 5).trim());
-                b = (cell.compareTo(val1) >= 0 && cell.compareTo(val2) <= 0) || (cell.compareTo(val1) <= 0 && cell.compareTo(val2) >= 0);
-                break;
-            case " LIKE ":
-                String strReg = "^" + condition.substring(condition.indexOf("'") + 1,
-                        condition.lastIndexOf("'")).replace("%", "*").replace("_", ".") + "$";
-                b = regLike(strReg, cellData);
-                break;
-            case " IN ":
-                ArrayList<BigInteger> val = new ArrayList<>();
-                String v = condition.substring(condition.indexOf("(") + 1, condition.indexOf(")")).trim();
-                while (v.contains(",")) {
-                    val.add(new BigInteger(v.substring(0, v.indexOf(","))));
-                    v = v.substring(v.indexOf(",") + 1).trim();
-                }
-                val.add(new BigInteger(v));
-                for (BigInteger vv : val
-                        ) {
-                    if (vv.compareTo(cell)==0) {
-                        b = true;
-                    }
-                }
-                break;
-        }
-        return b;
-    }
-
-    private static boolean checkFloat(String condition,String cellData,String operator){
-        boolean b=false;
-        BigDecimal cond=new BigDecimal(condition.substring(condition.indexOf(operator) + operator.length()).trim().replace(",","."));
-        BigDecimal cell = new BigDecimal(cellData);
-        switch (operator) {
-            case "=":
-                b = cond.compareTo(cell)==0;
-                break;
-            case "<>":
-                b = cond.compareTo(cell)!=0;
-                break;
-            case "<":
-                b = cond.compareTo(cell) ==1;
-                break;
-            case ">":
-                b = cond.compareTo(cell) ==-1;
-                break;
-            case "<=":
-                b = cond.compareTo(cell) != -1;
-                break;
-            case ">=":
-                b = cond.compareTo(cell) != 1;
-                break;
-            case " BETWEEN ":
-                BigDecimal val1 = new BigDecimal(condition.substring(condition.indexOf(" BETWEEN ") + 9, condition.indexOf(" AND ")).trim());
-                BigDecimal val2 = new BigDecimal(condition.substring(condition.indexOf(" AND ") + 5).trim());
-                b = (cell.compareTo(val1) >= 0 && cell.compareTo(val2) <= 0) || (cell.compareTo(val1) <= 0 && cell.compareTo(val2) >= 0);
-                break;
-            case " LIKE ":
-                String strReg = "^" + condition.substring(condition.indexOf("'") + 1,
-                        condition.lastIndexOf("'")).replace("%", "*").replace("_", ".") + "$";
-                b = regLike(strReg, cellData);
-                break;
-            case " IN ":
-                ArrayList<BigDecimal> val = new ArrayList<>();
-                String v = condition.substring(condition.indexOf("(") + 1, condition.indexOf(")")).trim();
-                while (v.contains(",")) {
-                    val.add(new BigDecimal(v.substring(0, v.indexOf(","))));
-                    v = v.substring(v.indexOf(",") + 1).trim();
-                }
-                val.add(new BigDecimal(v));
-                for (BigDecimal vv : val
-                        ) {
-                    if (vv.compareTo(cell)==0) {
-                        b = true;
-                    }
-                }
-                break;
-        }
-        return b;
-    }
-
-    private static ArrayList<String> getConditions(String str){
-        ArrayList<String> conditions = new ArrayList<>();
-        String condition;
-        String tmp;
-        condition=str.substring(str.indexOf(" WHERE ")+6,str.indexOf(";")).trim();
-        while (condition.contains(" AND ")) {
-            if(condition.substring(condition.indexOf(" ")+1,condition.indexOf(" ")+8).equals("BETWEEN")){
-                tmp=condition.substring(0,condition.indexOf(" AND ")+5);
-                condition=condition.substring(condition.indexOf(" AND ")+5).trim();
-                tmp+=condition.substring(0,condition.indexOf(" "));
-                conditions.add(tmp);
-                condition=condition.substring(condition.indexOf(" ")).trim();
-                if(condition.substring(0,4).equals("AND ")){
-                    condition=condition.substring(4).trim();
-                }
-            }
-            else {
-                conditions.add(condition.substring(0, condition.indexOf(" AND ")).trim());
-                condition = condition.substring(condition.indexOf(" AND ") + 4).trim();
-            }
-        }
-        conditions.add(condition.trim());
-        return conditions;
-    }
-
-    private static void remove(DataDbf dataDbf,Column c,String sss){
-        dataDbf.recordsDbf.remove(Arrays.asList(c.data).indexOf(sss));
-        dataDbf.headerDbf.setNumberOfRecords(dataDbf.headerDbf.getLengthOfRecord()-1);
-    }
-
-    private static boolean reg(String s){
-        Pattern p=Pattern.compile("^'*'$");
-        Matcher m=p.matcher(s);
-        return m.matches();
-    }
-
-    private static boolean regArr(String condition ){
-        boolean k=true;
-        ArrayList<String> val = new ArrayList<>();
-        String v = condition.substring(condition.indexOf("(") + 1, condition.indexOf(")")).trim();
-        while (val.contains(",")) {
-            val.add(v.substring(0, v.indexOf(",")));
-            v = v.substring(v.indexOf(",") + 1).trim();
-        }
-        val.add(v);
-        for (String ss:val
-                ) {
-            if(!reg(ss)) {
-                k=false;
-            }
-        }
-        return k;
-    }
-
-    private static boolean regLike(String s,String sArr){
-        Pattern p=Pattern.compile(s);
-        Matcher m=p.matcher(sArr);
-        return  m.matches();
-    }
-
-    private void deleteRecords(String str,DataDbf dataDbf){
-        if(str.contains("=")){
-            deletE(str,"=",dataDbf);
-        }
-        else if(str.contains("<>")){
-            deletE(str,"<>",dataDbf);
-        }
-        else if(str.contains("<")){
-            deletE(str,"<",dataDbf);
-        }
-        else if(str.contains("<=")){
-            deletE(str,"<=",dataDbf);
-        }
-        else if(str.contains(">")){
-            deletE(str,">",dataDbf);
-        }
-        else if(str.contains(">=")){
-            deletE(str,">=",dataDbf);
-        }
-        else if(str.contains(" BETWEEN ")){
-            deletE(str," BETWEEN ",dataDbf);
-        }
-        else if(str.contains(" LIKE ")){
-            deletE(str," LIKE ",dataDbf);
-        }
-        else if(str.contains(" IN ")){
-            if(regArr(str)) {
-                deletE(str, " IN ", dataDbf);
-            }
-            else{
-                Platform.runLater(() ->
-                        main.error("Ошибка в deleteRecords"));
-            }
-        }
-    }
-
-    private void deletE(String condition,String operator,DataDbf dataDbf){
-        String columnName=condition.substring(0,condition.indexOf(operator)).trim();
-        for (Column c:dataDbf.getAllColumns()
-                ) {
-            if(c.title.equals(columnName)) {
-                switch (c.type){
-                    case Character:
-                        if(reg(condition.substring(condition.indexOf(operator)+operator.length()).trim())) {
-                            for (String sss : c.data
-                                    ) {
-                                if (checkChar(condition,sss,operator)) {
-                                    remove(dataDbf,c,sss);
-                                }
-                            }
-                        }
-                        else{
-                            Platform.runLater(() ->
-                                    main.error("Ошибка в deletE"));
-                        }
-                        break;
-                    case Integer:
-                        for (String sss : c.data
-                                ) {
-                            if (checkInt(condition,sss,operator)) {
-                                remove(dataDbf,c,sss);
-                            }
-                        }
-                        break;
-                    case Float:
-                        for (String sss : c.data
-                                ) {
-                            if (checkFloat(condition,sss,operator)) {
-                                remove(dataDbf,c,sss);
-                            }
-                        }
-                        break;
-                }
-            }
-        }
+        //TODO добавить снятие флага с поля,когда будет готово чтение с ключами
+        File file=new File(indexName+".idx");
+        file.delete();
     }
 
     private static void setDBF(DataDbf dataDBF,String table_name){

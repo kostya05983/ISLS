@@ -155,7 +155,7 @@ public class DataDbf {
         int[] positions=new int[recordsDbf.size()];
         for (FieldDbf aFieldsDbf : fieldsDbf) {
             positionH += aFieldsDbf.getSizeField();
-            if (new String(aFieldsDbf.getNameField()).equals(field)) {
+            if (getPartOfRecord(aFieldsDbf.getNameField()).equals(field)) {
                 for (int j = 0; j < positions.length; j++) {
                     positions[j] = (headerDbf.getLengthOfTitle() + positionH + headerDbf.getLengthOfRecord() * j);
                 }
@@ -163,6 +163,18 @@ public class DataDbf {
             }
         }
         return null;
+    }
+
+    public String getPartOfRecord(byte[] data){
+        int i;
+        for(i = 0;i<data.length;i++){
+            if(data[i]==0)
+                break;
+        }
+        byte[] result=new byte[i];
+        System.arraycopy(data,0,result,0,i);
+
+        return new String(result);
     }
 
 

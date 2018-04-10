@@ -28,7 +28,7 @@ public class SelectorRequest implements Runnable{
         checkcommand=false;
     }
 
-    private void Checkcom() {
+    private void Checkcom() throws Exception {
         String mystring = mystringfirst.replaceAll("\n"," ");
         String [] strings_command = mystring.split("\\s*(u|U)(n|N)(i|I)(o|O)(n|N)\\s*");
         mystring = mystring.toUpperCase();
@@ -94,7 +94,11 @@ public class SelectorRequest implements Runnable{
     }
 
     public void run(){
-        Checkcom();
+        try {
+            Checkcom();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Main getMain() {
