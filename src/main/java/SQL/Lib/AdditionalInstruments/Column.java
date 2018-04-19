@@ -19,6 +19,13 @@ public class Column {
         this.size=size;
     }
 
+    public Column(TypesOfFields type,String title,String data[]){
+        this.type=type;
+        this.title=title;
+        this.data=data;
+        this.size=0;
+    }
+
     public Column(String title){
         this.title=title;
     }
@@ -30,5 +37,9 @@ public class Column {
                 max = aData.getBytes().length;
         }
         return max;
+    }
+
+    public void addRecord(){
+
     }
 }

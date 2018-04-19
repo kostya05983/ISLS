@@ -64,6 +64,25 @@ public class DataDbf {
         return columns;
     }
 
+    public DataDbf selectColumns(String[] names){
+        Column[] columns=getAllColumns();
+        ArrayList<Column> resultColumns=new ArrayList<Column>();
+
+        for (Column column : columns) {
+            for (String name : names) {
+                if (column.title.equals(name)) {
+                    resultColumns.add(column);
+                    break;
+                }
+            }
+        }
+
+        DataDbf result=new DataDbf(headerDbf,fieldsDbf,recordsDbf);
+        result.setAllColumns((Column[])resultColumns.toArray());
+
+        return result;
+    }
+
     private String intitalizeNullString(int size){
         StringBuilder result= new StringBuilder();
         for(int i=0;i<size;i++){
