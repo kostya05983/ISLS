@@ -20,38 +20,43 @@ public class HandlerRequest {
 
     private Main main;
 
-    public HandlerRequest(Main main) {
+    HandlerRequest(Main main) {
         this.main = main;
     }
 
-    String[] select(String request) {
-        request="SELECT column1, column2, ...\n" +
-                "FROM table_name" +
-                "WHERE column1=2;";
-
+    void select(String request) {
         request=request.substring(request.toUpperCase().indexOf("SELECT")+7);
-
+        DataDbf dataDbf;
 
         if(request.contains("*")){
-
+            request=request.substring(request.toUpperCase().indexOf("FROM")+5);
+            String tableName=request.substring(0,request.indexOf(" ")).trim();
+            request=request.substring(request.toUpperCase().indexOf("WHERE")+6).replaceAll("[ ;]","");
+            ReaderDbf readerDbf=new ReaderDbf(tableName+".dbf");
+            dataDbf=readerDbf.read();
+            Where where=new Where();
+            dataDbf=where.getRecs(request,dataDbf);
         }else{
+            request=request.replaceAll("[,]","");
             String[] namesColumns=request.substring(0,request.toUpperCase().indexOf("FROM")).trim().split("[ ]");
             request=request.substring(request.indexOf("FROM")+5).trim();
-            String tableName=request.substring(0,request.indexOf("WHERE"));
-            request=request.substring(request.indexOf("WHERE")+6);
+            String tableName=request.substring(0,request.indexOf("WHERE")).trim();
+            request=request.substring(request.indexOf("WHERE")+6).replaceAll("[ ;]","");
 
             ReaderDbf readerDbf=new ReaderDbf(tableName+".dbf");
-            DataDbf dataDbf=readerDbf.read();
+            dataDbf=readerDbf.read();
             dataDbf=dataDbf.selectColumns(namesColumns);
-
             Where where=new Where();
-            where.getRecs(request,dataDbf);
+            dataDbf=where.getRecs(request,dataDbf);
 
         }
 
-
-
-        return null;
+        DataDbf finalDataDbf = dataDbf;
+        Platform.runLater(() -> {
+            main.clearTable();
+            main.setAllColumns(finalDataDbf.getAllColumns());
+            main.outText("Успешно");
+        });
     }
 
     void createTable(String request) {
@@ -187,27 +192,27 @@ public class HandlerRequest {
 
     }
 
-    void delete(String request) {//можнос делать примитив
-        String table_name = request.substring(request.indexOf(" FROM ") + 5).trim();
-        table_name = table_name.substring(0, table_name.indexOf(" ")).trim();
-        Where wh = new Where();
-        DataDbf dataDBF = new DataDbf();
-        ReaderDbf reader = new ReaderDbf(table_name + ".dbf");
-        dataDBF = reader.read();
-        reader.close();
-        Column[] columns = dataDBF.getAllColumns();
-        ArrayList<Integer> recs = new ArrayList<>(wh.getRecs(request, dataDBF));
-        for (Integer ind : recs
-                ) {
-            dataDBF.recordsDbf.remove(ind);
-            dataDBF.headerDbf.setNumberOfRecords(dataDBF.headerDbf.getLengthOfRecord() - 1);
-        }
-        dataDBF.setAllColumns(columns);
-        setDBF(dataDBF, table_name);
-        WriterDbf writerDbf = new WriterDbf(table_name + ".dbf");
-        writerDbf.write(dataDBF);
-        writerDbf.close();
-    }
+//    void delete(String request) {
+//        String table_name = request.substring(request.indexOf(" FROM ") + 5).trim();
+//        table_name = table_name.substring(0, table_name.indexOf(" ")).trim();
+//        Where wh = new Where();
+//        DataDbf dataDBF = new DataDbf();
+//        ReaderDbf reader = new ReaderDbf(table_name + ".dbf");
+//        dataDBF = reader.read();
+//        reader.close();
+//        Column[] columns = dataDBF.getAllColumns();
+//        ArrayList<Integer> recs = new ArrayList<>(wh.getRecs(request, dataDBF));
+//        for (Integer ind : recs
+//                ) {
+//            dataDBF.recordsDbf.remove(ind);
+//            dataDBF.headerDbf.setNumberOfRecords(dataDBF.headerDbf.getLengthOfRecord() - 1);
+//        }
+//        dataDBF.setAllColumns(columns);
+//        setDBF(dataDBF, table_name);
+//        WriterDbf writerDbf = new WriterDbf(table_name + ".dbf");
+//        writerDbf.write(dataDBF);
+//        writerDbf.close();
+//    }
 
     void alterTable(String request) {
         int type = -50;
@@ -378,7 +383,7 @@ public class HandlerRequest {
         });
     }
 
-    public void dropIndex(String request) {
+    void dropIndex(String request) {
         request = request.substring(request.toLowerCase().indexOf("index") + 6);
         String indexName = request.substring(0, request.indexOf(" "));
         request = request.substring(request.toLowerCase().indexOf("on") + 3).trim();
@@ -408,4 +413,6 @@ public class HandlerRequest {
         writerDbf.write(dataDBF);
         writerDbf.close();
     }
+
+
 }

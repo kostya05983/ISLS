@@ -55,7 +55,7 @@ public class DataDbf {
             }
         }
         for(int i=0;i<fieldsDbf.size();i++){
-            arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(),new String(fieldsDbf.get(i).getNameField()),table[i],fieldsDbf.get(i).getSizeField()));
+            arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(),getPartOfRecord(fieldsDbf.get(i).getNameField()),table[i],fieldsDbf.get(i).getSizeField()));
         }
 
         Column[] columns=new Column[arrayList.size()];
@@ -66,7 +66,7 @@ public class DataDbf {
 
     public DataDbf selectColumns(String[] names){
         Column[] columns=getAllColumns();
-        ArrayList<Column> resultColumns=new ArrayList<Column>();
+        ArrayList<Column> resultColumns=new ArrayList<>();
 
         for (Column column : columns) {
             for (String name : names) {
@@ -78,7 +78,9 @@ public class DataDbf {
         }
 
         DataDbf result=new DataDbf(headerDbf,fieldsDbf,recordsDbf);
-        result.setAllColumns((Column[])resultColumns.toArray());
+        Column[] resultArrColumns=new Column[resultColumns.size()];
+        resultColumns.toArray(resultArrColumns);
+        result.setAllColumns(resultArrColumns);
 
         return result;
     }

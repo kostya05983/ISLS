@@ -19,10 +19,10 @@ public class Column {
         this.size=size;
     }
 
-    public Column(TypesOfFields type,String title,String data[]){
+    public Column(TypesOfFields type,String title){
         this.type=type;
         this.title=title;
-        this.data=data;
+        this.data=new String[0];
         this.size=0;
     }
 
@@ -39,7 +39,9 @@ public class Column {
         return max;
     }
 
-    public void addRecord(){
-
+    public void addRecord(String record){
+        data=new String[data.length+1];
+        data[data.length-1]=record;
+        size+=record.length();
     }
 }
