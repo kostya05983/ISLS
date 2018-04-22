@@ -64,6 +64,30 @@ public class DataDbf {
         return columns;
     }
 
+    public Column[] getColumnsforShow(){
+        ArrayList<Column> arrayList=new ArrayList<>();
+        String[][] table=new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
+        int start;
+
+        if(recordsDbf!=null)
+            for(int i=0;i<recordsDbf.size();i++) {
+                start=0;
+            if (recordsDbf.get(i).getHeaderByte()!=42)
+                for (int j = 0; j < fieldsDbf.size(); j++) {
+                    table[j][i] = recordsDbf.get(i).getPartOfRecord(start, transferByteToUnsigned(fieldsDbf.get(j).getSizeField()));
+                    start += transferByteToUnsigned(fieldsDbf.get(j).getSizeField());
+                }
+            }
+        for(int i=0;i<fieldsDbf.size();i++){
+            arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(),getPartOfRecord(fieldsDbf.get(i).getNameField()),table[i],fieldsDbf.get(i).getSizeField()));
+        }
+
+        Column[] columns=new Column[arrayList.size()];
+        columns=arrayList.toArray(columns);
+
+        return columns;
+    }
+
     public DataDbf selectColumns(String[] names){
         Column[] columns=getAllColumns();
         ArrayList<Column> resultColumns=new ArrayList<>();

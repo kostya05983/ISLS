@@ -27,15 +27,23 @@ public class HandlerRequest {
     void select(String request) {
         request=request.substring(request.toUpperCase().indexOf("SELECT")+7);
         DataDbf dataDbf;
+        ArrayList<RecordDbf> resultRecords;
 
         if(request.contains("*")){
             request=request.substring(request.toUpperCase().indexOf("FROM")+5);
             String tableName=request.substring(0,request.indexOf(" ")).trim();
-            request=request.substring(request.toUpperCase().indexOf("WHERE")+6).replaceAll("[ ;]","");
+            request=request.substring(request.toUpperCase().indexOf("WHERE")+6).replaceAll("[;]","");
             ReaderDbf readerDbf=new ReaderDbf(tableName+".dbf");
             dataDbf=readerDbf.read();
             Where where=new Where();
             ArrayList<Integer> indexes=where.getRecs(request,dataDbf);
+            resultRecords=new ArrayList<>();
+
+            for (Integer index : indexes) {
+                resultRecords.add(dataDbf.recordsDbf.get(index));
+            }
+            dataDbf=new DataDbf(dataDbf.headerDbf,dataDbf.fieldsDbf,resultRecords);
+
         }else{
             request=request.replaceAll("[,]","");
             String[] namesColumns=request.substring(0,request.toUpperCase().indexOf("FROM")).trim().split("[ ]");
@@ -48,13 +56,18 @@ public class HandlerRequest {
             dataDbf=dataDbf.selectColumns(namesColumns);
             Where where=new Where();
             ArrayList<Integer> indexes=where.getRecs(request,dataDbf);
+            resultRecords=new ArrayList<>();
 
+            for (Integer index : indexes) {
+                resultRecords.add(dataDbf.recordsDbf.get(index));
+            }
+            dataDbf=new DataDbf(dataDbf.headerDbf,dataDbf.fieldsDbf,resultRecords);
         }
 
         DataDbf finalDataDbf = dataDbf;
         Platform.runLater(() -> {
             main.clearTable();
-            main.setAllColumns(finalDataDbf.getAllColumns());
+            main.setAllColumns(finalDataDbf.getColumnsforShow());
             main.outText("Успешно");
         });
     }
@@ -71,7 +84,7 @@ public class HandlerRequest {
 
         String type;
         request = request.trim();
-        byte size = 0;
+        byte size;
 
         request = request.replaceAll("[)]+\\s+[;]", ");");
 
@@ -143,7 +156,7 @@ public class HandlerRequest {
 
         Platform.runLater(() -> {
             main.clearTable();
-            main.setAllColumns(dataDbf.getAllColumns());
+            main.setAllColumns(dataDbf.getColumnsforShow());
             main.outText("Успешно");
         });
 
@@ -349,7 +362,7 @@ public class HandlerRequest {
 
         Platform.runLater(() -> {
             main.clearTable();
-            main.setAllColumns(dataDbf.getAllColumns());
+            main.setAllColumns(dataDbf.getColumnsforShow());
             main.outText("Успешно");
         });
     }

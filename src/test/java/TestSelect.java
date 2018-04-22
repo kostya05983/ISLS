@@ -58,7 +58,7 @@ public class TestSelect {
         writerDbf.close();
 
 
-        SelectorRequest selectorRequest=new SelectorRequest("SELECT lol, olol, FROM lol  + WHERE olol=23;",null);
+        SelectorRequest selectorRequest=new SelectorRequest("SELECT * FROM lol  + WHERE olol=23 OR olol=34;",null);
         selectorRequest.run();
 
     }
