@@ -104,13 +104,13 @@ public class Where {
         return postfix;
     }
 
-    private static ArrayList<Column> calc(List<String> postfix, DataDbf dataDbf) {
-        Deque<ArrayList<Column>> stack = new ArrayDeque<>();
+    private  ArrayList<Integer> calc(List<String> postfix, DataDbf dataDbf) {
+        Deque<ArrayList<Integer>> stack = new ArrayDeque<>();
         for (String x : postfix) {
             switch (x) {
                 case "|": {
-                    ArrayList<Column> arr1 = new ArrayList<>(stack.pop()), arr2 = new ArrayList<>(stack.pop());
-                    Set<Column> set = new HashSet<>(arr1);
+                    ArrayList<Integer> arr1 = new ArrayList<>(stack.pop()), arr2 = new ArrayList<>(stack.pop());
+                    Set<Integer> set = new HashSet<>(arr1);
                     set.addAll(arr2);
                     arr1.clear();
                     arr1.addAll(set);
@@ -118,22 +118,23 @@ public class Where {
                     break;
                 }
                 case "&": {
-                    ArrayList<Column> arr1 = new ArrayList<>(stack.pop()), arr2 = new ArrayList<>(stack.pop());
+                    ArrayList<Integer> arr1 = new ArrayList<>(stack.pop()), arr2 = new ArrayList<>(stack.pop());
                     arr1.removeIf(h -> !arr2.contains(h));
                     stack.push(arr1);
                     break;
                 }
                 case "!": {
-                    ArrayList<Column> arr1 = new ArrayList<>(stack.pop()), arr2 = new ArrayList<>();
-                    for(Column buf:dataDbf.getAllColumns()){
-                        if(!arr1.contains(buf)) arr2.add(buf);
+                    ArrayList<Integer> arr1 = new ArrayList<>(stack.pop()), arr2 = new ArrayList<>();
+                        for(Integer i=0;i<dataDbf.recordsDbf.size();i++){
+                            if(!arr1.contains(i)) arr2.add(i);
+                        }
+                        stack.push(arr2);
                     }
-                    stack.push(arr2);
                     break;
-                }
+
                 case "?": {
-                    ArrayList<Column> arr1 = new ArrayList<>(stack.pop()), arr2 = new ArrayList<>(stack.pop());
-                    for (Column i : arr1
+                    ArrayList<Integer> arr1 = new ArrayList<>(stack.pop()), arr2 = new ArrayList<>(stack.pop());
+                    for (int i : arr1
                             ) {
                         if (arr2.contains(i)) {
                             arr2.removeIf(h -> h.equals(i));
@@ -152,8 +153,8 @@ public class Where {
         return stack.pop();
     }
 
-    private static ArrayList<Column> searchRecords(String str, DataDbf dataDbf) {
-        ArrayList<Column> records = new ArrayList<>();
+    private  ArrayList<Integer> searchRecords(String str, DataDbf dataDbf) {
+        ArrayList<Integer> records = new ArrayList<>();
         if (str.contains("<>")) {
             records = search(str, "<>", dataDbf);
         } else if (str.contains("<=")) {
@@ -166,58 +167,42 @@ public class Where {
         return records;
     }
 
-    private static ArrayList<Column> search(String condition, String operator, DataDbf dbf) {
+    private ArrayList<Integer> search(String condition, String operator, DataDbf dbf) {
         //Возвращает список индексов подходящих под условие записей
-        ArrayList<Column> result = new ArrayList<>();
+        ArrayList<Integer> result = new ArrayList<>();
         Column[] columns = dbf.getAllColumns();
         String columnName;
         String title;
-        Column bufColumn;
         columnName = condition.substring(0, condition.indexOf(operator)).trim();
         System.out.println(columnName);
         for (Column column : columns) {
-            bufColumn=null;
             title = column.title.trim();
             if (title.equals(columnName)) {
                 switch (column.type) {
                     case Character:
                         if (reg(condition.substring(condition.indexOf(operator) + operator.length()).trim())) {
                             for (String record : column.data) {
-                                if (checkChar(condition, record, operator)) {
-                                    if (bufColumn == null)
-                                        bufColumn = new Column(column.type, column.title);
-                                    bufColumn.addRecord(record);
-                                }
+                                if (checkChar(condition, record, operator))
+                                        result.add(Arrays.asList(column.data).indexOf(record));
                             }
                         }
-                        if(bufColumn!=null)
-                            result.add(bufColumn);
                         break;
                     case Integer:
                         for (String record : column.data) {
-                            if (checkInt(condition, record, operator)) {
-                                if(bufColumn==null)
-                                    bufColumn=new Column(column.type,column.title);
-                                bufColumn.addRecord(record);
-                            }
+                            if (checkInt(condition, record, operator))
+                                    result.add(Arrays.asList(column.data).indexOf(record));
                         }
-                        if(bufColumn!=null)
-                            result.add(bufColumn);
                         break;
                     case Float:
                         for (String record : column.data) {
-                            if (checkFloat(condition, record, operator)) {
-                                if(bufColumn==null)
-                                    bufColumn=new Column(column.type,column.title);
-                                bufColumn.addRecord(record);
+                            if (checkFloat(condition, record, operator))
+                                    result.add(Arrays.asList(column.data).indexOf(record));
                             }
-                        }
-                        if(bufColumn!=null)
-                            result.add(bufColumn);
                         break;
+                        }
+
                 }
             }
-        }
         return result;
     }
 
@@ -296,17 +281,16 @@ public class Where {
         return m.matches();
     }
 
-    public DataDbf getRecs(String request, DataDbf dataDbf) {
+    public ArrayList<Integer> getRecs(String request, DataDbf dataDbf) {
         List<String> expression = parse(request);
-        DataDbf result=new DataDbf(dataDbf.headerDbf);
         if (flag) {
-            ArrayList<Column> list=calc(expression,dataDbf);
-            Column[] resultArr=new Column[list.size()];
-            list.toArray(resultArr);
-            result.setAllColumns(resultArr);
+            ArrayList<Integer> result=calc(expression,dataDbf);
             return result;
         } else {
             return null;
         }
     }
+
+
+
 }

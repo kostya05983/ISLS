@@ -88,7 +88,6 @@ public class ReaderDbf extends DataHandler{
         try {
             randomAccessFile.close();
         } catch (IOException e) {
-            //e.printStackTrace();
             out_stack_error(e.getLocalizedMessage(), e.getMessage());
         }
     }

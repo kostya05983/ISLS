@@ -35,7 +35,7 @@ public class HandlerRequest {
             ReaderDbf readerDbf=new ReaderDbf(tableName+".dbf");
             dataDbf=readerDbf.read();
             Where where=new Where();
-            dataDbf=where.getRecs(request,dataDbf);
+            ArrayList<Integer> indexes=where.getRecs(request,dataDbf);
         }else{
             request=request.replaceAll("[,]","");
             String[] namesColumns=request.substring(0,request.toUpperCase().indexOf("FROM")).trim().split("[ ]");
@@ -47,7 +47,7 @@ public class HandlerRequest {
             dataDbf=readerDbf.read();
             dataDbf=dataDbf.selectColumns(namesColumns);
             Where where=new Where();
-            dataDbf=where.getRecs(request,dataDbf);
+            ArrayList<Integer> indexes=where.getRecs(request,dataDbf);
 
         }
 
