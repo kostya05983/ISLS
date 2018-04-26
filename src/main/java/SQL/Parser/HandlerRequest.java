@@ -199,9 +199,103 @@ public class HandlerRequest {
 
     void insertInto(String request) {
 
+        //берём данные команлды
+        request=request.substring(request.toUpperCase().indexOf("INSERT INTO")+11);
+
+        //берём имя таблицы
+        String tabel_name = request.substring(0,request.toUpperCase().indexOf("("));
+
+        //названия полей
+        String[] name_pole = request.substring(0,request.toUpperCase().indexOf(")")).trim().split("[,]");
+
+        //значения после value
+        String[] value = request.substring(request.toUpperCase().indexOf("VALUE")+5).trim().split("[,]");
+
+        DataDbf dataDbf;
+        ArrayList<RecordDbf> resultRecords;
+
+        //открываем выбранную таблицу
+        ReaderDbf readerDbf=new ReaderDbf(tabel_name+".dbf");
+        dataDbf=readerDbf.read();
+        dataDbf=dataDbf.selectColumns(name_pole);
+
+        //в выбранной таблице определяем тип поля и преобразуем в него нужный value
+        for (int i = 0; i < name_pole.length; i++)
+        {
+            //вытягиваем тип поля
+            String tip = "integer";
+            //преобразуем
+            switch (tip)
+            {
+                case "integer": {
+                    try {
+                        Integer i_p = Integer.valueOf(value[i]);
+                        //вставляем данные в поле
+
+                    } catch (NumberFormatException e) {
+                        Platform.runLater(() ->
+                                main.error("Типы полей должны совпадать\nс типом данных"));
+                        main.outText("Не успешно :(\n");
+                    }
+                    break;
+                }
+                case "float": {
+                    try {
+                        Float f_p = Float.valueOf(value[i]);
+                        //вставляем данные в поле
+
+                    } catch (NumberFormatException e) {
+                        Platform.runLater(() ->
+                                main.error("Типы полей должны совпадать\nс типом данных"));
+                        main.outText("Не успешно :(\n");
+                    }
+                    break;
+                }
+                case "character": {
+                    try {
+                        //Character c_p = value[i].toCharArray();
+                        //вставляем данные в поле
+
+                    } catch (NumberFormatException e) {
+                        Platform.runLater(() ->
+                                main.error("Типы полей должны совпадать\nс типом данных"));
+                        main.outText("Не успешно :(\n");
+                    }
+                    break;
+                }
+                default: {
+                    Platform.runLater(() ->
+                            main.error());
+                    main.outText("Не успешно :(\n");
+                }
+            }
+        }
+        ///////ВОПРОС ПО ТОМУ, ЧТО ДЕЛАТЬ С ТЕМИ ПОЛЯМИ, КОТОРЫЕ ПОЛЬЗОВАТЕЛЬ НЕ УКАЗАЛ
+
+        //сохраняем изменения
+
+//        Where where=new Where();
+//        ArrayList<Integer> indexes=where.getRecs(request,dataDbf);
+//        resultRecords=new ArrayList<>();
+//
+//        for (Integer index : indexes) {
+//            resultRecords.add(dataDbf.recordsDbf.get(index));
+//        }
+//
+//        dataDbf=new DataDbf(dataDbf.headerDbf,dataDbf.fieldsDbf,resultRecords);
+//
+        DataDbf finalDataDbf = dataDbf;
+
+        Platform.runLater(() -> {
+            main.clearTable();
+            main.setAllColumns(finalDataDbf.getColumnsforShow());
+            main.outText("\nУспешно\n");
+        });
     }
 
     void update(String request) {
+
+
 
     }
 
