@@ -27,12 +27,12 @@ public class ReaderDbf extends DataHandler{
     public DataDbf read(){
         byte[] buf=new byte[32];
         long position=32;
+
         try {
             randomAccessFile.read(buf);
 
             HeaderDbf headerDbf = new HeaderDbf(buf);
 
-            //Читаем поля пока не встретим терминальный знак
             ArrayList<FieldDbf> fieldsDbf=new ArrayList<>();
             FieldDbf fieldDbf;
             int sizeOfRecord=0;
@@ -40,18 +40,19 @@ public class ReaderDbf extends DataHandler{
             while (randomAccessFile.readByte()!=13) {
                 randomAccessFile.seek(position);
                 randomAccessFile.read(buf);
-//                out_stack_error("RandomAccessFile error on pos:",Long.toString(randomAccessFile.getChannel().position()));
                 fieldDbf=new FieldDbf(buf);
                 fieldsDbf.add(fieldDbf);
-                sizeOfRecord+=buf[16];//Находим длину записи
+                sizeOfRecord+=buf[16];
                 position+=32;
             }
+
             position++;
             sizeOfRecord++;
 
             byte[] bufRecord=new byte[sizeOfRecord];
             RecordDbf recordDbf;
             ArrayList<RecordDbf> recordsDbf=new ArrayList<>();
+
             while(randomAccessFile.readByte()!=12){
                 randomAccessFile.seek(position);
                 randomAccessFile.read(bufRecord);
@@ -59,6 +60,7 @@ public class ReaderDbf extends DataHandler{
                 recordsDbf.add(recordDbf);
                 position+=sizeOfRecord;
             }
+
             return new DataDbf(headerDbf,fieldsDbf,recordsDbf);
 
         }catch (IOException e){
@@ -71,6 +73,7 @@ public class ReaderDbf extends DataHandler{
         HeaderIdx headerIdx=new HeaderIdx();
         BTreeIdx bTreeIdx=new BTreeIdx();
         byte[] buffer=new byte[512];
+
         try {
             randomAccessFile.read(buffer);
             headerIdx.setByteCode(buffer);
@@ -81,14 +84,7 @@ public class ReaderDbf extends DataHandler{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new DataIdx(headerIdx,bTreeIdx);
-    }
 
-    public void close(){
-        try {
-            randomAccessFile.close();
-        } catch (IOException e) {
-            out_stack_error(e.getLocalizedMessage(), e.getMessage());
-        }
+        return new DataIdx(headerIdx,bTreeIdx);
     }
 }

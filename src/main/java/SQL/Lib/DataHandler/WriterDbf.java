@@ -29,22 +29,18 @@ public class WriterDbf extends DataHandler {
     public void  write(DataDbf dataDbf){
         try {
             int sumOfBytes=0;
-            //Записываем заголовок файла
+            int buf;
 
                 randomAccessFile.write(dataDbf.headerDbf.getByteCode(), 0, 32);
 
-            //Записываем все поля
                 for (int i = 0; i < dataDbf.fieldsDbf.size(); i++) {
                     sumOfBytes+=dataDbf.fieldsDbf.get(i).getSizeField();
                     randomAccessFile.write(dataDbf.fieldsDbf.get(i).getByteCode(), 0, 32);
                 }
-                //Терминальный байт
-            randomAccessFile.writeByte(13);
 
+            randomAccessFile.writeByte(13);
             sumOfBytes++;
 
-            int buf;
-            //Записываем записи
             if(dataDbf.recordsDbf!=null)
                 for (int i = 0; i < dataDbf.recordsDbf.size(); i++) {
                     buf=sumOfBytes;
@@ -69,17 +65,10 @@ public class WriterDbf extends DataHandler {
     public void write(DataIdx dataIdx){
         try {
             randomAccessFile.write(dataIdx.getHeaderIdx().getByteCode());
-            byte[] buffer=dataIdx.getHeaderIdx().getByteCode();
             randomAccessFile.write(dataIdx.getbTreeIdx().getByteCode());
-            buffer=dataIdx.getbTreeIdx().getByteCode();
-            System.out.println("fkd");
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void close(){
-
     }
 
     public void deleteFile(String name){
