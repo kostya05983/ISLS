@@ -57,7 +57,7 @@ public class SelectorRequest implements Runnable{
                 //handlerRequest.delete(strings_command[i]);
             }
             Check = Select_P.matcher(strings_command_upper[i]);
-            if (Check.find()||true) {
+            if (Check.find()) {
                 checkcommand=true;
                 handlerRequest.select(strings_command[i]);
             }
