@@ -2,6 +2,9 @@ package SQL.Lib.Dbf;
 
 
 public class FieldDbf {
+
+    //region Parameters
+
     private byte[] nameField=new byte[11];//0-10 имя поля с 0x00 завершением
     private byte typeField;//Тип поля 11
     //зарезирвированная область 12-15
@@ -12,7 +15,9 @@ public class FieldDbf {
     //21-30 зарезирвированная область
     private byte flagMdx;//Включено или нет поле в mdx индекс 31
 
+    //endregion
 
+    //region Constructors
 
     public FieldDbf(){
 
@@ -26,6 +31,10 @@ public class FieldDbf {
         this.identificator=Array[20];
         this.flagMdx=Array[31];
     }
+
+    //endregion
+
+    //region InterfaceMethods
 
     public byte[] getByteCode(){
         byte [] result=new byte[32];
@@ -58,11 +67,11 @@ public class FieldDbf {
         this.flagMdx=array[31];
     }
 
-    public void setNameFiled(byte[] nameFiled) {
+    public void setNameField(byte[] nameFiled) {
         this.nameField = nameFiled;
     }
 
-    public void setNameField(String name){//Проверка на размер поля
+    public void setNameField(String name){
         char[] array=name.toCharArray();
         for(int i=0;i<array.length;i++)
             nameField[i]=(byte)array[i];
@@ -110,7 +119,7 @@ public class FieldDbf {
         return flagMdx;
     }
 
-   protected TypesOfFields getTypeOfField(){
+    TypesOfFields getTypeOfField(){
         switch(typeField){
             case 'C':return TypesOfFields.Character;
             case 'F':return TypesOfFields.Float;
@@ -120,5 +129,7 @@ public class FieldDbf {
         }
 
    }
+
+   //endregion
 
 }

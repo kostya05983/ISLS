@@ -5,12 +5,18 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class BTreeIdx {
+
+    //region Parameters
+
     private int height;
     private Node[] nodes;
     private String[] keysExpresion;
     private int[] positions;
     private int currentAmount=0;
 
+    //endregion
+
+    //region Constructors
 
     BTreeIdx(String[] keysExpresion, int[] positions){
         nodes=new Node[keysExpresion.length];
@@ -20,6 +26,10 @@ public class BTreeIdx {
 
     public BTreeIdx(){
     }
+
+    //endregion
+
+    //region InterfaceMethods
 
     void init(){
         //Устанавливаем корень
@@ -61,30 +71,6 @@ public class BTreeIdx {
         }
     }
 
-    private class Node{
-        private short attribute;//Атрибут вершины
-        private short keyAmount=0;//Колличество существующих ключей
-        private int left;
-        private int right;
-        private byte[] data=new byte[500];
-
-        private void setKeys(int[] positions){
-            ByteBuffer byteBuffer=ByteBuffer.allocate(8);
-            for(int i=0;i<positions.length;i++){
-                byteBuffer.putInt(positions[i]);
-                byteBuffer.putInt(BTreeIdx.this.currentAmount);
-                System.arraycopy(byteBuffer.array(),0,data,i*8+1,8);
-                byteBuffer.clear();
-                keyAmount++;
-            }
-
-        }
-        private void setKey(String key){
-            System.arraycopy(key.getBytes(),0,data,0,key.getBytes().length);
-            keyAmount++;
-        }
-    }
-
     public byte[] getByteCode(){
         ByteBuffer result=ByteBuffer.allocate(nodes.length*512);
         for (Node node : nodes) {
@@ -110,5 +96,35 @@ public class BTreeIdx {
             System.arraycopy(byteBuffer.array(),i*512+12,nodes[i].data,0,500);
         }
     }
+
+    //endregion
+
+    //region PrivateClasses
+
+    private class Node{
+        private short attribute;//Атрибут вершины
+        private short keyAmount=0;//Колличество существующих ключей
+        private int left;
+        private int right;
+        private byte[] data=new byte[500];
+
+        private void setKeys(int[] positions){
+            ByteBuffer byteBuffer=ByteBuffer.allocate(8);
+            for(int i=0;i<positions.length;i++){
+                byteBuffer.putInt(positions[i]);
+                byteBuffer.putInt(BTreeIdx.this.currentAmount);
+                System.arraycopy(byteBuffer.array(),0,data,i*8+1,8);
+                byteBuffer.clear();
+                keyAmount++;
+            }
+
+        }
+        private void setKey(String key){
+            System.arraycopy(key.getBytes(),0,data,0,key.getBytes().length);
+            keyAmount++;
+        }
+    }
+
+    //endregion
 
 }

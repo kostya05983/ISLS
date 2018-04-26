@@ -10,12 +10,30 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Where {
+
+    //region Parameters
+
     private static String operators = "&|!?";
     private static String delimiters = "()" + operators;
     private static boolean flag = true;
 
-    public Where() {
+    //endregion
+
+    //region InterfaceMethods
+
+    public ArrayList<Integer> getRecs(String request, DataDbf dataDbf) {
+        List<String> expression = parse(request);
+        if (flag) {
+            ArrayList<Integer> result=calc(expression,dataDbf);
+            return result;
+        } else {
+            return null;
+        }
     }
+
+    //endregion
+
+    //region PrivateMethods
 
     private static String repl(String token) {
         token = token.replaceAll("(\\s|[)])AND([(]|\\s)", "&");
@@ -125,12 +143,12 @@ public class Where {
                 }
                 case "!": {
                     ArrayList<Integer> arr1 = new ArrayList<>(stack.pop()), arr2 = new ArrayList<>();
-                        for(Integer i=0;i<dataDbf.recordsDbf.size();i++){
-                            if(!arr1.contains(i)) arr2.add(i);
-                        }
-                        stack.push(arr2);
+                    for(Integer i=0;i<dataDbf.recordsDbf.size();i++){
+                        if(!arr1.contains(i)) arr2.add(i);
                     }
-                    break;
+                    stack.push(arr2);
+                }
+                break;
 
                 case "?": {
                     ArrayList<Integer> arr1 = new ArrayList<>(stack.pop()), arr2 = new ArrayList<>(stack.pop());
@@ -183,26 +201,26 @@ public class Where {
                         if (reg(condition.substring(condition.indexOf(operator) + operator.length()).trim())) {
                             for (String record : column.data) {
                                 if (checkChar(condition, record, operator))
-                                        result.add(Arrays.asList(column.data).indexOf(record));
+                                    result.add(Arrays.asList(column.data).indexOf(record));
                             }
                         }
                         break;
                     case Integer:
                         for (String record : column.data) {
                             if (checkInt(condition, record, operator))
-                                    result.add(Arrays.asList(column.data).indexOf(record));
+                                result.add(Arrays.asList(column.data).indexOf(record));
                         }
                         break;
                     case Float:
                         for (String record : column.data) {
                             if (checkFloat(condition, record, operator))
-                                    result.add(Arrays.asList(column.data).indexOf(record));
-                            }
-                        break;
+                                result.add(Arrays.asList(column.data).indexOf(record));
                         }
-
+                        break;
                 }
+
             }
+        }
         return result;
     }
 
@@ -281,16 +299,6 @@ public class Where {
         return m.matches();
     }
 
-    public ArrayList<Integer> getRecs(String request, DataDbf dataDbf) {
-        List<String> expression = parse(request);
-        if (flag) {
-            ArrayList<Integer> result=calc(expression,dataDbf);
-            return result;
-        } else {
-            return null;
-        }
-    }
-
-
+    //endregion
 
 }

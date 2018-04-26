@@ -3,10 +3,16 @@ package SQL.Lib.AdditionalInstruments;
 import SQL.Lib.Dbf.TypesOfFields;
 
 public class Column {
+    //region Properties
+
     public TypesOfFields type;
     public String title;
     public String data[];
     public int size;
+
+    //endregion
+
+    //region Constructors
 
     public Column(){
 
@@ -30,6 +36,10 @@ public class Column {
         this.title=title;
     }
 
+    //endregion
+
+    //region InterfaceMethods
+
     protected int max(){
         int max=data[0].getBytes().length;
         for (String aData : data) {
@@ -44,4 +54,7 @@ public class Column {
         data[data.length-1]=record;
         size+=record.length();
     }
+
+    //endregion
+
 }

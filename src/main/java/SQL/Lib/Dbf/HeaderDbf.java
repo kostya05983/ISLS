@@ -7,6 +7,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class HeaderDbf {
+
+    //region Parameters
+
     private byte signature;//0
     private byte year;//1
     private byte month;//2
@@ -21,6 +24,10 @@ public class HeaderDbf {
     private byte flagMDX;//флаг наличия индексного MDX- файла 28
     private byte NumberOfDriver;//29 Идентификатор кодовой страницы файла 29
     //30-31 зарезирвированная область
+
+    //endregion
+
+    //region Constructors
 
     public HeaderDbf(){
 
@@ -48,6 +55,10 @@ public class HeaderDbf {
         this.NumberOfDriver=ArrayOfHeader[29];
 
     }
+
+    //endregion
+
+    //region InterfaceMethods
 
     public byte[] getByteCode(){
         ByteBuffer byteBuffer=ByteBuffer.allocate(4);
@@ -92,7 +103,6 @@ public class HeaderDbf {
 
         return a;
     }
-    //TODO добавить отдельно сетер для даты
 
     public void setSignature(byte signature) {
         this.signature = signature;
@@ -197,5 +207,7 @@ public class HeaderDbf {
         this.month=((byte)gregorianCalendar.get(Calendar.MONTH));
         this.day=((byte)gregorianCalendar.get(Calendar.DAY_OF_MONTH));
     }
+
+    //endregion
 
 }

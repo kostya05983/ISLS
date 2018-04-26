@@ -7,11 +7,15 @@ import java.util.ArrayList;
 
 public class DataDbf {
 
+    //region Properties
+
     public HeaderDbf headerDbf;
     public ArrayList<FieldDbf> fieldsDbf;
     public ArrayList<RecordDbf> recordsDbf;
 
+    //endregion
 
+    //region Constructors
 
     public DataDbf(HeaderDbf headerDbf, ArrayList<FieldDbf> fieldDbf, ArrayList<RecordDbf> recordDbf){
         this.headerDbf=headerDbf;
@@ -34,12 +38,9 @@ public class DataDbf {
 
     }
 
-    private short transferByteToUnsigned(byte b){
-        if(b<=0){
-            return (short)(127+(128+b));
-        }
-        return b;
-    }
+    //endregion
+
+    //region InterfaceMethods
 
     public Column[] getAllColumns(){
         ArrayList<Column> arrayList=new ArrayList<>();
@@ -109,14 +110,6 @@ public class DataDbf {
         return result;
     }
 
-    private String intitalizeNullString(int size){
-        StringBuilder result= new StringBuilder();
-        for(int i=0;i<size;i++){
-            result.append((char) 0);
-        }
-        return result.toString();
-    }
-
     public void setAllColumns(Column[] columns){
         if(!(fieldsDbf==null)) {
             fieldsDbf.clear();
@@ -150,7 +143,6 @@ public class DataDbf {
             buf[i]=columns[i].data;
         }
 
-        String tmp;
         buf=transportMatrix(buf);
 
         RecordDbf recordDbf;
@@ -173,16 +165,6 @@ public class DataDbf {
             recordsDbf.add(recordDbf);
         }
 
-    }
-
-    private int sizeBuffer(){
-        int sum=0;
-
-        for (FieldDbf aFieldsDbf : fieldsDbf) {
-            sum += aFieldsDbf.getSizeField();
-        }
-
-        return sum;
     }
 
     public String[][] transportMatrix(String[][] a) {
@@ -222,5 +204,35 @@ public class DataDbf {
         return new String(result);
     }
 
+    //endregion
+
+    //region PrivateMethods
+
+    private short transferByteToUnsigned(byte b){
+        if(b<=0){
+            return (short)(127+(128+b));
+        }
+        return b;
+    }
+
+    private int sizeBuffer(){
+        int sum=0;
+
+        for (FieldDbf aFieldsDbf : fieldsDbf) {
+            sum += aFieldsDbf.getSizeField();
+        }
+
+        return sum;
+    }
+
+    private String intitalizeNullString(int size){
+        StringBuilder result= new StringBuilder();
+        for(int i=0;i<size;i++){
+            result.append((char) 0);
+        }
+        return result.toString();
+    }
+
+    //endregion
 
 }

@@ -6,9 +6,14 @@ import java.util.Random;
 
 public class DataIdx {
 
+    //region Parameters
+
     private HeaderIdx headerIdx;
     private BTreeIdx bTreeIdx;
 
+    //endregion
+
+    //region Constructors
 
     public DataIdx(String fieldName, DataDbf dataDbf){
        String key=generateKey(fieldName,dataDbf.recordsDbf.size());
@@ -23,19 +28,9 @@ public class DataIdx {
         this.bTreeIdx=bTreeIdx;
     }
 
-    private String generateKey(String field,int amount){
-        if((field.length()-2)>(amount/62)&&field.length()>=3) {
-            return field;
-        }else{
-            Random random=new Random(System.currentTimeMillis());
-            StringBuilder stringBuilder=new StringBuilder();
-            stringBuilder.append(field);
-            for(int i=0;i<amount/62-field.length();i++){
-                stringBuilder.append((char)(random.nextDouble()*25+65));
-            }
-            return stringBuilder.toString();
-        }
-    }
+    //endregion
+
+    //region InterfaceMethods
 
     public HeaderIdx getHeaderIdx() {
         return headerIdx;
@@ -52,4 +47,26 @@ public class DataIdx {
     public void setbTreeIdx(BTreeIdx bTreeIdx) {
         this.bTreeIdx = bTreeIdx;
     }
+
+    //endregion
+
+    //region PrivateMethods
+
+    private String generateKey(String field,int amount){
+        if((field.length()-2)>(amount/62)&&field.length()>=3) {
+            return field;
+        }else{
+            Random random=new Random(System.currentTimeMillis());
+            StringBuilder stringBuilder=new StringBuilder();
+            stringBuilder.append(field);
+            for(int i=0;i<amount/62-field.length();i++){
+                stringBuilder.append((char)(random.nextDouble()*25+65));
+            }
+            return stringBuilder.toString();
+        }
+    }
+
+    //endregion
+
+
 }

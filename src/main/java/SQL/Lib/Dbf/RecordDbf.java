@@ -2,8 +2,15 @@ package SQL.Lib.Dbf;
 
 
 public class RecordDbf {
+
+    //region Parameters
+
     private byte headerByte;
     private byte[] data;
+
+    //endregion
+
+    //region Constructors
 
     public RecordDbf(){
 
@@ -24,6 +31,10 @@ public class RecordDbf {
         this.headerByte=array[0];
         System.arraycopy(array, 1, this.data, 0, array.length - 1);
     }
+
+    //endregion
+
+    //region InterfaceMethods
 
     public byte[] getByteCode(){
         byte [] result=new byte[data.length+1];
@@ -76,4 +87,6 @@ public class RecordDbf {
 
         return new String(result);
     }
+
+    //endregion
 }

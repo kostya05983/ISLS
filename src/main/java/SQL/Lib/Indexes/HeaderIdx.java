@@ -3,6 +3,9 @@ package SQL.Lib.Indexes;
 import java.nio.ByteBuffer;
 
 public class HeaderIdx {
+
+    //region Parameters
+
     private int rootPointer;
     private int freePointer;
     private int endPointer;
@@ -12,6 +15,10 @@ public class HeaderIdx {
     private byte[] keyExpression=new byte[220];
     private byte[] forExpression=new byte[220];
 
+    //endregion
+
+    //region Constructors
+
     HeaderIdx(String field){
         rootPointer=512;
         freePointer=512;
@@ -20,9 +27,14 @@ public class HeaderIdx {
         featuresIndex=(byte)1;
         System.arraycopy(field.getBytes(),0,keyExpression,0,field.getBytes().length);
     }
+
     public HeaderIdx(){
 
     }
+
+    //endregion
+
+    //region InterfaceMethods
 
     public int getRootPointer() {
         return rootPointer;
@@ -113,4 +125,6 @@ public class HeaderIdx {
         System.arraycopy(byteBuffer.array(),236,keyExpression,0,220);
 
     }
+
+    //endregion
 }
