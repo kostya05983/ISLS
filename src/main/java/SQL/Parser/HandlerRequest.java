@@ -204,8 +204,10 @@ public class HandlerRequest {
         //названия полей
         String[] name_pole = request.substring(request.toUpperCase().indexOf("(")+1,request.toUpperCase().indexOf(")")).trim().split("[,]");
 
+        request=request.substring(request.toUpperCase().indexOf("VALUE")+5);
+
         //значения после value
-        String[] value = request.substring(request.toUpperCase().indexOf("VALUE")+5).trim().split("[,]");
+        String[] value = request.substring(request.toUpperCase().indexOf("(")+1,request.toUpperCase().indexOf(")")).trim().split("[,]");
 
         DataDbf dataDbf;
 
@@ -331,7 +333,7 @@ public class HandlerRequest {
         }
 
         //значения после where (логическое выражение)
-        String logik = request.substring(request.toUpperCase().indexOf("WHERE")+5).trim();
+        String logik = request.substring(request.toUpperCase().indexOf("WHERE")+5,request.toUpperCase().indexOf(";")).trim();
 
         DataDbf dataDbf;
 
