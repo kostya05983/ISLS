@@ -206,7 +206,7 @@ public class HandlerRequest {
         String table_name = request.substring(0,request.toUpperCase().indexOf("("));
 
         //названия полей
-        String[] name_pole = request.substring(0,request.toUpperCase().indexOf(")")).trim().split("[,]");
+        String[] name_pole = request.substring(request.toUpperCase().indexOf("(")+1,request.toUpperCase().indexOf(")")).trim().split("[,]");
 
         //значения после value
         String[] value = request.substring(request.toUpperCase().indexOf("VALUE")+5).trim().split("[,]");
@@ -318,6 +318,23 @@ public class HandlerRequest {
 
     void update(String request) {
 
+        //берём данные команлды
+        request=request.substring(request.toUpperCase().indexOf("UPDATE")+6);
+
+        //берём имя таблицы
+        String table_name = request.substring(0,request.toUpperCase().indexOf("SET"));
+
+        //пары
+        String[] pairs = request.substring(request.toUpperCase().indexOf("SET")+3,request.toUpperCase().indexOf("WHERE")).trim().split("[,]");
+
+        //значения после where
+        String logik = request.substring(request.toUpperCase().indexOf("WHERE")+5);
+
+        DataDbf dataDbf;
+
+        //////////////////////////
+        /// тут идёт работа =) ///
+        //////////////////////////
 
     }
 
