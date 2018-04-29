@@ -10,11 +10,7 @@ import javafx.application.Platform;
 
 
 import java.io.File;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class HandlerRequest {
 
@@ -510,8 +506,7 @@ public class HandlerRequest {
                     Column[] columns = dataDbf.getAllColumns();
                     int length = columns.length;
                     Column[] newcolumns = new Column[length + 1];
-                    for (int i = 0; i < length; i++)
-                        newcolumns[i] = columns[i];
+                    System.arraycopy(columns, 0, newcolumns, 0, length);
                     String[] data = new String[dataDbf.recordsDbf.size()];
                     Column column = new Column(Type_Column, Name_Column, data, size_data);
                     newcolumns[length] = column;
