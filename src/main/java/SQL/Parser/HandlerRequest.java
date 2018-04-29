@@ -203,7 +203,7 @@ public class HandlerRequest {
         request=request.substring(request.toUpperCase().indexOf("INSERT INTO")+11);
 
         //берём имя таблицы
-        String tabel_name = request.substring(0,request.toUpperCase().indexOf("("));
+        String table_name = request.substring(0,request.toUpperCase().indexOf("("));
 
         //названия полей
         String[] name_pole = request.substring(0,request.toUpperCase().indexOf(")")).trim().split("[,]");
@@ -212,85 +212,100 @@ public class HandlerRequest {
         String[] value = request.substring(request.toUpperCase().indexOf("VALUE")+5).trim().split("[,]");
 
         DataDbf dataDbf;
-        ArrayList<RecordDbf> resultRecords;
 
         //открываем выбранную таблицу
-        ReaderDbf readerDbf=new ReaderDbf(tabel_name+".dbf");
+        ReaderDbf readerDbf=new ReaderDbf(table_name+".dbf");
         dataDbf=readerDbf.read();
-        dataDbf=dataDbf.selectColumns(name_pole);
+        //dataDbf=dataDbf.selectColumns(name_pole);
+        readerDbf.close();
 
-        //в выбранной таблице определяем тип поля и преобразуем в него нужный value
-        for (int i = 0; i < name_pole.length; i++)
+        //Настройка даты
+        dataDbf.headerDbf.setData();
+
+        //Взятие всех колонок
+        Column[] columns = dataDbf.getAllColumns();
+
+        //переменная ошибки
+        boolean check_error = false;
+
+        //в выбранной таблице определяем тип поля и преобразуем в него нужный value,
+        //а потом в строку для хранения
+        for (Column column : columns)
         {
-            //вытягиваем тип поля
-            String tip = "integer";
-            //преобразуем
-            switch (tip)
-            {
-                case "integer": {
-                    try {
-                        Integer i_p = Integer.valueOf(value[i]);
-                        //вставляем данные в поле
+            boolean existence = false;
+            int k;
 
-                    } catch (NumberFormatException e) {
-                        Platform.runLater(() ->
-                                main.error("Типы полей должны совпадать\nс типом данных"));
-                        main.outText("Не успешно :(\n");
-                    }
+            //ищем совпадающее поле по имени
+            for (k = 0; k < name_pole.length; k++) {
+                if (column.title.equals(name_pole[k])) {
+                    existence = true;
                     break;
-                }
-                case "float": {
-                    try {
-                        Float f_p = Float.valueOf(value[i]);
-                        //вставляем данные в поле
-
-                    } catch (NumberFormatException e) {
-                        Platform.runLater(() ->
-                                main.error("Типы полей должны совпадать\nс типом данных"));
-                        main.outText("Не успешно :(\n");
-                    }
-                    break;
-                }
-                case "character": {
-                    try {
-                        //Character c_p = value[i].toCharArray();
-                        //вставляем данные в поле
-
-                    } catch (NumberFormatException e) {
-                        Platform.runLater(() ->
-                                main.error("Типы полей должны совпадать\nс типом данных"));
-                        main.outText("Не успешно :(\n");
-                    }
-                    break;
-                }
-                default: {
-                    Platform.runLater(() ->
-                            main.error());
-                    main.outText("Не успешно :(\n");
                 }
             }
+
+            //если Пользователь не ввёл это имя поля и данные для него
+            if (!existence) {
+                column.addRecord(" ");
+            } else {
+                //преобразуем и сохраняем в найденное поле
+                switch (column.type) {
+                    case Integer: {
+                        try {
+                            String t = String.valueOf(Integer.valueOf(value[k]));
+                            //вставляем данные в поле
+                            column.addRecord(t);
+                        } catch (NumberFormatException e) {
+                            check_error = true;
+                            Platform.runLater(() ->
+                                    main.error("Типы полей должны совпадать\nс типом данных"));
+                            main.outText("Не успешно :(\n");
+                        }
+                        break;
+                    }
+                    case Float: {
+                        try {
+                            String t = String.valueOf(Float.valueOf(value[k]));
+                            //вставляем данные в поле
+                            column.addRecord(t);
+                        } catch (NumberFormatException e) {
+                            check_error = true;
+                            Platform.runLater(() ->
+                                    main.error("Типы полей должны совпадать\nс типом данных"));
+                            main.outText("Не успешно :(\n");
+                        }
+                        break;
+                    }
+                    case Character: {
+                        column.addRecord(value[k]);
+                        break;
+                    }
+                    default: {
+                        check_error = true;
+                        Platform.runLater(() ->
+                                main.error());
+                        main.outText("Не успешно :(\n");
+                    }
+                }
+            }
+            if (check_error) break;
         }
-        ///////ВОПРОС ПО ТОМУ, ЧТО ДЕЛАТЬ С ТЕМИ ПОЛЯМИ, КОТОРЫЕ ПОЛЬЗОВАТЕЛЬ НЕ УКАЗАЛ
 
-        //сохраняем изменения
+        if (!check_error) {
 
-//        Where where=new Where();
-//        ArrayList<Integer> indexes=where.getRecs(request,dataDbf);
-//        resultRecords=new ArrayList<>();
-//
-//        for (Integer index : indexes) {
-//            resultRecords.add(dataDbf.recordsDbf.get(index));
-//        }
-//
-//        dataDbf=new DataDbf(dataDbf.headerDbf,dataDbf.fieldsDbf,resultRecords);
-//
-        DataDbf finalDataDbf = dataDbf;
+            dataDbf.setAllColumns(columns);
 
-        Platform.runLater(() -> {
-            main.clearTable();
-            main.setAllColumns(finalDataDbf.getColumnsforShow());
-            main.outText("\nУспешно\n");
-        });
+            //сохраняем изменения
+            WriterDbf writerDbf = new WriterDbf(table_name + ".dbf");
+            writerDbf.write(dataDbf);
+            writerDbf.close();
+
+            //вывод изменений
+            Platform.runLater(() -> {
+                main.clearTable();
+                main.setAllColumns(dataDbf.getColumnsforShow());
+                main.outText("Успешно");
+            });
+        }
     }
 
     void update(String request) {

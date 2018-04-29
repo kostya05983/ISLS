@@ -33,13 +33,17 @@ public class Main extends Application implements Runnable {
     private Button button = new Button("ТЫК");
     private TextArea textOut = new TextArea("Здесь вывод действи библиотеки будет");
 
-    private Duration animationDuration = new Duration(2000);
+    private Duration animationDuration = new Duration(1500);
+    private Duration animationDuration_undo = new Duration(500);
 
     private Timeline timeline = new Timeline(
             new KeyFrame(Duration.ZERO, new KeyValue(tableView.maxHeightProperty(), 10)),
-            //new KeyFrame(Duration.ZERO, new KeyValue(tableView.maxWidthProperty(), 10)),
             new KeyFrame(animationDuration, new KeyValue(tableView.maxHeightProperty(), 350))
-            //new KeyFrame(animationDuration, new KeyValue(tableView.maxWidthProperty(), 300.0))
+    );
+
+    private Timeline timeline_undo = new Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(tableView.maxHeightProperty(), 350)),
+            new KeyFrame(animationDuration_undo, new KeyValue(tableView.maxHeightProperty(), 10))
     );
 
     private AnchorPane anchor3 = new AnchorPane();
@@ -117,6 +121,8 @@ public class Main extends Application implements Runnable {
     }
 
     public void clearTable(){
+        //запуск анимации свёртывания таблицы
+        timeline_undo.play();
         int size=tableView.getColumns().size();
         for(int i=0;i<size;i++)
             tableView.getColumns().remove(0);
