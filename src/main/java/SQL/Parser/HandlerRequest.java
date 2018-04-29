@@ -203,7 +203,7 @@ public class HandlerRequest {
         request=request.substring(request.toUpperCase().indexOf("INSERT INTO")+11);
 
         //берём имя таблицы
-        String table_name = request.substring(0,request.toUpperCase().indexOf("("));
+        String table_name = request.substring(0,request.toUpperCase().indexOf("(")).trim();
 
         //названия полей
         String[] name_pole = request.substring(request.toUpperCase().indexOf("(")+1,request.toUpperCase().indexOf(")")).trim().split("[,]");
@@ -237,7 +237,7 @@ public class HandlerRequest {
 
                 //ищем совпадающее поле по имени
                 for (k = 0; k < name_pole.length; k++) {
-                    if (column.title.equals(name_pole[k])) {
+                    if (column.title.trim().equals(name_pole[k].trim())) {
                         existence = true;
                         break;
                     }
@@ -322,20 +322,100 @@ public class HandlerRequest {
         request=request.substring(request.toUpperCase().indexOf("UPDATE")+6);
 
         //берём имя таблицы
-        String table_name = request.substring(0,request.toUpperCase().indexOf("SET"));
+        String table_name = request.substring(0,request.toUpperCase().indexOf("SET")).trim();
 
         //пары
         String[] pairs = request.substring(request.toUpperCase().indexOf("SET")+3,request.toUpperCase().indexOf("WHERE")).trim().split("[,]");
 
-        //значения после where
-        String logik = request.substring(request.toUpperCase().indexOf("WHERE")+5);
+        String[] name_pole = new String[pairs.length];
+        for (int i = 0; i<pairs.length; i++)
+        {
+            name_pole[i] = pairs[i].substring(0,request.toUpperCase().indexOf("=")).trim();
+            pairs[i] = pairs[i].substring(request.toUpperCase().indexOf("=")+1).trim();
+        }
+
+        //значения после where (логическое выражение)
+        String logik = request.substring(request.toUpperCase().indexOf("WHERE")+5).trim();
 
         DataDbf dataDbf;
 
-        //////////////////////////
-        /// тут идёт работа =) ///
-        //////////////////////////
+        try {
+            //открываем выбранную таблицу
+            ReaderDbf readerDbf = new ReaderDbf(table_name + ".dbf");
+            dataDbf = readerDbf.read();
+            dataDbf = dataDbf.selectColumns(name_pole);
+            readerDbf.close();
+            //Настройка даты
+            dataDbf.headerDbf.setData();
 
+            Column[] columns = dataDbf.getAllColumns();
+
+            Where where = new Where();
+            DataDbf toDbf = new DataDbf();
+
+            //проход по списку пар
+            for (String pair : pairs) {
+                //ищем совпадающее поле по имени в списке колонок
+                for (int k = 0; k < pairs.length; k++) {
+                    if (columns[k].title.trim().equals(name_pole[k].trim())) {
+
+                        toDbf.setAllColumns(new Column[]{columns[k]});
+                        ArrayList<Integer> result = where.getRecs(logik, toDbf);
+
+                        //проход внутри колонки
+                        for (Integer f : result) {
+                            switch (columns[k].type) {
+                                case Integer: {
+                                    try {
+                                        columns[k].data[f] = String.valueOf(Integer.valueOf(pair));
+                                    } catch (NumberFormatException e) {
+                                        main.outText("Не удалось провести одно из изменений\n");
+                                    }
+                                    break;
+                                }
+                                case Float: {
+                                    try {
+                                        columns[k].data[f] = String.valueOf(Float.valueOf(pair));
+                                    } catch (NumberFormatException e) {
+                                        main.outText("Не удалось провести одно из изменений\n");
+                                    }
+                                    break;
+                                }
+                                case Character: {
+                                    columns[k].data[f] = pair;
+                                }
+                                default: {
+                                    main.outText("Не удалось провести одно из изменений\n");
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+
+            dataDbf.setAllColumns(columns);
+
+            //сохраняем изменения
+            WriterDbf writerDbf = new WriterDbf(table_name + ".dbf");
+            writerDbf.write(dataDbf);
+            writerDbf.close();
+
+            DataDbf finalDBF = dataDbf;
+            //вывод изменений
+            Platform.runLater(() -> {
+                main.clearTable();
+                main.setAllColumns(finalDBF.getColumnsforShow());
+                main.outText("Успешно");
+            });
+        }
+        catch (NumberFormatException e)
+        {
+            Platform.runLater(() ->
+                    main.error("Не удалось открыть таблицу"));
+            main.outText("Не успешно :(\n");
+        }
     }
 
 //    void delete(String request) {
