@@ -213,103 +213,110 @@ public class HandlerRequest {
 
         DataDbf dataDbf;
 
-        //открываем выбранную таблицу
-        ReaderDbf readerDbf=new ReaderDbf(table_name+".dbf");
-        dataDbf=readerDbf.read();
-        //dataDbf=dataDbf.selectColumns(name_pole);
-        readerDbf.close();
+        try {
+            //открываем выбранную таблицу
+            ReaderDbf readerDbf=new ReaderDbf(table_name+".dbf");
+            dataDbf=readerDbf.read();
+            //dataDbf=dataDbf.selectColumns(name_pole);
+            readerDbf.close();
+            //Настройка даты
+            dataDbf.headerDbf.setData();
 
-        //Настройка даты
-        dataDbf.headerDbf.setData();
+            //Взятие всех колонок
+            Column[] columns = dataDbf.getAllColumns();
 
-        //Взятие всех колонок
-        Column[] columns = dataDbf.getAllColumns();
+            //переменная ошибки
+            boolean check_error = false;
 
-        //переменная ошибки
-        boolean check_error = false;
+            //в выбранной таблице определяем тип поля и преобразуем в него нужный value,
+            //а потом в строку для хранения
+            for (Column column : columns)
+            {
+                boolean existence = false;
+                int k;
 
-        //в выбранной таблице определяем тип поля и преобразуем в него нужный value,
-        //а потом в строку для хранения
-        for (Column column : columns)
+                //ищем совпадающее поле по имени
+                for (k = 0; k < name_pole.length; k++) {
+                    if (column.title.equals(name_pole[k])) {
+                        existence = true;
+                        break;
+                    }
+                }
+
+                //если Пользователь не ввёл это имя поля и данные для него
+                if (!existence) {
+                    column.addRecord(" ");
+                } else {
+                    //преобразуем и сохраняем в найденное поле
+                    switch (column.type) {
+                        case Integer: {
+                            try {
+                                String t = String.valueOf(Integer.valueOf(value[k]));
+                                //вставляем данные в поле
+                                column.addRecord(t);
+                            } catch (NumberFormatException e) {
+                                check_error = true;
+                                Platform.runLater(() ->
+                                        main.error("Типы полей должны совпадать\nс типом данных"));
+                                main.outText("Не успешно :(\n");
+                            }
+                            break;
+                        }
+                        case Float: {
+                            try {
+                                String t = String.valueOf(Float.valueOf(value[k]));
+                                //вставляем данные в поле
+                                column.addRecord(t);
+                            } catch (NumberFormatException e) {
+                                check_error = true;
+                                Platform.runLater(() ->
+                                        main.error("Типы полей должны совпадать\nс типом данных"));
+                                main.outText("Не успешно :(\n");
+                            }
+                            break;
+                        }
+                        case Character: {
+                            column.addRecord(value[k]);
+                            break;
+                        }
+                        default: {
+                            check_error = true;
+                            Platform.runLater(() ->
+                                    main.error());
+                            main.outText("Не успешно :(\n");
+                        }
+                    }
+                }
+                if (check_error) break;
+            }
+
+            if (!check_error) {
+
+                dataDbf.setAllColumns(columns);
+
+                //сохраняем изменения
+                WriterDbf writerDbf = new WriterDbf(table_name + ".dbf");
+                writerDbf.write(dataDbf);
+                writerDbf.close();
+
+                //вывод изменений
+                Platform.runLater(() -> {
+                    main.clearTable();
+                    main.setAllColumns(dataDbf.getColumnsforShow());
+                    main.outText("Успешно");
+                });
+            }
+        }
+        catch (NumberFormatException e)
         {
-            boolean existence = false;
-            int k;
-
-            //ищем совпадающее поле по имени
-            for (k = 0; k < name_pole.length; k++) {
-                if (column.title.equals(name_pole[k])) {
-                    existence = true;
-                    break;
-                }
-            }
-
-            //если Пользователь не ввёл это имя поля и данные для него
-            if (!existence) {
-                column.addRecord(" ");
-            } else {
-                //преобразуем и сохраняем в найденное поле
-                switch (column.type) {
-                    case Integer: {
-                        try {
-                            String t = String.valueOf(Integer.valueOf(value[k]));
-                            //вставляем данные в поле
-                            column.addRecord(t);
-                        } catch (NumberFormatException e) {
-                            check_error = true;
-                            Platform.runLater(() ->
-                                    main.error("Типы полей должны совпадать\nс типом данных"));
-                            main.outText("Не успешно :(\n");
-                        }
-                        break;
-                    }
-                    case Float: {
-                        try {
-                            String t = String.valueOf(Float.valueOf(value[k]));
-                            //вставляем данные в поле
-                            column.addRecord(t);
-                        } catch (NumberFormatException e) {
-                            check_error = true;
-                            Platform.runLater(() ->
-                                    main.error("Типы полей должны совпадать\nс типом данных"));
-                            main.outText("Не успешно :(\n");
-                        }
-                        break;
-                    }
-                    case Character: {
-                        column.addRecord(value[k]);
-                        break;
-                    }
-                    default: {
-                        check_error = true;
-                        Platform.runLater(() ->
-                                main.error());
-                        main.outText("Не успешно :(\n");
-                    }
-                }
-            }
-            if (check_error) break;
+            Platform.runLater(() ->
+                    main.error("Не удалось открыть таблицу"));
+            main.outText("Не успешно :(\n");
         }
 
-        if (!check_error) {
-
-            dataDbf.setAllColumns(columns);
-
-            //сохраняем изменения
-            WriterDbf writerDbf = new WriterDbf(table_name + ".dbf");
-            writerDbf.write(dataDbf);
-            writerDbf.close();
-
-            //вывод изменений
-            Platform.runLater(() -> {
-                main.clearTable();
-                main.setAllColumns(dataDbf.getColumnsforShow());
-                main.outText("Успешно");
-            });
-        }
     }
 
     void update(String request) {
-
 
 
     }
