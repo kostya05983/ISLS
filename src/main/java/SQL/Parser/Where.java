@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Where {
+class Where {
 
     //region Parameters
 
@@ -21,11 +21,10 @@ public class Where {
 
     //region InterfaceMethods
 
-    public ArrayList<Integer> getRecs(String request, DataDbf dataDbf) {
+    ArrayList<Integer> getRecs(String request, DataDbf dataDbf) {
         List<String> expression = parse(request);
         if (flag) {
-            ArrayList<Integer> result=calc(expression,dataDbf);
-            return result;
+            return calc(expression,dataDbf);
         } else {
             return null;
         }
@@ -35,7 +34,7 @@ public class Where {
 
     //region PrivateMethods
 
-    private static String repl(String token) {
+    private static String replace(String token) {
         token = token.replaceAll("(\\s|[)])AND([(]|\\s)", "&");
         token = token.replaceAll("(\\s|[)])OR([(]|\\s)", "|");
         token = token.replaceAll("(\\s|[)])XOR([(]|\\s)", "?");
@@ -70,7 +69,7 @@ public class Where {
     }
 
     private static List<String> parse(String infix) {
-        infix = repl(infix);
+        infix = replace(infix);
         List<String> postfix = new ArrayList<>();
         Deque<String> stack = new ArrayDeque<>();
         StringTokenizer tokenizer = new StringTokenizer(infix, delimiters, true);
@@ -82,33 +81,35 @@ public class Where {
                 flag = false;
                 return postfix;
             }
-            if (curr.equals(" ")) {
-            }
-            else if (isDelimiter(curr)) {
-                switch (curr) {
-                    case "(":
-                        stack.push(curr);
-                        break;
-                    case ")":
-                        while (!stack.peek().equals("(")) {
-                            postfix.add(stack.pop());
-                            if (stack.isEmpty()) {
-                                System.out.println("Скобки не согласованы.");
-                                flag = false;
-                                return postfix;
+            if (!curr.equals(" ")) {
+                if (isDelimiter(curr)) {
+                    switch (curr) {
+                        case "(":
+                            stack.push(curr);
+                            break;
+                        case ")":
+                            assert stack.peek() != null;
+                            while (!stack.peek().equals("(")) {
+                                postfix.add(stack.pop());
+                                if (stack.isEmpty()) {
+                                    System.out.println("Скобки не согласованы.");
+                                    flag = false;
+                                    return postfix;
+                                }
                             }
-                        }
-                        stack.pop();
-                        break;
-                    default:
-                        while (!stack.isEmpty() && (priority(curr) <= priority(stack.peek()))) {
-                            postfix.add(stack.pop());
-                        }
-                        stack.push(curr);
-                        break;
+                            stack.pop();
+                            break;
+                        default:
+                            assert stack.peek() != null;
+                            while (!stack.isEmpty() && (priority(curr) <= priority(stack.peek()))) {
+                                postfix.add(stack.pop());
+                            }
+                            stack.push(curr);
+                            break;
+                    }
+                } else {
+                    postfix.add(curr);
                 }
-            } else {
-                postfix.add(curr);
             }
         }
         while (!stack.isEmpty()) {
