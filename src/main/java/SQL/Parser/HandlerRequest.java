@@ -28,36 +28,41 @@ public class HandlerRequest {
         if(request.contains("*")){
             request=request.substring(request.toUpperCase().indexOf("FROM")+5);
             String tableName=request.substring(0,request.indexOf(" ")).trim();
-            request=request.substring(request.toUpperCase().indexOf("WHERE")+6).replaceAll("[;]","");
             ReaderDbf readerDbf=new ReaderDbf(tableName+".dbf");
             dataDbf=readerDbf.read();
-            Where where=new Where();
-            ArrayList<Integer> indexes=where.getRecs(request,dataDbf);
-            resultRecords=new ArrayList<>();
+            if(request.toUpperCase().contains("WHERE")) {
+                request = request.substring(request.toUpperCase().indexOf("WHERE") + 6).replaceAll("[;]", "");
+                Where where = new Where();
+                ArrayList<Integer> indexes = where.getRecs(request, dataDbf);
+                resultRecords = new ArrayList<>();
 
-            for (Integer index : indexes) {
-                resultRecords.add(dataDbf.recordsDbf.get(index));
+                for (Integer index : indexes) {
+                    resultRecords.add(dataDbf.recordsDbf.get(index));
+                }
+                dataDbf = new DataDbf(dataDbf.headerDbf, dataDbf.fieldsDbf, resultRecords);
             }
-            dataDbf=new DataDbf(dataDbf.headerDbf,dataDbf.fieldsDbf,resultRecords);
 
         }else{
             request=request.replaceAll("[,]","");
             String[] namesColumns=request.substring(0,request.toUpperCase().indexOf("FROM")).trim().split("[ ]");
             request=request.substring(request.indexOf("FROM")+5).trim();
             String tableName=request.substring(0,request.indexOf("WHERE")).trim();
-            request=request.substring(request.indexOf("WHERE")+6).replaceAll("[ ;]","");
+
 
             ReaderDbf readerDbf=new ReaderDbf(tableName+".dbf");
             dataDbf=readerDbf.read();
             dataDbf=dataDbf.selectColumns(namesColumns);
-            Where where=new Where();
-            ArrayList<Integer> indexes=where.getRecs(request,dataDbf);
-            resultRecords=new ArrayList<>();
+            if(request.toUpperCase().contains("WHERE")) {
+                request = request.substring(request.indexOf("WHERE") + 6).replaceAll("[ ;]", "");
+                Where where = new Where();
+                ArrayList<Integer> indexes = where.getRecs(request, dataDbf);
+                resultRecords = new ArrayList<>();
 
-            for (Integer index : indexes) {
-                resultRecords.add(dataDbf.recordsDbf.get(index));
+                for (Integer index : indexes) {
+                    resultRecords.add(dataDbf.recordsDbf.get(index));
+                }
+                dataDbf = new DataDbf(dataDbf.headerDbf, dataDbf.fieldsDbf, resultRecords);
             }
-            dataDbf=new DataDbf(dataDbf.headerDbf,dataDbf.fieldsDbf,resultRecords);
         }
 
         DataDbf finalDataDbf = dataDbf;
@@ -158,7 +163,7 @@ public class HandlerRequest {
 
     }
 
-    void createIndex(String request) throws Exception {
+    void createIndex(String request) throws ParserException {
         request = request.substring(request.toLowerCase().indexOf("index") + 6);
         String indexName = request.substring(0, request.indexOf(" "));
         request = request.substring(request.toLowerCase().indexOf("on") + 3);
@@ -181,7 +186,7 @@ public class HandlerRequest {
                 break;
             }
         }
-        if (!flag) throw new Exception();
+        if (!flag) throw new ParserException("Не совпало имя createIndex");
 
         WriterDbf writerDbf = new WriterDbf(tableName + ".dbf");
         writerDbf.write(dataDbf);
@@ -416,27 +421,27 @@ public class HandlerRequest {
         }
     }
 
-//    void delete(String request) {
-//        String table_name = request.substring(request.indexOf(" FROM ") + 5).trim();
-//        table_name = table_name.substring(0, table_name.indexOf(" ")).trim();
-//        Where wh = new Where();
-//        DataDbf dataDBF = new DataDbf();
-//        ReaderDbf reader = new ReaderDbf(table_name + ".dbf");
-//        dataDBF = reader.read();
-//        reader.close();
-//        Column[] columns = dataDBF.getAllColumns();
-//        ArrayList<Integer> recs = new ArrayList<>(wh.getRecs(request, dataDBF));
-//        for (Integer ind : recs
-//                ) {
-//            dataDBF.recordsDbf.remove(ind);
-//            dataDBF.headerDbf.setNumberOfRecords(dataDBF.headerDbf.getLengthOfRecord() - 1);
-//        }
-//        dataDBF.setAllColumns(columns);
-//        setDBF(dataDBF, table_name);
-//        WriterDbf writerDbf = new WriterDbf(table_name + ".dbf");
-//        writerDbf.write(dataDBF);
-//        writerDbf.close();
-//    }
+    void delete(String request) {
+        String table_name = request.substring(request.indexOf(" FROM ") + 5).trim();
+        table_name = table_name.substring(0, table_name.indexOf(" ")).trim();
+        Where wh = new Where();
+        DataDbf dataDBF;
+        ReaderDbf reader = new ReaderDbf(table_name + ".dbf");
+        dataDBF = reader.read();
+        reader.close();
+        Column[] columns = dataDBF.getAllColumns();
+        ArrayList<Integer> recs = new ArrayList<>(wh.getRecs(request, dataDBF));
+        for (int ind : recs
+                ) {
+            dataDBF.recordsDbf.remove(ind);
+            dataDBF.headerDbf.setNumberOfRecords(dataDBF.headerDbf.getLengthOfRecord() - 1);
+        }
+        dataDBF.setAllColumns(columns);
+        setDBF(dataDBF, table_name);
+        WriterDbf writerDbf = new WriterDbf(table_name + ".dbf");
+        writerDbf.write(dataDBF);
+        writerDbf.close();
+    }
 
     void alterTable(String request) {
         int type = -50;
@@ -584,10 +589,11 @@ public class HandlerRequest {
         ReaderDbf reader = new ReaderDbf(table_name + ".dbf");
         dataDBF = reader.read();
         reader.close();
-        for (RecordDbf rd : dataDBF.recordsDbf
-                ) {
-            dataDBF.recordsDbf.remove(rd);
+
+        for(int i=0; i < dataDBF.recordsDbf.size(); i++){
+            dataDBF.recordsDbf.remove(i);
         }
+
         dataDBF.headerDbf.setNumberOfRecords(0);
         setDBF(dataDBF, table_name);
     }

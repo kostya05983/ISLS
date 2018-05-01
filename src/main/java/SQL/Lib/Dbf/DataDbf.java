@@ -44,10 +44,9 @@ public class DataDbf {
 
     public Column[] getAllColumns(){
         ArrayList<Column> arrayList=new ArrayList<>();
-        String[][] table=new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
+        String[][] table=new String[fieldsDbf.size()][recordsDbf.size()];
         int start;
 
-        if(recordsDbf!=null)
         for(int i=0;i<recordsDbf.size();i++) {
             start=0;
             for (int j = 0; j < fieldsDbf.size(); j++) {
@@ -67,18 +66,17 @@ public class DataDbf {
 
     public Column[] getColumnsforShow(){
         ArrayList<Column> arrayList=new ArrayList<>();
-        String[][] table=new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
+        String[][] table=new String[fieldsDbf.size()][recordsDbf.size()];
         int start;
 
-        if(recordsDbf!=null)
-            for(int i=0;i<recordsDbf.size();i++) {
-                start=0;
-            if (recordsDbf.get(i).getHeaderByte()!=42)
-                for (int j = 0; j < fieldsDbf.size(); j++) {
-                    table[j][i] = recordsDbf.get(i).getPartOfRecord(start, transferByteToUnsigned(fieldsDbf.get(j).getSizeField()));
-                    start += transferByteToUnsigned(fieldsDbf.get(j).getSizeField());
-                }
+        for(int i=0;i<recordsDbf.size();i++) {
+            start=0;
+        if (recordsDbf.get(i).getHeaderByte()!=42)
+            for (int j = 0; j < fieldsDbf.size(); j++) {
+                table[j][i] = recordsDbf.get(i).getPartOfRecord(start, transferByteToUnsigned(fieldsDbf.get(j).getSizeField()));
+                start += transferByteToUnsigned(fieldsDbf.get(j).getSizeField());
             }
+        }
         for(int i=0;i<fieldsDbf.size();i++){
             arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(),getPartOfRecord(fieldsDbf.get(i).getNameField()),table[i],fieldsDbf.get(i).getSizeField()));
         }
