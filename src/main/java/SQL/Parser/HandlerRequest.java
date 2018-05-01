@@ -9,6 +9,7 @@ import SQL.Lib.Indexes.DataIdx;
 import javafx.application.Platform;
 
 
+import javax.swing.text.html.parser.Parser;
 import java.io.File;
 import java.util.*;
 
@@ -73,7 +74,7 @@ public class HandlerRequest {
         });
     }
 
-    void createTable(String request) {
+    void createTable(String request) throws ParserException {
         request = request.substring(request.indexOf(" ") + 1);
         request = request.substring(request.indexOf(" ") + 1);
         String tableName = request.substring(0, request.indexOf("(")).trim();
@@ -86,11 +87,13 @@ public class HandlerRequest {
         String type;
         request = request.trim();
         byte size;
+        boolean flagType;
 
         request = request.replaceAll("[)]+\\s+[;]", ");");
 
         while (!request.equals(");")) {
             size = 0;
+            flagType=false;
             fieldsNames.add(request.substring(0, request.indexOf(" ")));
             request = request.substring(request.indexOf(" ")).trim();
 
@@ -112,14 +115,19 @@ public class HandlerRequest {
             sizes.add(size);
             if (type.toLowerCase().equals("character"))
                 types.add(TypesOfFields.Character);
+                flagType=true;
             if (type.toLowerCase().equals("integer")) {
                 types.add(TypesOfFields.Integer);
-
+                flagType=true;
             }
             if (type.toLowerCase().equals("float")) {
                 types.add(TypesOfFields.Float);
-
+                flagType=true;
             }
+
+            if(!flagType)
+                throw new ParserException("Неправильный формат данных для столбцов");
+
             request = request.trim();
         }
 
