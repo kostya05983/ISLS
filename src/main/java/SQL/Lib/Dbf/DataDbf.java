@@ -44,7 +44,7 @@ public class DataDbf {
 
     public Column[] getAllColumns(){
         ArrayList<Column> arrayList=new ArrayList<>();
-        String[][] table=new String[fieldsDbf.size()][recordsDbf.size()];
+        String[][] table=new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
         int start;
 
         for(int i=0;i<recordsDbf.size();i++) {
@@ -66,19 +66,25 @@ public class DataDbf {
 
     public Column[] getColumnsforShow(){
         ArrayList<Column> arrayList=new ArrayList<>();
-        String[][] table=new String[fieldsDbf.size()][recordsDbf.size()];
-        int start;
+        if(recordsDbf!=null) {
+            String[][] table = new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
+            int start;
 
-        for(int i=0;i<recordsDbf.size();i++) {
-            start=0;
-        if (recordsDbf.get(i).getHeaderByte()!=42)
-            for (int j = 0; j < fieldsDbf.size(); j++) {
-                table[j][i] = recordsDbf.get(i).getPartOfRecord(start, transferByteToUnsigned(fieldsDbf.get(j).getSizeField()));
-                start += transferByteToUnsigned(fieldsDbf.get(j).getSizeField());
+            for (int i = 0; i < recordsDbf.size(); i++) {
+                start = 0;
+                if (recordsDbf.get(i).getHeaderByte() != 42)
+                    for (int j = 0; j < fieldsDbf.size(); j++) {
+                        table[j][i] = recordsDbf.get(i).getPartOfRecord(start, transferByteToUnsigned(fieldsDbf.get(j).getSizeField()));
+                        start += transferByteToUnsigned(fieldsDbf.get(j).getSizeField());
+                    }
             }
-        }
-        for(int i=0;i<fieldsDbf.size();i++){
-            arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(),getPartOfRecord(fieldsDbf.get(i).getNameField()),table[i],fieldsDbf.get(i).getSizeField()));
+            for (int i = 0; i < fieldsDbf.size(); i++) {
+                arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(), getPartOfRecord(fieldsDbf.get(i).getNameField()), table[i], fieldsDbf.get(i).getSizeField()));
+            }
+        }else{
+            for (FieldDbf aFieldsDbf : fieldsDbf) {
+                arrayList.add(new Column(aFieldsDbf.getTypeOfField(), getPartOfRecord(aFieldsDbf.getNameField()), aFieldsDbf.getSizeField()));
+            }
         }
 
         Column[] columns=new Column[arrayList.size()];

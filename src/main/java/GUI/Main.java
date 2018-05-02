@@ -141,14 +141,16 @@ public class Main extends Application implements Runnable {
 
         ObservableList<List<String>> data= FXCollections.observableArrayList();
         List<String> record;
-        for(int i=0;i<columns[0].data.length;i++){
-            record=new ArrayList<>();
-            for (Column column : columns) {
-                record.add(column.data[i]);
+        if(columns[0].data!=null) {
+            for (int i = 0; i < columns[0].data.length; i++) {
+                record = new ArrayList<>();
+                for (Column column : columns) {
+                    record.add(column.data[i]);
+                }
+                data.add(record);
             }
-            data.add(record);
+            tableView.setItems(data);
         }
-        tableView.setItems(data);
         customTooltip.hide();
     }
 

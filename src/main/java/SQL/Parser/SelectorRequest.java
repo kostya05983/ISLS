@@ -151,7 +151,7 @@ public class SelectorRequest implements Runnable {
 
                 //Проверяем на концовку
                 if (!command.substring(command.indexOf(")")+1).equals(");")) {
-                    if(command.indexOf(",")>0) {
+                    if(command.substring(command.indexOf(")")).indexOf(",")>0) {
                         command = checkType(command);
                         command = command.substring(command.indexOf(",") + 1).trim();
                     }else
@@ -197,8 +197,8 @@ public class SelectorRequest implements Runnable {
                 if (command.substring(command.indexOf("("), command.indexOf(")") + 1).matches(floatRegex)) {
 
                     //Проверка на допустиммый диапозон
-                    if (Short.parseShort(command.substring(command.indexOf("(") + 1, command.indexOf(".")).replaceAll("[ ]", ""))+
-                            Short.parseShort(command.substring(command.indexOf(".") + 1, command.indexOf(")")).replaceAll("[ ]", "")) < 255) {
+                    if (Short.parseShort(command.substring(command.indexOf("(") + 1, command.indexOf(",")).replaceAll("[ ]", ""))+
+                            Short.parseShort(command.substring(command.indexOf(",") + 1, command.indexOf(")")).replaceAll("[ ]", "")) < 255) {
                         command = command.substring(command.indexOf(")")+1);
                         return command;
                     }
@@ -252,6 +252,7 @@ public class SelectorRequest implements Runnable {
             checkCom();
         } catch (Exception e) {
             e.printStackTrace();
+            main.error("что-то пошло не так... Проверьте синтаксис команды");
         }
     }
 

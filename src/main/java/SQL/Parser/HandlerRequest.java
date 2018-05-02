@@ -74,7 +74,7 @@ public class HandlerRequest {
         });
     }
 
-    void createTable(String request) throws ParserException {
+    void createTable(String request) {
         request = request.substring(request.indexOf(" ") + 1);
         request = request.substring(request.indexOf(" ") + 1);
         String tableName = request.substring(0, request.indexOf("(")).trim();
@@ -87,19 +87,16 @@ public class HandlerRequest {
         String type;
         request = request.trim();
         byte size;
-        boolean flagType;
         String end="\\s*\\)\\s*;\\s*";
 
-        request=request.replaceAll("[,]"," ");
         while (!request.substring(request.indexOf(")")).matches(end)) {
             size = 0;
-            flagType=false;
             fieldsNames.add(request.substring(0, request.indexOf(" ")));
             request = request.substring(request.indexOf(" ")).trim();
 
             type = request.substring(0, request.indexOf(")")+1).trim();
             request = request.substring(request.indexOf(")")+1).trim();
-            if (type.contains(",") && type.indexOf(",") != type.length() - 1) {
+            if (type.contains(",")) {
                 String type_F = type.substring(type.indexOf("("), type.indexOf(","));
                 Platform.runLater(() ->
                         main.outText(type_F));
@@ -115,19 +112,14 @@ public class HandlerRequest {
             sizes.add(size);
             if (type.toLowerCase().equals("character"))
                 types.add(TypesOfFields.Character);
-                flagType=true;
             if (type.toLowerCase().equals("integer")) {
                 types.add(TypesOfFields.Integer);
-                flagType=true;
             }
             if (type.toLowerCase().equals("float")) {
                 types.add(TypesOfFields.Float);
-                flagType=true;
             }
 
-            if(!flagType)
-                throw new ParserException("Неправильный формат данных для столбцов");
-
+            request=request.substring(request.indexOf(",")+1);
             request = request.trim();
         }
 

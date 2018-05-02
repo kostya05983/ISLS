@@ -32,6 +32,12 @@ public class Column {
         this.size=0;
     }
 
+    public Column(TypesOfFields type,String title,int size){
+        this.type=type;
+        this.title=title;
+        this.size=size;
+    }
+
     public Column(String title){
         this.title=title;
     }
