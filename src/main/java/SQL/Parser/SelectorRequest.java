@@ -11,9 +11,9 @@ public class SelectorRequest implements Runnable {
 
     private Main main;
     private Matcher check;
-    private Pattern Create_P = Pattern.compile("\\s*CREATE\\s+TABLE\\s+(\\w+)\\s*\\((\\s*(\\w+)\\s+((((CHARACTER|INTEGER)\\s*\\(\\d+\\))|(FLOAT\\((\\d)+.(\\d)+\\)))\\s*)\\s*(,|\\s*))+\\)\\s*;\\s*");//готов
+    private Pattern Create_P = Pattern.compile("CREATE \\s*TABLE \\s*\\w* \\s*");//готов
     private Pattern Insert_P_With_Params = Pattern.compile("(INSERT \\s*INTO \\s*\\w*\\s* \\([\\w,\\d]+\\)\\s)(VALUES \\s*\\([\\w,\\d]+\\))|(INSERT \\s*INTO \\s*\\w*\\s*)(VALUES \\s*\\([\\w,\\d]+\\))");//готов
-    private Pattern Insert_P=Pattern.compile("INSERT \\s*INTO \\s*\\w*\\s*VALUES \\s*\\([\\w,\\d]+\\)");
+    private Pattern Insert_P = Pattern.compile("INSERT \\s*INTO \\s*\\w*\\s*VALUES \\s*\\([\\w,\\d]+\\)");
     private Pattern Update_P = Pattern.compile("\\s*UPDATE\\s+((\\w)+)\\s+SET\\s+((((\\w+)=[\\w\"]+)(,|\\s*))+)\\s+WHERE\\s+([\\w.<>=\\s,\"]+)\\s*;\\s*");//готов
     private Pattern Delete_P = Pattern.compile("\\s*DELETE\\s+FROM\\s+((\\w+)|\\*)\\s+WHERE\\s([\\w.<>=\\s\",]+)\\s*;\\s*");//готов
     private Pattern Select_P = Pattern.compile("\\s*SELECT\\s+(((\\w+)|\\*)\\s*(,|\\s*)\\s*)+\\s+FROM\\s+((\\w+)(\\s+WHERE\\s+([\\w.<>=\\s,\"]+)|\\s*))\\s*;\\s*");//готов
@@ -100,7 +100,7 @@ public class SelectorRequest implements Runnable {
                     continue;
                 }
 
-                throw new ParserException("Комманда не расознана");
+                throw new ParserException("Комманда не распознана");
             }
         } catch (ParserException e) {
             main.error(e.getMessage());
@@ -108,8 +108,8 @@ public class SelectorRequest implements Runnable {
     }
 
     private void validateInsertInto(String command) throws ParserException {
-        if(!(check=Insert_P.matcher(command.toUpperCase())).find())
-        checkAmount(command);
+        if (!(check = Insert_P.matcher(command.toUpperCase())).find())
+            checkAmount(command);
 
         checkEnd(command);
 
@@ -119,22 +119,101 @@ public class SelectorRequest implements Runnable {
 
     }
 
-    private void checkEnd(String command) throws ParserException{
-        if(command.length()-1!=command.indexOf(";"))
+    private void checkEnd(String command) throws ParserException {
+        if (command.length() - 1 != command.indexOf(";"))
             throw new ParserException("Комманда должна заканчиваться точкой с запятой");
     }
 
     private void checkAmount(String command) throws ParserException {
-        String[] firstPart = command.substring(command.indexOf("(")+1, command.indexOf(")")).split("[,]");
-        command = command.substring(command.indexOf(")")+1);
-        String[] secondPart = command.substring(command.indexOf("(")+1, command.indexOf(")")).split("[,]");
+        String[] firstPart = command.substring(command.indexOf("(") + 1, command.indexOf(")")).split("[,]");
+        command = command.substring(command.indexOf(")") + 1);
+        String[] secondPart = command.substring(command.indexOf("(") + 1, command.indexOf(")")).split("[,]");
         if (firstPart.length != secondPart.length)
             throw new ParserException("Колличество имен в названйи столбцов и в введенных значениях не совпадает");
     }
 
+    //region CreateTable
     private void validateCreateTable(String command) throws ParserException {
+        checkEnd(command);
+        checkColumns(command);
         handlerRequest.createTable(command);
     }
+
+    private void checkColumns(String command) throws ParserException {
+        command = command.substring(command.indexOf("(") + 1).toUpperCase().trim();
+        var end="\\s*\\)\\s*;\\s*";
+        command=command.replaceAll(end,");");
+
+        while (true) {
+            //Проверка на допустимый диапозон
+            if (command.substring(0, command.indexOf(" ")).length() <= 10) {
+                command = command.substring(command.indexOf(" "));
+
+                //Проверяем на концовку
+                if (!command.substring(command.indexOf(")")+1).equals(");")) {
+                    if(command.indexOf(",")>0) {
+                        command = checkType(command);
+                        command = command.substring(command.indexOf(",") + 1).trim();
+                    }else
+                        throw new ParserException("Не хватает запятых");
+                } else {
+                    checkType(command);
+                    break;
+                }
+            } else
+                throw new ParserException("Название столбца не должно превышать 10 символов");
+        }
+    }
+
+    private String checkType(String command) throws ParserException {
+        var integerCharacterRegex = "\\(\\s*\\d*\\s*\\)";
+        var floatRegex = "\\(\\s*\\d*\\s*.\\s*\\d*\\s*\\)";
+
+        //проверка на соответствии типу
+        if (command.substring(0, command.indexOf("(")).trim().matches("INTEGER|CHARACTER|FLOAT")) {
+
+            if (command.substring(0, command.indexOf("(")).trim().matches("INTEGER|CHARACTER")) {
+                command = command.substring(command.indexOf("(")).trim();
+
+                //Проверка на формат скобок
+                if (command.substring(command.indexOf("("), command.indexOf(")") + 1).matches(integerCharacterRegex)) {
+
+                    //Проверка на допустимый диапозон
+                    if (Short.parseShort(command.substring(command.indexOf("(") + 1, command.indexOf(")")).replaceAll("[ ]", "")) < 255){
+                        command = command.substring(command.indexOf(")") + 1).trim();
+                        return command;
+                    }
+
+                    else
+                        throw new ParserException("Значение в скобках превышает допустимый диапозон 255");
+                } else
+                    throw new ParserException("Значения в скобках не соответствуют типу");
+            }
+
+            if (command.substring(0, command.indexOf("(")).trim().matches("FLOAT")) {
+                command = command.substring(command.indexOf("(")).trim();
+
+                //Проверка на формат скобок
+                if (command.substring(command.indexOf("("), command.indexOf(")") + 1).matches(floatRegex)) {
+
+                    //Проверка на допустиммый диапозон
+                    if (Short.parseShort(command.substring(command.indexOf("(") + 1, command.indexOf(".")).replaceAll("[ ]", ""))+
+                            Short.parseShort(command.substring(command.indexOf(".") + 1, command.indexOf(")")).replaceAll("[ ]", "")) < 255) {
+                        command = command.substring(command.indexOf(")")+1);
+                        return command;
+                    }
+                    else
+                        throw new ParserException("Значения в скобках превышают допустимый диапозон");
+                } else {
+                    throw new ParserException("Значения в скобках не соответствуют типу");
+                }
+            }
+        } else
+            throw new ParserException("Не соответствуют типы, или не все запятые на своем месте");
+
+        return command;
+    }
+    //endregion
 
     private void validateUpdate(String command) {
         handlerRequest.update(command);
