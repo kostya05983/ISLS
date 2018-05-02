@@ -372,7 +372,7 @@ public class HandlerRequest {
                             switch (columns[k].type) {
                                 case Integer: {
                                     try {
-                                        columns[k].data[f] = String.valueOf(Integer.valueOf(pair));
+                                        columns[k].data[f] = String.valueOf(Integer.valueOf(pair.trim()));
                                     } catch (NumberFormatException e) {
                                         main.outText("Не удалось провести одно из изменений\n");
                                     }
@@ -380,7 +380,7 @@ public class HandlerRequest {
                                 }
                                 case Float: {
                                     try {
-                                        columns[k].data[f] = String.valueOf(Float.valueOf(pair));
+                                        columns[k].data[f] = String.valueOf(Float.valueOf(pair.trim()));
                                     } catch (NumberFormatException e) {
                                         main.outText("Не удалось провести одно из изменений\n");
                                     }
