@@ -229,7 +229,7 @@ public class DataDbf {
         int sum=0;
 
         for (FieldDbf aFieldsDbf : fieldsDbf) {
-            sum += aFieldsDbf.getSizeField();
+            sum += transferByteToUnsigned(aFieldsDbf.getSizeField());
         }
 
         return sum;

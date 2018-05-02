@@ -35,7 +35,7 @@ public class ReaderDbf extends DataHandler{
                 randomAccessFile.read(buf);
                 fieldDbf=new FieldDbf(buf);
                 fieldsDbf.add(fieldDbf);
-                sizeOfRecord+=buf[16];
+                sizeOfRecord+=transferByteToUnsigned(buf[16]);
                 position+=32;
             }
 
@@ -74,5 +74,12 @@ public class ReaderDbf extends DataHandler{
         }
 
         return new DataIdx(headerIdx,bTreeIdx);
+    }
+
+    private short transferByteToUnsigned(byte b){
+        if(b<=0){
+            return (short)(127+(128+b));
+        }
+        return b;
     }
 }

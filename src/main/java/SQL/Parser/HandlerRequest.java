@@ -313,8 +313,7 @@ public class HandlerRequest {
                 });
             }
         }
-        catch (NumberFormatException e)
-        {
+        catch (NumberFormatException e) {
             Platform.runLater(() ->
                     main.error("Не удалось открыть таблицу"));
             main.outText("Не успешно :(\n");
@@ -444,6 +443,12 @@ public class HandlerRequest {
         WriterDbf writerDbf = new WriterDbf(table_name + ".dbf");
         writerDbf.write(dataDBF);
         writerDbf.close();
+
+        Platform.runLater(() -> {
+            main.clearTable();
+            main.setAllColumns(dataDBF.getColumnsforShow());
+            main.outText("Успешно");
+        });
     }
 
     void alterTable(String request) throws IOException{
