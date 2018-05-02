@@ -11,6 +11,7 @@ import javafx.application.Platform;
 
 import javax.swing.text.html.parser.Parser;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class HandlerRequest {
@@ -21,7 +22,7 @@ public class HandlerRequest {
         this.main = main;
     }
 
-    void select(String request) {
+    void select(String request) throws IOException {
         request=request.substring(request.toUpperCase().indexOf("SELECT")+7);
         DataDbf dataDbf;
         ArrayList<RecordDbf> resultRecords;
@@ -74,7 +75,7 @@ public class HandlerRequest {
         });
     }
 
-    void createTable(String request) {
+    void createTable(String request) throws IOException {
         request = request.substring(request.indexOf(" ") + 1);
         request = request.substring(request.indexOf(" ") + 1);
         String tableName = request.substring(0, request.indexOf("(")).trim();
@@ -163,7 +164,7 @@ public class HandlerRequest {
 
     }
 
-    void createIndex(String request) throws ParserException {
+    void createIndex(String request) throws ParserException, IOException{
         request = request.substring(request.toLowerCase().indexOf("index") + 6);
         String indexName = request.substring(0, request.indexOf(" "));
         request = request.substring(request.toLowerCase().indexOf("on") + 3);
@@ -198,7 +199,7 @@ public class HandlerRequest {
         writerDbf.close();
     }
 
-    void insertInto(String request) {
+    void insertInto(String request) throws IOException {
 
         //берём данные команлды
         request=request.substring(request.toUpperCase().indexOf("INSERT INTO")+11);
@@ -296,6 +297,8 @@ public class HandlerRequest {
             if (!check_error) {
 
                 dataDbf.setAllColumns(columns);
+                //обновляем колличество записей
+                dataDbf.headerDbf.setNumberOfRecords(columns[0].data.length);
 
                 //сохраняем изменения
                 WriterDbf writerDbf = new WriterDbf(table_name + ".dbf");
@@ -319,7 +322,7 @@ public class HandlerRequest {
 
     }
 
-    void update(String request) {
+    void update(String request) throws IOException {
 
         //берём данные команлды
         request=request.substring(request.toUpperCase().indexOf("UPDATE")+6);
@@ -421,7 +424,7 @@ public class HandlerRequest {
         }
     }
 
-    void delete(String request) {
+    void delete(String request) throws IOException {
         String table_name = request.substring(request.indexOf(" FROM ") + 5).trim();
         table_name = table_name.substring(0, table_name.indexOf(" ")).trim();
         Where wh = new Where();
@@ -443,7 +446,7 @@ public class HandlerRequest {
         writerDbf.close();
     }
 
-    void alterTable(String request) {
+    void alterTable(String request) throws IOException{
         int type = -50;
         int size_data = 0;
         TypesOfFields Type_Column = TypesOfFields.Integer;
@@ -582,7 +585,7 @@ public class HandlerRequest {
         });
     }
 
-    void truncate(String request) {
+    void truncate(String request) throws IOException{
         String table_name;
         table_name = request.substring(request.indexOf(" TABLE ") + 6, request.indexOf(";")).trim();
         DataDbf dataDBF;
@@ -596,6 +599,12 @@ public class HandlerRequest {
 
         dataDBF.headerDbf.setNumberOfRecords(0);
         setDBF(dataDBF, table_name);
+
+        Platform.runLater(() -> {
+            main.clearTable();
+            main.setAllColumns(dataDBF.getColumnsforShow());
+            main.outText("Успешно");
+        });
     }
 
     void dropTable(String request) {
@@ -612,7 +621,7 @@ public class HandlerRequest {
         });
     }
 
-    void dropIndex(String request) {
+    void dropIndex(String request) throws IOException{
         request = request.substring(request.toLowerCase().indexOf("index") + 6);
         String indexName = request.substring(0, request.indexOf(" "));
         request = request.substring(request.toLowerCase().indexOf("on") + 3).trim();
@@ -631,7 +640,7 @@ public class HandlerRequest {
         file.delete();
     }
 
-    private static void setDBF(DataDbf dataDBF, String table_name) {
+    private static void setDBF(DataDbf dataDBF, String table_name) throws IOException{
         Date date = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(date);

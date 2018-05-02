@@ -4,6 +4,7 @@ import GUI.Main;
 
 
 import javax.swing.text.html.parser.Parser;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,16 +12,16 @@ public class SelectorRequest implements Runnable {
 
     private Main main;
     private Matcher check;
-    private Pattern Create_P = Pattern.compile("CREATE \\s*TABLE \\s*\\w* \\s*");//готов
-    private Pattern Insert_P_With_Params = Pattern.compile("(INSERT \\s*INTO \\s*\\w*\\s* \\([\\w,\\d]+\\)\\s)(VALUES \\s*\\([\\w,\\d]+\\))|(INSERT \\s*INTO \\s*\\w*\\s*)(VALUES \\s*\\([\\w,\\d]+\\))");//готов
-    private Pattern Insert_P = Pattern.compile("INSERT \\s*INTO \\s*\\w*\\s*VALUES \\s*\\([\\w,\\d]+\\)");
-    private Pattern Update_P = Pattern.compile("\\s*UPDATE\\s+((\\w)+)\\s+SET\\s+((((\\w+)=[\\w\"]+)(,|\\s*))+)\\s+WHERE\\s+([\\w.<>=\\s,\"]+)\\s*;\\s*");//готов
+    private Pattern Create_P = Pattern.compile("CREATE \\s*TABLE \\s*\\w* \\s*");//++
+    private Pattern Insert_P = Pattern.compile("(INSERT \\s*INTO \\s*\\w*\\s* \\([\\w,\\d]+\\)\\s)" +
+            "(VALUES \\s*\\([\\w,\\d]+\\))");//
+    private Pattern Update_P = Pattern.compile("\\s*UPDATE\\s+((\\w)+)\\s+SET\\s+((((\\w+)=[\\w\"]+)(,|\\s*))+)\\s+WHERE\\s+([\\w.<>=\\s,\"]+)\\s*;\\s*");//
     private Pattern Delete_P = Pattern.compile("\\s*DELETE\\s+FROM\\s+((\\w+)|\\*)\\s+WHERE\\s([\\w.<>=\\s\",]+)\\s*;\\s*");//готов
-    private Pattern Select_P = Pattern.compile("\\s*SELECT\\s+(((\\w+)|\\*)\\s*(,|\\s*)\\s*)+\\s+FROM\\s+((\\w+)(\\s+WHERE\\s+([\\w.<>=\\s,\"]+)|\\s*))\\s*;\\s*");//готов
-    private Pattern Drop_P = Pattern.compile("\\s*DROP\\s+TABLE\\s+(\\w+)\\s*;\\s*");//готов
-    private Pattern Truncate_P = Pattern.compile("\\s*TRUNCATE\\s+TABLE\\s+(\\w+)\\s*;\\s*");//готов
-    private Pattern CreateIn_P = Pattern.compile("\\s*CREATE\\s+INDEX\\s+(\\w+)\\s+ON\\s+(\\w+)\\s*\\((((\\w+)(,|\\s*))+)\\)\\s*;\\s*");
-    private Pattern DropIn_P = Pattern.compile("\\s*DROP\\s+INDEX\\s+((\\w+).(\\w+))\\s*;\\s*");
+    private Pattern Select_P = Pattern.compile("\\s*SELECT\\s+(((\\w+)|\\*)\\s*(,|\\s*)\\s*)+\\s+FROM\\s+((\\w+)(\\s+WHERE\\s+([\\w.<>=\\s,\"]+)|\\s*))\\s*;\\s*");//
+    private Pattern Drop_P = Pattern.compile("\\s*DROP\\s+TABLE\\s+(\\w+)\\s*;\\s*");//++
+    private Pattern Truncate_P = Pattern.compile("\\s*TRUNCATE\\s+TABLE\\s+(\\w+)\\s*;\\s*");//++
+    private Pattern CreateIn_P = Pattern.compile("\\s*CREATE \\s*INDEX \\s*\\w* \\s*ON \\s*\\w*\\s*;\\s*");//++
+    private Pattern DropIn_P = Pattern.compile("\\s*DROP\\s+INDEX\\s+((\\w+).(\\w+))\\s*;\\s*");//++
     private Pattern Alter_P = Pattern.compile("\\s*ALTER\\s+TABLE\\s+(\\w+)\\s+((((ADD|MODIFY\\s+COLUMN)\\s+(\\w+))\\s+(((CHARACTER|INTEGER)\\s*\\(\\d+\\))|(FLOAT\\((\\d)+.(\\d)+\\))))|((DROP\\s+COLUMN)\\s+(\\w+)))\\s*;\\s*");
     private String myStringFirst;
     private HandlerRequest handlerRequest;
@@ -46,7 +47,7 @@ public class SelectorRequest implements Runnable {
                     continue;
                 }
 
-                check = Insert_P_With_Params.matcher(strings_command_upper[i]);
+                check = Insert_P.matcher(strings_command_upper[i]);
                 if (check.find()) {
                     validateInsertInto(strings_command[i]);
                     continue;
@@ -104,12 +105,15 @@ public class SelectorRequest implements Runnable {
             }
         } catch (ParserException e) {
             main.error(e.getMessage());
+        }catch (IOException e){
+            main.error("Что-то не так с файлом,проверьте имя таблицы");
         }
     }
 
-    private void validateInsertInto(String command) throws ParserException {
-        if (!(check = Insert_P.matcher(command.toUpperCase())).find())
-            checkAmount(command);
+    //region InsertInto
+
+    private void validateInsertInto(String command) throws ParserException,IOException {
+        checkAmount(command);
 
         checkEnd(command);
 
@@ -132,8 +136,10 @@ public class SelectorRequest implements Runnable {
             throw new ParserException("Колличество имен в названйи столбцов и в введенных значениях не совпадает");
     }
 
+    //endregion
+
     //region CreateTable
-    private void validateCreateTable(String command) throws ParserException {
+    private void validateCreateTable(String command) throws ParserException,IOException {
         checkEnd(command);
         checkColumns(command);
         handlerRequest.createTable(command);
@@ -215,15 +221,15 @@ public class SelectorRequest implements Runnable {
     }
     //endregion
 
-    private void validateUpdate(String command) {
+    private void validateUpdate(String command) throws IOException {
         handlerRequest.update(command);
     }
 
-    private void validateSelect(String command) {
+    private void validateSelect(String command) throws IOException {
         handlerRequest.select(command);
     }
 
-    private void validateDelete(String command) {
+    private void validateDelete(String command) throws IOException{
         handlerRequest.delete(command);
     }
 
@@ -231,19 +237,19 @@ public class SelectorRequest implements Runnable {
         handlerRequest.dropTable(command);
     }
 
-    private void validateCreateIndex(String command) throws ParserException {
+    private void validateCreateIndex(String command) throws ParserException,IOException {
         handlerRequest.createIndex(command);
     }
 
-    private void validateDropIndex(String command) {
+    private void validateDropIndex(String command) throws IOException{
         handlerRequest.dropIndex(command);
     }
 
-    private void validateAlterTable(String command) {
+    private void validateAlterTable(String command) throws IOException {
         handlerRequest.alterTable(command);
     }
 
-    private void validateTruncate(String command) {
+    private void validateTruncate(String command) throws IOException{
         handlerRequest.truncate(command);
     }
 

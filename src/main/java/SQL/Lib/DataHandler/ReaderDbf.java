@@ -7,28 +7,21 @@ import SQL.Lib.Dbf.RecordDbf;
 import SQL.Lib.Indexes.BTreeIdx;
 import SQL.Lib.Indexes.DataIdx;
 import SQL.Lib.Indexes.HeaderIdx;
-import javafx.scene.control.Alert;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
 public class ReaderDbf extends DataHandler{
 
-    public ReaderDbf(String nameOfFile){
-        try{
+    public ReaderDbf(String nameOfFile) throws IOException{
             randomAccessFile=new RandomAccessFile(nameOfFile,"r");
-        }catch(FileNotFoundException e){
-            out_stack_error(e.getLocalizedMessage(), e.getMessage());
-        }
     }
 
-    public DataDbf read(){
+    public DataDbf read() throws IOException{
         byte[] buf=new byte[32];
         long position=32;
 
-        try {
             randomAccessFile.read(buf);
 
             HeaderDbf headerDbf = new HeaderDbf(buf);
@@ -62,11 +55,6 @@ public class ReaderDbf extends DataHandler{
             }
 
             return new DataDbf(headerDbf,fieldsDbf,recordsDbf);
-
-        }catch (IOException e){
-            out_stack_error(e.getLocalizedMessage(), e.getMessage());
-            return null;
-        }
     }
 
     public DataIdx readIdx(){
