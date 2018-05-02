@@ -30,11 +30,11 @@ public class HandlerRequest {
         if(request.contains("*")){
             request=request.substring(request.toUpperCase().indexOf("FROM")+5);
             String tableName=request.substring(0,request.indexOf(" ")).trim();
-            ReaderDbf readerDbf=new ReaderDbf(tableName+".dbf");
+            var readerDbf=new ReaderDbf(tableName+".dbf");
             dataDbf=readerDbf.read();
             if(request.toUpperCase().contains("WHERE")) {
                 request = request.substring(request.toUpperCase().indexOf("WHERE") + 6).replaceAll("[;]", "");
-                Where where = new Where();
+                var where = new Where();
                 ArrayList<Integer> indexes = where.getRecs(request, dataDbf);
                 resultRecords = new ArrayList<>();
 
@@ -51,12 +51,12 @@ public class HandlerRequest {
             String tableName=request.substring(0,request.indexOf("WHERE")).trim();
 
 
-            ReaderDbf readerDbf=new ReaderDbf(tableName+".dbf");
+            var readerDbf=new ReaderDbf(tableName+".dbf");
             dataDbf=readerDbf.read();
             dataDbf=dataDbf.selectColumns(namesColumns);
             if(request.toUpperCase().contains("WHERE")) {
                 request = request.substring(request.indexOf("WHERE") + 6).replaceAll("[ ;]", "");
-                Where where = new Where();
+                var where = new Where();
                 ArrayList<Integer> indexes = where.getRecs(request, dataDbf);
                 resultRecords = new ArrayList<>();
 
@@ -202,7 +202,7 @@ public class HandlerRequest {
     void insertInto(String request) throws IOException {
 
         //берём данные команлды
-        request=request.substring(request.toUpperCase().indexOf("INSERT INTO")+11);
+        request = request.substring(request.toUpperCase().indexOf("INSERT INTO")+11);
 
         //берём имя таблицы
         String table_name = request.substring(0,request.toUpperCase().indexOf("(")).trim();
@@ -210,7 +210,7 @@ public class HandlerRequest {
         //названия полей
         String[] name_pole = request.substring(request.toUpperCase().indexOf("(")+1,request.toUpperCase().indexOf(")")).trim().split("[,]");
 
-        request=request.substring(request.toUpperCase().indexOf("VALUE")+5).trim();
+        request = request.substring(request.toUpperCase().indexOf("VALUE")+5).trim();
 
         //значения после value
         String[] value = request.substring(request.toUpperCase().indexOf("(")+1,request.toUpperCase().indexOf(")")).trim().split("[,]");
@@ -219,8 +219,8 @@ public class HandlerRequest {
 
         try {
             //открываем выбранную таблицу
-            ReaderDbf readerDbf=new ReaderDbf(table_name+".dbf");
-            dataDbf=readerDbf.read();
+            var readerDbf = new ReaderDbf(table_name+".dbf");
+            dataDbf = readerDbf.read();
             //dataDbf=dataDbf.selectColumns(name_pole);
             readerDbf.close();
             //Настройка даты
@@ -255,7 +255,7 @@ public class HandlerRequest {
                     switch (column.type) {
                         case Integer: {
                             try {
-                                String t = String.valueOf(Integer.valueOf(value[k].trim()));
+                                var t = String.valueOf(Integer.valueOf(value[k].trim()));
                                 //вставляем данные в поле
                                 column.addRecord(t);
                             } catch (NumberFormatException e) {
@@ -268,7 +268,7 @@ public class HandlerRequest {
                         }
                         case Float: {
                             try {
-                                String t = String.valueOf(Float.valueOf(value[k].trim()));
+                                var t = String.valueOf(Float.valueOf(value[k].trim()));
                                 //вставляем данные в поле
                                 column.addRecord(t);
                             } catch (NumberFormatException e) {
@@ -332,7 +332,7 @@ public class HandlerRequest {
         //пары
         String[] pairs = request.substring(request.toUpperCase().indexOf("SET")+3,request.toUpperCase().indexOf("WHERE")).trim().split("[,]");
 
-        String[] name_pole = new String[pairs.length];
+        var name_pole = new String[pairs.length];
         for (int i = 0; i<pairs.length; i++)
         {
             name_pole[i] = pairs[i].substring(0,request.toUpperCase().indexOf("=")).trim();
@@ -346,7 +346,7 @@ public class HandlerRequest {
 
         try {
             //открываем выбранную таблицу
-            ReaderDbf readerDbf = new ReaderDbf(table_name + ".dbf");
+            var readerDbf = new ReaderDbf(table_name + ".dbf");
             dataDbf = readerDbf.read();
             dataDbf = dataDbf.selectColumns(name_pole);
             readerDbf.close();
@@ -361,7 +361,7 @@ public class HandlerRequest {
             //проход по списку пар
             for (String pair : pairs) {
                 //ищем совпадающее поле по имени в списке колонок
-                for (int k = 0; k < pairs.length; k++) {
+                for (var k = 0; k < pairs.length; k++) {
                     if (columns[k].title.trim().equals(name_pole[k].trim())) {
 
                         toDbf.setAllColumns(new Column[]{columns[k]});
