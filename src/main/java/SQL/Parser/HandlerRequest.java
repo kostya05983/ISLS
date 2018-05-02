@@ -210,7 +210,7 @@ public class HandlerRequest {
         //названия полей
         String[] name_pole = request.substring(request.toUpperCase().indexOf("(")+1,request.toUpperCase().indexOf(")")).trim().split("[,]");
 
-        request=request.substring(request.toUpperCase().indexOf("VALUE")+5);
+        request=request.substring(request.toUpperCase().indexOf("VALUE")+5).trim();
 
         //значения после value
         String[] value = request.substring(request.toUpperCase().indexOf("(")+1,request.toUpperCase().indexOf(")")).trim().split("[,]");
@@ -255,7 +255,7 @@ public class HandlerRequest {
                     switch (column.type) {
                         case Integer: {
                             try {
-                                String t = String.valueOf(Integer.valueOf(value[k]));
+                                String t = String.valueOf(Integer.valueOf(value[k].trim()));
                                 //вставляем данные в поле
                                 column.addRecord(t);
                             } catch (NumberFormatException e) {
@@ -268,7 +268,7 @@ public class HandlerRequest {
                         }
                         case Float: {
                             try {
-                                String t = String.valueOf(Float.valueOf(value[k]));
+                                String t = String.valueOf(Float.valueOf(value[k].trim()));
                                 //вставляем данные в поле
                                 column.addRecord(t);
                             } catch (NumberFormatException e) {
@@ -280,7 +280,7 @@ public class HandlerRequest {
                             break;
                         }
                         case Character: {
-                            column.addRecord(value[k]);
+                            column.addRecord(value[k].trim());
                             break;
                         }
                         default: {
