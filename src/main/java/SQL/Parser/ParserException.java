@@ -5,6 +5,7 @@ class ParserException extends Exception{
 
     ParserException(String message){
         super(message);
+        this.message=message;
     }
 
     @Override

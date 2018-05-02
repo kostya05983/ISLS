@@ -1,6 +1,7 @@
 package SQL.Parser;
 
 import GUI.Main;
+import javafx.application.Platform;
 
 
 import javax.swing.text.html.parser.Parser;
@@ -13,8 +14,7 @@ public class SelectorRequest implements Runnable {
     private Main main;
     private Matcher check;
     private Pattern Create_P = Pattern.compile("CREATE \\s*TABLE \\s*\\w* \\s*");//++
-    private Pattern Insert_P = Pattern.compile("(INSERT \\s*INTO \\s*\\w*\\s* \\([\\w,\\d]+\\)\\s)" +
-            "(VALUES \\s*\\([\\w,\\d]+\\))");//
+    private Pattern Insert_P = Pattern.compile("(\\s*INSERT \\s*INTO\\s*)|VALUES");//
     private Pattern Update_P = Pattern.compile("\\s*UPDATE\\s+((\\w)+)\\s+SET\\s+((((\\w+)=[\\w\"]+)(,|\\s*))+)\\s+WHERE\\s+([\\w.<>=\\s,\"]+)\\s*;\\s*");//
     private Pattern Delete_P = Pattern.compile("\\s*DELETE\\s+FROM\\s+((\\w+)|\\*)\\s+WHERE\\s([\\w.<>=\\s\",]+)\\s*;\\s*");//готов
     private Pattern Select_P = Pattern.compile("\\s*SELECT\\s+(((\\w+)|\\*)\\s*(,|\\s*)\\s*)+\\s+FROM\\s+((\\w+)(\\s+WHERE\\s+([\\w.<>=\\s,\"]+)|\\s*))\\s*;\\s*");//
@@ -104,9 +104,11 @@ public class SelectorRequest implements Runnable {
                 throw new ParserException("Комманда не распознана");
             }
         } catch (ParserException e) {
-            main.error(e.getMessage());
+            Platform.runLater(() ->
+            main.error(e.getMessage()));
         }catch (IOException e){
-            main.error("Что-то не так с файлом,проверьте имя таблицы");
+            Platform.runLater(() ->
+            main.error("Что-то не так с файлом,проверьте имя таблицы"));
         }
     }
 
