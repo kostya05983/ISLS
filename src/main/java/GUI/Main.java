@@ -32,6 +32,7 @@ public class Main extends Application implements Runnable {
     private TextArea textIn = new TextArea();
     private Button button = new Button("ТЫК");
     private TextArea textOut = new TextArea("Здесь вывод действи библиотеки будет");
+    private boolean text_start = false;
 
     private Duration animationDuration = new Duration(1500);
     private Duration animationDuration_undo = new Duration(500);
@@ -176,6 +177,10 @@ public class Main extends Application implements Runnable {
         //showTooltip(anchor3, tableView, "Мы работаем над этим...", null);
         /////////////////
         String text = textIn.getText();
+        if (!text_start) { //если изначльный текст не был очищен
+            textOut.clear();
+            text_start = true;
+        }
         SelectorRequest selectorRequest=new SelectorRequest(text,this);
         Thread thread=new Thread(selectorRequest);
         thread.start();
@@ -184,7 +189,7 @@ public class Main extends Application implements Runnable {
     //функция вывода результатов работы библиотеки
     public void outText(String text)
     {
-        textOut.setText(text);
+        textOut.setText(text+"\n"+textOut.getText());
     }
 
     //из вне вызывать эту функцию без параметра (для неопознанных ошибок)

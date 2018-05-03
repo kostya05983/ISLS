@@ -71,7 +71,7 @@ public class HandlerRequest {
         Platform.runLater(() -> {
             main.clearTable();
             main.setAllColumns(finalDataDbf.getColumnsforShow());
-            main.outText("Успешно");
+            main.outText("SELECT выполнилось успешно");
         });
     }
 
@@ -159,7 +159,7 @@ public class HandlerRequest {
         Platform.runLater(() -> {
             main.clearTable();
             main.setAllColumns(dataDbf.getColumnsforShow());
-            main.outText("Успешно");
+            main.outText("CREATE TABLE выполнилось успешно");
         });
 
     }
@@ -262,7 +262,7 @@ public class HandlerRequest {
                                 check_error = true;
                                 Platform.runLater(() ->
                                         main.error("Типы полей должны совпадать\nс типом данных"));
-                                main.outText("Не успешно :(\n");
+                                main.outText("INSERT INTO Не успешно :(\n");
                             }
                             break;
                         }
@@ -275,7 +275,7 @@ public class HandlerRequest {
                                 check_error = true;
                                 Platform.runLater(() ->
                                         main.error("Типы полей должны совпадать\nс типом данных"));
-                                main.outText("Не успешно :(\n");
+                                main.outText("INSERT INTO Не успешно :(\n");
                             }
                             break;
                         }
@@ -287,7 +287,7 @@ public class HandlerRequest {
                             check_error = true;
                             Platform.runLater(() ->
                                     main.error());
-                            main.outText("Не успешно :(\n");
+                            main.outText("INSERT INTO Не успешно :(\n");
                         }
                     }
                 }
@@ -309,14 +309,14 @@ public class HandlerRequest {
                 Platform.runLater(() -> {
                     main.clearTable();
                     main.setAllColumns(dataDbf.getColumnsforShow());
-                    main.outText("Успешно");
+                    main.outText("INSERT INTO выполнилось успешно");
                 });
             }
         }
         catch (NumberFormatException e) {
             Platform.runLater(() ->
                     main.error("Не удалось открыть таблицу"));
-            main.outText("Не успешно :(\n");
+            main.outText("INSERT INTO Не успешно :(\n");
         }
 
     }
@@ -347,7 +347,7 @@ public class HandlerRequest {
             //открываем выбранную таблицу
             var readerDbf = new ReaderDbf(table_name + ".dbf");
             dataDbf = readerDbf.read();
-            dataDbf = dataDbf.selectColumns(name_pole);
+            //dataDbf = dataDbf.selectColumns(name_pole);
             readerDbf.close();
             //Настройка даты
             dataDbf.headerDbf.setData();
@@ -363,9 +363,12 @@ public class HandlerRequest {
                 for (Column column : columns) {
                     if (column.title.trim().equals(name_pole[i].trim())) {
                         //если поле совпало, то берём эту колонку и отправляем  в where
-                        //для получени яндексов значений, которые меняем
+                        //для получени индексов значений, которые меняем
                         toDbf.setAllColumns(new Column[]{column});
                         ArrayList<Integer> result = where.getRecs(logik, toDbf);
+
+                        //тест
+                        //main.outText(String.valueOf(result));
 
                         //проход внутри колонки по индексам из where и меняем каждое
                         for (Integer f : result) {
@@ -395,6 +398,8 @@ public class HandlerRequest {
                                 }
                             }
                         }
+                        //тест
+                        //main.outText(column.title+"  "+column.data[0]+"  "+column.data[1]+"  "+column.data[2]+"  "+column.data[3]);
                         break;
                     }
                 }
@@ -412,14 +417,14 @@ public class HandlerRequest {
             Platform.runLater(() -> {
                 main.clearTable();
                 main.setAllColumns(finalDBF.getColumnsforShow());
-                main.outText("Успешно");
+                main.outText("UPDATE выполнилось успешно");
             });
         }
         catch (NumberFormatException e)
         {
             Platform.runLater(() ->
                     main.error("Не удалось открыть таблицу"));
-            main.outText("Не успешно :(\n");
+            main.outText("UPDATE Не успешно :(\n");
         }
     }
 
@@ -447,7 +452,7 @@ public class HandlerRequest {
         Platform.runLater(() -> {
             main.clearTable();
             main.setAllColumns(dataDBF.getColumnsforShow());
-            main.outText("Успешно");
+            main.outText("DELETE выполнилось успешно");
         });
     }
 
@@ -584,7 +589,7 @@ public class HandlerRequest {
         Platform.runLater(() -> {
             main.clearTable();
             main.setAllColumns(dataDbf.getColumnsforShow());
-            main.outText("Успешно");
+            main.outText("ALTER TABLE выполнилось успешно");
         });
     }
 
@@ -606,7 +611,7 @@ public class HandlerRequest {
         Platform.runLater(() -> {
             main.clearTable();
             main.setAllColumns(dataDBF.getColumnsforShow());
-            main.outText("Успешно");
+            main.outText("TRUNCATE выполнилось успешно");
         });
     }
 
@@ -620,7 +625,7 @@ public class HandlerRequest {
 
         Platform.runLater(() -> {
             main.clearTable();
-            main.outText("Успешно");
+            main.outText("DROP TABLE выполнилось успешно");
         });
     }
 
