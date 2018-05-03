@@ -354,42 +354,43 @@ public class HandlerRequest {
 
             Column[] columns = dataDbf.getAllColumns();
 
-            Where where = new Where();
-            DataDbf toDbf = new DataDbf();
+            var where = new Where();
+            var toDbf = new DataDbf();
 
             //проход по списку пар
-            for (String pair : pairs) {
+            for (var i = 0; i < pairs.length; i++) {
                 //ищем совпадающее поле по имени в списке колонок
-                for (var k = 0; k < pairs.length; k++) {
-                    if (columns[k].title.trim().equals(name_pole[k].trim())) {
-
-                        toDbf.setAllColumns(new Column[]{columns[k]});
+                for (Column column : columns) {
+                    if (column.title.trim().equals(name_pole[i].trim())) {
+                        //если поле совпало, то берём эту колонку и отправляем  в where
+                        //для получени яндексов значений, которые меняем
+                        toDbf.setAllColumns(new Column[]{column});
                         ArrayList<Integer> result = where.getRecs(logik, toDbf);
 
-                        //проход внутри колонки
+                        //проход внутри колонки по индексам из where и меняем каждое
                         for (Integer f : result) {
-                            switch (columns[k].type) {
+                            switch (column.type) {
                                 case Integer: {
                                     try {
-                                        columns[k].data[f] = String.valueOf(Integer.valueOf(pair.trim()));
+                                        column.data[f] = String.valueOf(Integer.valueOf(pairs[i].trim()));
                                     } catch (NumberFormatException e) {
-                                        Platform.runLater(()->main.outText("Не удалось провести одно из изменений\n"));
+                                        Platform.runLater(() -> main.outText("Не удалось провести одно из изменений\n"));
                                     }
                                     break;
                                 }
                                 case Float: {
                                     try {
-                                        columns[k].data[f] = String.valueOf(Float.valueOf(pair.trim()));
+                                        column.data[f] = String.valueOf(Float.valueOf(pairs[i].trim()));
                                     } catch (NumberFormatException e) {
-                                        Platform.runLater(()->main.outText("Не удалось провести одно из изменений\n"));
+                                        Platform.runLater(() -> main.outText("Не удалось провести одно из изменений\n"));
                                     }
                                     break;
                                 }
                                 case Character: {
-                                    columns[k].data[f] = pair;
+                                    column.data[f] = pairs[i];
                                 }
                                 default: {
-                                    Platform.runLater(()->main.outText("Не удалось провести одно из изменений\n"));
+                                    Platform.runLater(() -> main.outText("Не удалось провести одно из изменений\n"));
                                     break;
                                 }
                             }
@@ -402,7 +403,7 @@ public class HandlerRequest {
             dataDbf.setAllColumns(columns);
 
             //сохраняем изменения
-            WriterDbf writerDbf = new WriterDbf(table_name + ".dbf");
+            var writerDbf = new WriterDbf(table_name + ".dbf");
             writerDbf.write(dataDbf);
             writerDbf.close();
 
