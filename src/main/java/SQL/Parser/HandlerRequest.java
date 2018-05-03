@@ -333,10 +333,9 @@ public class HandlerRequest {
         String[] pairs = request.substring(request.toUpperCase().indexOf("SET")+3,request.toUpperCase().indexOf("WHERE")).trim().split("[,]");
 
         var name_pole = new String[pairs.length];
-        for (int i = 0; i<pairs.length; i++)
-        {
-            name_pole[i] = pairs[i].substring(0,request.toUpperCase().indexOf("=")).trim();
-            pairs[i] = pairs[i].substring(request.toUpperCase().indexOf("=")+1).trim();
+        for (int i = 0; i<pairs.length; i++) {
+            name_pole[i] = pairs[i].substring(0,pairs[i].indexOf("=")).trim();
+            pairs[i] = pairs[i].substring(pairs[0].toUpperCase().indexOf("=")+1).trim();
         }
 
         //значения после where (логическое выражение)

@@ -138,9 +138,13 @@ public class DataDbf {
                     column.data[j] = intitalizeNullString(column.size);
             }
         }
-        headerDbf.setLengthOfRecord(lentgthRecord);
-        headerDbf.setLengthOfTitle((short)(columns.length*32));
-        headerDbf.setNumberOfRecords(columns[0].data.length);
+        if(headerDbf==null)
+            headerDbf=new HeaderDbf();
+
+            headerDbf.setLengthOfRecord(lentgthRecord);
+            headerDbf.setLengthOfTitle((short) (columns.length * 32));
+            headerDbf.setNumberOfRecords(columns[0].data.length);
+
 
         FieldDbf fieldDbf;
         String[][] buf=new String[columns.length][];
