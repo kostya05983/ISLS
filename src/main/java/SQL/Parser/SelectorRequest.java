@@ -175,7 +175,7 @@ public class SelectorRequest implements Runnable {
 
     private String checkType(String command) throws ParserException {
         var integerCharacterRegex = "\\(\\s*\\d*\\s*\\)";
-        var floatRegex = "\\(\\s*\\d*\\s*.\\s*\\d*\\s*\\)";
+        var floatRegex = "\\(\\s*\\d*\\s*,\\s*\\d*\\s*\\)";
 
         //проверка на соответствии типу
         if (command.substring(0, command.indexOf("(")).trim().matches("INTEGER|CHARACTER|FLOAT")) {
@@ -191,7 +191,6 @@ public class SelectorRequest implements Runnable {
                         command = command.substring(command.indexOf(")") + 1).trim();
                         return command;
                     }
-
                     else
                         throw new ParserException("Значение в скобках превышает допустимый диапозон 255");
                 } else
@@ -206,7 +205,7 @@ public class SelectorRequest implements Runnable {
 
                     //Проверка на допустиммый диапозон
                     if (Short.parseShort(command.substring(command.indexOf("(") + 1, command.indexOf(",")).replaceAll("[ ]", ""))+
-                            Short.parseShort(command.substring(command.indexOf(",") + 1, command.indexOf(")")).replaceAll("[ ]", "")) < 255) {
+                            Short.parseShort(command.substring(command.indexOf(",") + 1, command.indexOf(")")).replaceAll("[ ]", ""))+1 < 255) {
                         command = command.substring(command.indexOf(")")+1);
                         return command;
                     }

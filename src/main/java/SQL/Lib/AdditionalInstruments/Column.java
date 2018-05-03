@@ -3,6 +3,7 @@ package SQL.Lib.AdditionalInstruments;
 import SQL.Lib.Dbf.TypesOfFields;
 
 public class Column {
+
     //region Properties
 
     public TypesOfFields type;
@@ -56,7 +57,10 @@ public class Column {
     }
 
     public void addRecord(String record){
+        var buffer=data;
         data=new String[data.length+1];
+
+        System.arraycopy(buffer, 0, data, 0, data.length - 1);
         data[data.length-1]=record;
         size+=record.length();
     }

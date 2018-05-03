@@ -7,9 +7,11 @@ import SQL.Lib.Dbf.TypesOfFields;
 import SQL.Parser.HandlerRequest;
 import SQL.Parser.SelectorRequest;
 
+import java.io.IOException;
+
 public class TestSelect {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //Заголовок
         HeaderDbf headerDbf=new HeaderDbf();
         headerDbf.setSignature((byte)2);

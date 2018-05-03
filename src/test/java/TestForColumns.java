@@ -5,8 +5,10 @@ import SQL.Lib.Dbf.DataDbf;
 import SQL.Lib.Dbf.HeaderDbf;
 import SQL.Lib.Dbf.TypesOfFields;
 
+import java.io.IOException;
+
 public class TestForColumns {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         DataDbf dataDbf=new DataDbf();
         Column[] buf=new Column[2];
 

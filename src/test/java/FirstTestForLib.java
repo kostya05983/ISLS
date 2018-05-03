@@ -3,12 +3,13 @@ import SQL.Lib.DataHandler.ReaderDbf;
 import SQL.Lib.DataHandler.WriterDbf;
 import SQL.Lib.Dbf.*;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public class FirstTestForLib {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //Заголовок
         HeaderDbf headerDbf=new HeaderDbf();
         headerDbf.setSignature((byte)2);
