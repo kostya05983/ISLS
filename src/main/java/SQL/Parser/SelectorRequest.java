@@ -14,7 +14,7 @@ public class SelectorRequest implements Runnable {
     private Main main;
     private Matcher check;
     private Pattern Create_P = Pattern.compile("CREATE \\s*TABLE \\s*\\w* \\s*");//++
-    private Pattern Insert_P = Pattern.compile("(\\s*INSERT \\s*INTO\\s*)|VALUES");//
+    private Pattern Insert_P = Pattern.compile("(\\s*INSERT \\s*INTO\\s*)");//
     private Pattern Update_P = Pattern.compile("\\s*UPDATE\\s+((\\w)+)\\s+SET\\s+((((\\w+)=[\\w\"]+)(,|\\s*))+)\\s+WHERE\\s+([\\w.<>=\\s,\"]+)\\s*;\\s*");//
     private Pattern Delete_P = Pattern.compile("\\s*DELETE\\s+FROM\\s+((\\w+)|\\*)\\s+WHERE\\s([\\w.<>=\\s\",]+)\\s*;\\s*");//готов
     private Pattern Select_P = Pattern.compile("\\s*SELECT\\s+(((\\w+)|\\*)\\s*(,|\\s*)\\s*)+\\s+FROM\\s+((\\w+)(\\s+WHERE\\s+([\\w.<>=\\s,\"]+)|\\s*))\\s*;\\s*");//
@@ -115,6 +115,9 @@ public class SelectorRequest implements Runnable {
     //region InsertInto
 
     private void validateInsertInto(String command) throws ParserException,IOException {
+        var checkValues=Pattern.compile("VALUES");
+        if(!checkValues.matcher(command).find())
+            throw new ParserException("Ошибка в VALUES");
         checkAmount(command);
 
         checkEnd(command);
