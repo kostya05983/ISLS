@@ -163,24 +163,56 @@ public class DataDbf {
         RecordDbf recordDbf;
         ByteBuffer byteBuffer;
         byte[] tmpByte;
-        for (String[] aBuf : buf) {//Пишем записи
-            recordDbf = new RecordDbf();
-            byteBuffer = ByteBuffer.allocate(sizeBuffer());
-            for (int j = 0; j < aBuf.length; j++) {//Пишем запись
-                tmpByte = aBuf[j].getBytes();
-                for (int k = 0; k < fieldsDbf.get(j).getSizeField(); k++) {//пишем одну ячейку
-                    if (k < tmpByte.length)
-                        byteBuffer.put(tmpByte[k]);
-                    else
-                        byteBuffer.put((byte) 0);
-                }
-            }
-            recordDbf.setByteCode((byte) ' ', byteBuffer.array());
-            byteBuffer.clear();
-            recordsDbf.add(recordDbf);
-        }
+        writeRecords(buf);
 
     }
+
+    public void setAllColumns(ArrayList<Column> columns){
+        if(!(fieldsDbf==null)) {
+            fieldsDbf.clear();
+            recordsDbf.clear();
+        }
+        if(fieldsDbf==null) {
+            fieldsDbf=new ArrayList<>();
+            recordsDbf=new ArrayList<>();
+        }
+
+        short lentgthRecord=0;
+        for (Column column : columns) {
+            for (int j = 0; j < column.data.length; j++) {
+                lentgthRecord+=column.size;
+                if (column.data[j] == null)
+                    column.data[j] = intitalizeNullString(column.size);
+            }
+        }
+        if(headerDbf==null)
+            headerDbf=new HeaderDbf();
+
+        headerDbf.setLengthOfRecord(lentgthRecord);
+        headerDbf.setLengthOfTitle((short) (columns.size() * 32));
+        headerDbf.setNumberOfRecords(columns.get(0).data.length);
+
+
+        FieldDbf fieldDbf;
+        String[][] buf=new String[columns.size()][];
+        for(int i=0;i<columns.size();i++){
+            fieldDbf=new FieldDbf();
+            fieldDbf.setNameField(columns.get(i).title);
+            fieldDbf.setTypeField(columns.get(i).type.code);
+            fieldDbf.setSizeField((byte)columns.get(i).size);//Размер поля в бинарном формате
+            fieldDbf.setNumberOfCh((byte)i);
+            fieldsDbf.add(fieldDbf);
+            buf[i]=columns.get(i).data;
+        }
+
+        buf=transportMatrix(buf);
+
+        RecordDbf recordDbf;
+        ByteBuffer byteBuffer;
+        byte[] tmpByte;
+        writeRecords(buf);
+    }
+
 
     public String[][] transportMatrix(String[][] a) {
         String[][] b = new String[a[0].length][a.length];
@@ -246,6 +278,28 @@ public class DataDbf {
             result.append((char) 0);
         }
         return result.toString();
+    }
+
+    private void writeRecords(String[][] buf) {
+        RecordDbf recordDbf;
+        ByteBuffer byteBuffer;
+        byte[] tmpByte;
+        for (String[] aBuf : buf) {//Пишем записи
+            recordDbf = new RecordDbf();
+            byteBuffer = ByteBuffer.allocate(sizeBuffer());
+            for (int j = 0; j < aBuf.length; j++) {//Пишем запись
+                tmpByte = aBuf[j].getBytes();
+                for (int k = 0; k < fieldsDbf.get(j).getSizeField(); k++) {//пишем одну ячейку
+                    if (k < tmpByte.length)
+                        byteBuffer.put(tmpByte[k]);
+                    else
+                        byteBuffer.put((byte) 0);
+                }
+            }
+            recordDbf.setByteCode((byte) ' ', byteBuffer.array());
+            byteBuffer.clear();
+            recordsDbf.add(recordDbf);
+        }
     }
 
     //endregion

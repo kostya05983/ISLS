@@ -11,5 +11,10 @@ public abstract class DataHandler {
              randomAccessFile.close();
      }
 
-
+     short transferByteToUnsigned(byte b){
+        if(b<=0){
+            return (short)(127+(128+b));
+        }
+        return b;
+    }
 }

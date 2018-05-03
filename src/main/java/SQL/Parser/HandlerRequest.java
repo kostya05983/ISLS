@@ -506,7 +506,6 @@ public class HandlerRequest {
                 //Добавление с помощью setAllColumns
                 boolean check = false;
 
-                //System.out.println("ADD");
                 Platform.runLater(() ->
                         main.outText("ADD"));
                 for (int i = 0; i < dataDbf.fieldsDbf.size(); i++) {
@@ -530,8 +529,9 @@ public class HandlerRequest {
                             main.error("Поле с таким именем уже\nсуществует"));
                 break;
             }
-            case 2://DROP работает
+            case 2:
             {
+                var columns=new ArrayList<>(Arrays.asList(dataDbf.getAllColumns()));
                 int check = 0;
                 for (int i = 0; i < dataDbf.fieldsDbf.size(); i++) {
                     String namef = new String(dataDbf.fieldsDbf.get(i).getNameField());
@@ -540,9 +540,8 @@ public class HandlerRequest {
                         check = 1;
                         Platform.runLater(() ->
                                 main.outText("FIND"));
-                        //System.out.println("FIND");
-                        dataDbf.fieldsDbf.remove(i);
-                        dataDbf.recordsDbf.remove(i);
+                        columns.remove(i);
+                        dataDbf.setAllColumns(columns);
                         break;
                     } else
                         check = 2;
@@ -552,7 +551,7 @@ public class HandlerRequest {
                             main.error("Не найдена колонка"));
                 break;
             }
-            case 3://MODIFY работает до размера в 10
+            case 3://TODO ДОбавить проверку на смену типа
             {
                 Platform.runLater(() ->
                         main.outText("MODIFY"));
@@ -562,7 +561,6 @@ public class HandlerRequest {
                     namef = namef.trim();
                     if (Name_Column.compareTo(namef) == 0) {
                         check = 1;
-                        //System.out.println("FIND");
                         Platform.runLater(() ->
                                 main.outText("FIND"));
                         dataDbf.fieldsDbf.get(i).setTypeField(Type_Column.code);

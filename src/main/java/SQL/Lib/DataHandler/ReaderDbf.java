@@ -76,10 +76,5 @@ public class ReaderDbf extends DataHandler{
         return new DataIdx(headerIdx,bTreeIdx);
     }
 
-    private short transferByteToUnsigned(byte b){
-        if(b<=0){
-            return (short)(127+(128+b));
-        }
-        return b;
-    }
+
 }

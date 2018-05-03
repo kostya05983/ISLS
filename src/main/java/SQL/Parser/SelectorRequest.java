@@ -227,6 +227,8 @@ public class SelectorRequest implements Runnable {
 
     //endregion
 
+    //region Update
+
     private void validateUpdate(String command) throws IOException,ParserException {
         var checkWhere=Pattern.compile("WHERE");
         if(!checkWhere.matcher(command).find())
@@ -251,6 +253,8 @@ public class SelectorRequest implements Runnable {
         }
 
     }
+
+    //endregion
 
     private void validateSelect(String command) throws IOException {
         handlerRequest.select(command);

@@ -28,7 +28,7 @@ public class WriterDbf extends DataHandler {
         randomAccessFile.write(dataDbf.headerDbf.getByteCode(), 0, 32);
 
         for (int i = 0; i < dataDbf.fieldsDbf.size(); i++) {
-            sumOfBytes += dataDbf.fieldsDbf.get(i).getSizeField();
+            sumOfBytes += transferByteToUnsigned(dataDbf.fieldsDbf.get(i).getSizeField());
             randomAccessFile.write(dataDbf.fieldsDbf.get(i).getByteCode(), 0, 32);
         }
 
