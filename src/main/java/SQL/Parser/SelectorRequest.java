@@ -276,9 +276,32 @@ public class SelectorRequest implements Runnable {
         handlerRequest.dropIndex(command);
     }
 
-    private void validateAlterTable(String command) throws IOException {
+    //region AlterTable
+
+    private void validateAlterTable(String command) throws IOException, ParserException {
+        var upperCommand=command.toUpperCase();
+        var regexAdd=Pattern.compile("ADD");
+        var regexModify=Pattern.compile("MODIFY");
+
+        if(regexAdd.matcher(upperCommand).find())
+            checkSize(upperCommand.substring(upperCommand.indexOf("ADD")+3));
+
+        if(regexModify.matcher(upperCommand).find())
+            checkSize(upperCommand.substring(upperCommand.indexOf("MODIFY")+6));
+
+        checkEnd(command);
         handlerRequest.alterTable(command);
     }
+
+    private void checkSize(String command) throws ParserException{
+        command=command.trim();
+        command=command.substring(0,command.indexOf(" "));
+
+        if(command.length()>10)
+            throw new ParserException("Размер имени поля не должен превышать 10 символов");
+    }
+
+    //endregion
 
     private void validateTruncate(String command) throws IOException{
         handlerRequest.truncate(command);

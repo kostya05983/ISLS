@@ -373,7 +373,7 @@ public class HandlerRequest {
                                     try {
                                         columns[k].data[f] = String.valueOf(Integer.valueOf(pair.trim()));
                                     } catch (NumberFormatException e) {
-                                        main.outText("Не удалось провести одно из изменений\n");
+                                        Platform.runLater(()->main.outText("Не удалось провести одно из изменений\n"));
                                     }
                                     break;
                                 }
@@ -381,7 +381,7 @@ public class HandlerRequest {
                                     try {
                                         columns[k].data[f] = String.valueOf(Float.valueOf(pair.trim()));
                                     } catch (NumberFormatException e) {
-                                        main.outText("Не удалось провести одно из изменений\n");
+                                        Platform.runLater(()->main.outText("Не удалось провести одно из изменений\n"));
                                     }
                                     break;
                                 }
@@ -389,7 +389,7 @@ public class HandlerRequest {
                                     columns[k].data[f] = pair;
                                 }
                                 default: {
-                                    main.outText("Не удалось провести одно из изменений\n");
+                                    Platform.runLater(()->main.outText("Не удалось провести одно из изменений\n"));
                                     break;
                                 }
                             }
@@ -518,12 +518,12 @@ public class HandlerRequest {
                 if (!check) {
                     Column[] columns = dataDbf.getAllColumns();
                     int length = columns.length;
-                    Column[] newcolumns = new Column[length + 1];
-                    System.arraycopy(columns, 0, newcolumns, 0, length);
+                    Column[] newСolumns = new Column[length + 1];
+                    System.arraycopy(columns, 0, newСolumns, 0, length);
                     String[] data = new String[dataDbf.recordsDbf.size()];
                     Column column = new Column(Type_Column, Name_Column, data, size_data);
-                    newcolumns[length] = column;
-                    dataDbf.setAllColumns(newcolumns);
+                    newСolumns[length] = column;
+                    dataDbf.setAllColumns(newСolumns);
                 } else
                     Platform.runLater(() ->
                             main.error("Поле с таким именем уже\nсуществует"));
