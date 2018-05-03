@@ -232,8 +232,23 @@ public class SelectorRequest implements Runnable {
         if(!checkWhere.matcher(command).find())
             throw new ParserException("Ошибка в WHERE");
 
+        checkSet(command.substring(command.indexOf("SET")+3,command.indexOf("WHERE")));
         checkEnd(command);
         handlerRequest.update(command);
+
+    }
+
+    private void checkSet(String command) throws ParserException{
+        if(command.contains(",")){
+            var pairs=command.split("[,]");
+            for (String pair : pairs) {
+                if(!pair.contains("="))
+                    throw new ParserException("Не хватает =  в условиях SET");
+            }
+        }else{
+            if(!command.contains("="))
+                throw new ParserException("Не хватает = в условиях SET");
+        }
 
     }
 
