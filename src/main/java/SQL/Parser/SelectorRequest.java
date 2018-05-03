@@ -115,9 +115,9 @@ public class SelectorRequest implements Runnable {
     //region InsertInto
 
     private void validateInsertInto(String command) throws ParserException,IOException {
-        var checkValues=Pattern.compile("VALUES");
+        var checkValues=Pattern.compile("VALUE");
         if(!checkValues.matcher(command).find())
-            throw new ParserException("Ошибка в VALUES");
+            throw new ParserException("Ошибка в VALUE");
         checkAmount(command);
 
         checkEnd(command);
