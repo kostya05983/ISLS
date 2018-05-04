@@ -200,22 +200,22 @@ class Where {
                 switch (column.type) {
                     case Character:
                         if (reg(condition.substring(condition.indexOf(operator) + operator.length()).trim())) {
-                            for (String record : column.data) {
-                                if (checkChar(condition, record, operator))
-                                    result.add(Arrays.asList(column.data).indexOf(record));
+                            for (int i=0;i<column.data.length;i++) {
+                                if (checkChar(condition, column.data[i].trim(), operator))
+                                    result.add(i);
                             }
                         }
                         break;
                     case Integer:
-                        for (String record : column.data) {
-                            if (checkInt(condition, record, operator))
-                                result.add(Arrays.asList(column.data).indexOf(record));
+                        for(int i=0;i<column.data.length;i++){
+                            if (checkInt(condition, column.data[i].trim(), operator))
+                                result.add(i);
                         }
                         break;
                     case Float:
-                        for (String record : column.data) {
-                            if (checkFloat(condition, record, operator))
-                                result.add(Arrays.asList(column.data).indexOf(record));
+                        for (int i=0;i<column.data.length;i++) {
+                            if (checkFloat(condition, column.data[i].trim(), operator))
+                                result.add(i);
                         }
                         break;
                 }
