@@ -1,6 +1,7 @@
 package SQL.Lib.Dbf;
 
 import SQL.Lib.AdditionalInstruments.Column;
+import SQL.Parser.ParserException;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -99,7 +100,7 @@ public class DataDbf {
         return columns;
     }
 
-    public DataDbf selectColumns(String[] names){
+    public DataDbf selectColumns(String[] names) throws ParserException {
         Column[] columns=getAllColumns();
         ArrayList<Column> resultColumns=new ArrayList<>();
 
@@ -109,6 +110,7 @@ public class DataDbf {
                     resultColumns.add(column);
                     break;
                 }
+                throw new ParserException("Имя поля не найдено,проверьте имена");
             }
         }
 
@@ -160,9 +162,6 @@ public class DataDbf {
 
         buf=transportMatrix(buf);
 
-        RecordDbf recordDbf;
-        ByteBuffer byteBuffer;
-        byte[] tmpByte;
         writeRecords(buf);
 
     }
@@ -207,9 +206,6 @@ public class DataDbf {
 
         buf=transportMatrix(buf);
 
-        RecordDbf recordDbf;
-        ByteBuffer byteBuffer;
-        byte[] tmpByte;
         writeRecords(buf);
     }
 

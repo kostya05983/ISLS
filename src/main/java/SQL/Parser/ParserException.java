@@ -1,9 +1,9 @@
 package SQL.Parser;
 
-class ParserException extends Exception{
+public class ParserException extends Exception{
     private String message;
 
-    ParserException(String message){
+    public ParserException(String message){
         super(message);
         this.message=message;
     }

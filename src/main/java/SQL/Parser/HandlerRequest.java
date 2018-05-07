@@ -22,14 +22,18 @@ public class HandlerRequest {
         this.main = main;
     }
 
-    void select(String request) throws IOException {
+    void select(String request) throws IOException,ParserException {
         request=request.substring(request.toUpperCase().indexOf("SELECT")+7);
         DataDbf dataDbf;
         ArrayList<RecordDbf> resultRecords;
 
         if(request.contains("*")){
             request=request.substring(request.toUpperCase().indexOf("FROM")+5);
-            String tableName=request.substring(0,request.indexOf(" ")).trim();
+            String tableName;
+            if(request.indexOf(" ")!=-1)
+                tableName=request.substring(0,request.indexOf(" ")).trim();
+            else
+                tableName=request.substring(0,request.indexOf(";")).trim();
             var readerDbf=new ReaderDbf(tableName+".dbf");
             dataDbf=readerDbf.read();
             if(request.toUpperCase().contains("WHERE")) {
@@ -321,7 +325,7 @@ public class HandlerRequest {
 
     }
 
-    void update(String request) throws IOException {
+    void update(String request) throws IOException,ParserException {
 
         //берём данные команлды
         request=request.substring(request.toUpperCase().indexOf("UPDATE")+6);
@@ -364,7 +368,7 @@ public class HandlerRequest {
                     if (column.title.trim().equals(name_pole[i].trim())) {
                         //если поле совпало, то берём эту колонку и отправляем  в where
                         //для получени индексов значений, которые меняем
-                        toDbf.setAllColumns(new Column[]{column});
+                        toDbf.setAllColumns(columns);
                         ArrayList<Integer> result = where.getRecs(logik, toDbf);
 
                         //тест
@@ -428,7 +432,7 @@ public class HandlerRequest {
         }
     }
 
-    void delete(String request) throws IOException {
+    void delete(String request) throws IOException,ParserException {
         String table_name = request.substring(request.indexOf(" FROM ") + 5).trim();
         table_name = table_name.substring(0, table_name.indexOf(" ")).trim();
         Where wh = new Where();
@@ -460,10 +464,10 @@ public class HandlerRequest {
         int type = -50;
         int size_data = 0;
         TypesOfFields Type_Column = TypesOfFields.Integer;
-        String Type_Action = " ";
-        String Name_Table = " ";
-        String Name_Column = " ";
-        String Type_Data = " ";
+        String Type_Action;
+        String Name_Table;
+        String Name_Column;
+        String Type_Data;
         request = request.trim();
         request = request.substring(request.indexOf(" ") + 1).trim();
         request = request.substring(request.indexOf(" ") + 1).trim();

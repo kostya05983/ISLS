@@ -3,8 +3,6 @@ package SQL.Parser;
 import GUI.Main;
 import javafx.application.Platform;
 
-
-import javax.swing.text.html.parser.Parser;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,16 +24,16 @@ public class SelectorRequest implements Runnable {
     private String myStringFirst;
     private HandlerRequest handlerRequest;
 
-    public SelectorRequest(String mstring, Main main) {
+    public SelectorRequest(String mString, Main main) {
         this.main = main;
-        myStringFirst = mstring;
+        myStringFirst = mString;
         handlerRequest = new HandlerRequest(main);
     }
 
     private void checkCom() {
         try {
             String mystring = myStringFirst.replaceAll("\n", " ");
-            String[] strings_command = mystring.split("\\s*(u|U)(n|N)(i|I)(o|O)(n|N)\\s*");
+            String[] strings_command = mystring.split("\\s*([uU])([nN])([iI])([oO])([nN])\\s*");
             mystring = mystring.toUpperCase();
             String[] strings_command_upper = mystring.split("\\s*UNION\\s*");
 
@@ -105,18 +103,18 @@ public class SelectorRequest implements Runnable {
             }
         } catch (ParserException e) {
             Platform.runLater(() ->
-            main.error(e.getMessage()));
-        }catch (IOException e){
+                    main.error(e.getMessage()));
+        } catch (IOException e) {
             Platform.runLater(() ->
-            main.error("Что-то не так с файлом,проверьте имя таблицы"));
+                    main.error("Что-то не так с файлом,проверьте имя таблицы"));
         }
     }
 
     //region InsertInto
 
-    private void validateInsertInto(String command) throws ParserException,IOException {
-        var checkValues=Pattern.compile("VALUE");
-        if(!checkValues.matcher(command).find())
+    private void validateInsertInto(String command) throws ParserException, IOException {
+        var checkValues = Pattern.compile("VALUE");
+        if (!checkValues.matcher(command).find())
             throw new ParserException("Ошибка в VALUE");
         checkAmount(command);
 
@@ -145,7 +143,7 @@ public class SelectorRequest implements Runnable {
 
     //region CreateTable
 
-    private void validateCreateTable(String command) throws ParserException,IOException {
+    private void validateCreateTable(String command) throws ParserException, IOException {
         checkEnd(command);
         checkColumns(command);
         handlerRequest.createTable(command);
@@ -153,8 +151,8 @@ public class SelectorRequest implements Runnable {
 
     private void checkColumns(String command) throws ParserException {
         command = command.substring(command.indexOf("(") + 1).toUpperCase().trim();
-        var end="\\s*\\)\\s*;\\s*";
-        command=command.replaceAll(end,");");
+        var end = "\\s*\\)\\s*;\\s*";
+        command = command.replaceAll(end, ");");
 
         while (true) {
             //Проверка на допустимый диапозон
@@ -162,11 +160,11 @@ public class SelectorRequest implements Runnable {
                 command = command.substring(command.indexOf(" "));
 
                 //Проверяем на концовку
-                if (!command.substring(command.indexOf(")")+1).equals(");")) {
-                    if(command.substring(command.indexOf(")")).indexOf(",")>0) {
+                if (!command.substring(command.indexOf(")") + 1).equals(");")) {
+                    if (command.substring(command.indexOf(")")).indexOf(",") > 0) {
                         command = checkType(command);
                         command = command.substring(command.indexOf(",") + 1).trim();
-                    }else
+                    } else
                         throw new ParserException("Не хватает запятых");
                 } else {
                     checkType(command);
@@ -191,11 +189,10 @@ public class SelectorRequest implements Runnable {
                 if (command.substring(command.indexOf("("), command.indexOf(")") + 1).matches(integerCharacterRegex)) {
 
                     //Проверка на допустимый диапозон
-                    if (Short.parseShort(command.substring(command.indexOf("(") + 1, command.indexOf(")")).replaceAll("[ ]", "")) < 255){
+                    if (Short.parseShort(command.substring(command.indexOf("(") + 1, command.indexOf(")")).replaceAll("[ ]", "")) < 255) {
                         command = command.substring(command.indexOf(")") + 1).trim();
                         return command;
-                    }
-                    else
+                    } else
                         throw new ParserException("Значение в скобках превышает допустимый диапозон 255");
                 } else
                     throw new ParserException("Значения в скобках не соответствуют типу");
@@ -208,12 +205,11 @@ public class SelectorRequest implements Runnable {
                 if (command.substring(command.indexOf("("), command.indexOf(")") + 1).matches(floatRegex)) {
 
                     //Проверка на допустиммый диапозон
-                    if (Short.parseShort(command.substring(command.indexOf("(") + 1, command.indexOf(",")).replaceAll("[ ]", ""))+
-                            Short.parseShort(command.substring(command.indexOf(",") + 1, command.indexOf(")")).replaceAll("[ ]", ""))+1 < 255) {
-                        command = command.substring(command.indexOf(")")+1);
+                    if (Short.parseShort(command.substring(command.indexOf("(") + 1, command.indexOf(",")).replaceAll("[ ]", "")) +
+                            Short.parseShort(command.substring(command.indexOf(",") + 1, command.indexOf(")")).replaceAll("[ ]", "")) + 1 < 255) {
+                        command = command.substring(command.indexOf(")") + 1);
                         return command;
-                    }
-                    else
+                    } else
                         throw new ParserException("Значения в скобках превышают допустимый диапозон");
                 } else {
                     throw new ParserException("Значения в скобках не соответствуют типу");
@@ -229,26 +225,27 @@ public class SelectorRequest implements Runnable {
 
     //region Update
 
-    private void validateUpdate(String command) throws IOException,ParserException {
-        var checkWhere=Pattern.compile("WHERE");
-        if(!checkWhere.matcher(command).find())
+    private void validateUpdate(String command) throws IOException, ParserException {
+        var checkWhere = Pattern.compile("WHERE");
+        if (!checkWhere.matcher(command).find())
             throw new ParserException("Ошибка в WHERE");
 
-        checkSet(command.substring(command.indexOf("SET")+3,command.indexOf("WHERE")));
+        checkSet(command.substring(command.indexOf("SET") + 3, command.indexOf("WHERE")));
+        validateWhere(command.substring(command.indexOf("WHERE") + 5));
         checkEnd(command);
         handlerRequest.update(command);
 
     }
 
-    private void checkSet(String command) throws ParserException{
-        if(command.contains(",")){
-            var pairs=command.split("[,]");
+    private void checkSet(String command) throws ParserException {
+        if (command.contains(",")) {
+            var pairs = command.split("[,]");
             for (String pair : pairs) {
-                if(!pair.contains("="))
+                if (!pair.contains("="))
                     throw new ParserException("Не хватает =  в условиях SET");
             }
-        }else{
-            if(!command.contains("="))
+        } else {
+            if (!command.contains("="))
                 throw new ParserException("Не хватает = в условиях SET");
         }
 
@@ -256,11 +253,34 @@ public class SelectorRequest implements Runnable {
 
     //endregion
 
-    private void validateSelect(String command) throws IOException {
+    //region Select
+
+    private void validateSelect(String command) throws IOException, ParserException {
+        validateWhere(command.substring(command.toUpperCase().indexOf("WHERE") + 5));
+
+        if (!command.contains("*"))
+            if (command.toUpperCase().contains("WHERE"))
+                checkLengthSelect(command.substring(command.toUpperCase().indexOf("SELECT") + 6, command.toUpperCase().indexOf("WHERE")));
+            else
+                checkLengthSelect(command.substring(command.toUpperCase().indexOf("SELECT") + 6));
+
+        checkEnd(command);
         handlerRequest.select(command);
     }
 
-    private void validateDelete(String command) throws IOException{
+    private void checkLengthSelect(String command) throws ParserException {
+        command=command.substring(command.indexOf("FROM"));
+        var buf = command.split("[,]");
+
+        for (var str : buf) {
+            if (str.length() > 10)
+                throw new ParserException("Длина имени поля не должна превышать 10 символов");
+        }
+    }
+
+    //endregion
+
+    private void validateDelete(String command) throws IOException,ParserException {
         handlerRequest.delete(command);
     }
 
@@ -268,44 +288,85 @@ public class SelectorRequest implements Runnable {
         handlerRequest.dropTable(command);
     }
 
-    private void validateCreateIndex(String command) throws ParserException,IOException {
+    private void validateCreateIndex(String command) throws ParserException, IOException {
         handlerRequest.createIndex(command);
     }
 
-    private void validateDropIndex(String command) throws IOException{
+    private void validateDropIndex(String command) throws IOException {
         handlerRequest.dropIndex(command);
     }
 
     //region AlterTable
 
     private void validateAlterTable(String command) throws IOException, ParserException {
-        var upperCommand=command.toUpperCase();
-        var regexAdd=Pattern.compile("ADD");
-        var regexModify=Pattern.compile("MODIFY");
+        var upperCommand = command.toUpperCase();
+        var regexAdd = Pattern.compile("ADD");
+        var regexModify = Pattern.compile("MODIFY");
 
-        if(regexAdd.matcher(upperCommand).find())
-            checkSize(upperCommand.substring(upperCommand.indexOf("ADD")+3));
+        if (regexAdd.matcher(upperCommand).find())
+            checkSize(upperCommand.substring(upperCommand.indexOf("ADD") + 3));
 
-        if(regexModify.matcher(upperCommand).find())
-            checkSize(upperCommand.substring(upperCommand.indexOf("MODIFY")+6));
+        if (regexModify.matcher(upperCommand).find())
+            checkSize(upperCommand.substring(upperCommand.indexOf("MODIFY") + 6));
 
         checkEnd(command);
         handlerRequest.alterTable(command);
     }
 
-    private void checkSize(String command) throws ParserException{
-        command=command.trim();
-        command=command.substring(0,command.indexOf(" "));
+    private void checkSize(String command) throws ParserException {
+        command = command.trim();
+        command = command.substring(0, command.indexOf(" "));
 
-        if(command.length()>10)
+        if (command.length() > 10)
             throw new ParserException("Размер имени поля не должен превышать 10 символов");
     }
 
     //endregion
 
-    private void validateTruncate(String command) throws IOException{
+    private void validateTruncate(String command) throws IOException {
         handlerRequest.truncate(command);
     }
+
+    //region Where
+
+    private void validateWhere(String command) throws ParserException {
+        checkBrackets(command);
+        command = command.replaceAll("[()]", " ");
+        checkExpressions(command);
+
+    }
+
+    private void checkExpressions(String command) throws ParserException {
+        command = command.toUpperCase().replaceAll("NOT", " ");
+        var buf = command.split("OR|XOR|AND");
+
+        for (String aBuf : buf) {
+            if(aBuf.contains(">="))
+            checkLength(aBuf, ">=");
+            if(aBuf.contains("<="))
+            checkLength(aBuf, "<=");
+            if(aBuf.contains("<>"))
+            checkLength(aBuf, "<>");
+            if(aBuf.contains("="))
+            checkLength(aBuf, "=");
+        }
+
+    }
+
+    private void checkLength(String command, String sequence) throws ParserException {
+        if (command.contains(sequence) && command.substring(0, command.indexOf(sequence)).length() > 10)
+            throw new ParserException("Ошибка в названии поля,имя поля не может превышать 10 символов");
+    }
+
+    private void checkBrackets(String command) throws ParserException {
+        if (command.contains("[") || command.contains("]") || command.contains("{") || command.contains("}"))
+            throw new ParserException("Скобки должны быть круглыми ()");
+
+        if (command.chars().filter(ch -> ch == '(').count() != command.chars().filter(ch -> ch == ')').count())
+            throw new ParserException("Несоответствие открывающих и закрывающих скобок");
+    }
+
+    //endregion
 
     public void run() {
         try {

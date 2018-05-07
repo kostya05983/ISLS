@@ -21,7 +21,7 @@ class Where {
 
     //region InterfaceMethods
 
-    ArrayList<Integer> getRecs(String request, DataDbf dataDbf) {
+    ArrayList<Integer> getRecs(String request, DataDbf dataDbf) throws ParserException {
         List<String> expression = parse(request);
         if (flag) {
             return calc(expression,dataDbf);
@@ -73,7 +73,7 @@ class Where {
         List<String> postfix = new ArrayList<>();
         Deque<String> stack = new ArrayDeque<>();
         StringTokenizer tokenizer = new StringTokenizer(infix, delimiters, true);
-        String curr = "";
+        String curr;
         while (tokenizer.hasMoreTokens()) {
             curr = tokenizer.nextToken();
             if (!tokenizer.hasMoreTokens() && isOperator(curr)) {
@@ -123,7 +123,7 @@ class Where {
         return postfix;
     }
 
-    private  ArrayList<Integer> calc(List<String> postfix, DataDbf dataDbf) {
+    private  ArrayList<Integer> calc(List<String> postfix, DataDbf dataDbf) throws ParserException {
         Deque<ArrayList<Integer>> stack = new ArrayDeque<>();
         for (String x : postfix) {
             switch (x) {
@@ -172,7 +172,7 @@ class Where {
         return stack.pop();
     }
 
-    private  ArrayList<Integer> searchRecords(String str, DataDbf dataDbf) {
+    private  ArrayList<Integer> searchRecords(String str, DataDbf dataDbf) throws ParserException {
         ArrayList<Integer> records = new ArrayList<>();
         if (str.contains("<>")) {
             records = search(str, "<>", dataDbf);
@@ -186,7 +186,7 @@ class Where {
         return records;
     }
 
-    private ArrayList<Integer> search(String condition, String operator, DataDbf dbf) {
+    private ArrayList<Integer> search(String condition, String operator, DataDbf dbf) throws ParserException {
         //Возвращает список индексов подходящих под условие записей
         ArrayList<Integer> result = new ArrayList<>();
         Column[] columns = dbf.getAllColumns();
@@ -200,29 +200,32 @@ class Where {
                 switch (column.type) {
                     case Character:
                         if (reg(condition.substring(condition.indexOf(operator) + operator.length()).trim())) {
-                            for (int i=0;i<column.data.length;i++) {
+                            for (int i = 0; i < column.data.length; i++) {
                                 if (checkChar(condition, column.data[i].trim(), operator))
                                     result.add(i);
                             }
-                        }
-                        break;
+                            return result;
+                        }else
+                        throw new ParserException("После знаков сравнения,если поле типа character необходимо данные указывать в \"\"");
                     case Integer:
-                        for(int i=0;i<column.data.length;i++){
+                        for (int i = 0; i < column.data.length; i++) {
                             if (checkInt(condition, column.data[i].trim(), operator))
                                 result.add(i);
                         }
-                        break;
+                        return result;
+
                     case Float:
-                        for (int i=0;i<column.data.length;i++) {
+                        for (int i = 0; i < column.data.length; i++) {
                             if (checkFloat(condition, column.data[i].trim(), operator))
                                 result.add(i);
                         }
-                        break;
+                        return result;
                 }
-
+                break;
             }
         }
-        return result;
+        throw new ParserException("Имя не найдено проверьте имена полей в WHERE");
+
     }
 
     private static boolean checkChar(String condition, String cellData, String operator) {
