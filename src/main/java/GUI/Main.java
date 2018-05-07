@@ -62,8 +62,8 @@ public class Main extends Application implements Runnable {
         toLabel.setCenter(name);//двигаем панельку в центр
         BorderPane.setMargin(name, new Insets(10.0));//делаем отступы для лэйбла
 
-        Label command = new Label ("Command:");
-        setLeftAnchor(command,15.0);
+        Label command = new Label("Command:");
+        setLeftAnchor(command, 15.0);
 
         Label output = new Label("Output:");
         setLeftAnchor(output, 25.0);
@@ -94,7 +94,7 @@ public class Main extends Application implements Runnable {
         textOut.setTooltip(new Tooltip("Здесь выводится результат работы библиотеки"));
 
         //таблица TableView
-        setRightAnchor(tableView,20.0);
+        setRightAnchor(tableView, 20.0);
         setLeftAnchor(tableView, 20.0);
         setBottomAnchor(tableView, 20.0);
         tableView.setMaxSize(10, 10);
@@ -112,7 +112,7 @@ public class Main extends Application implements Runnable {
         list.getChildren().addAll(toLabel, anchor1, anchor2, anchor3);
 
         //добавление элементов в окно и вызов окна
-        Scene scene=new Scene(list);
+        Scene scene = new Scene(list);
         primaryStage.setScene(scene);
         primaryStage.setWidth(900);
         primaryStage.setHeight(730);
@@ -121,28 +121,28 @@ public class Main extends Application implements Runnable {
         primaryStage.show();
     }
 
-    public void clearTable(){
+    public void clearTable() {
         //запуск анимации свёртывания таблицы
         timeline_undo.play();
-        int size=tableView.getColumns().size();
-        for(int i=0;i<size;i++)
+        int size = tableView.getColumns().size();
+        for (int i = 0; i < size; i++)
             tableView.getColumns().remove(0);
     }
 
-    public void setAllColumns(Column[] columns){
+    public void setAllColumns(Column[] columns) {
         //запуск анимации
         timeline.play();
 
-        TableColumn[] tableColumns=new TableColumn[columns.length];
-        for(int i=0;i<tableColumns.length;i++){
-            tableColumns[i]=new TableColumn<List<String>,String>(columns[i].title);
+        TableColumn[] tableColumns = new TableColumn[columns.length];
+        for (int i = 0; i < tableColumns.length; i++) {
+            tableColumns[i] = new TableColumn<List<String>, String>(columns[i].title);
             tableColumns[i].setCellValueFactory(new OurCallBack(i));
         }
         tableView.getColumns().addAll(tableColumns);
 
-        ObservableList<List<String>> data= FXCollections.observableArrayList();
+        ObservableList<List<String>> data = FXCollections.observableArrayList();
         List<String> record;
-        if(columns[0].data!=null) {
+        if (columns[0].data != null) {
             for (int i = 0; i < columns[0].data.length; i++) {
                 record = new ArrayList<>();
                 for (Column column : columns) {
@@ -156,24 +156,21 @@ public class Main extends Application implements Runnable {
     }
 
     //обработчик нажатий
-    private void initialize()
-    {
+    private void initialize() {
         button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> textGoToRelise());
 
         textIn.setOnKeyPressed(event ->
         {
             if ((event.getCode().getName().equals("F1") ||
                     event.getCode().getName().equals("F5")) ||
-                    (event.getCode() == KeyCode.ENTER && event.isControlDown()))
-            {
+                    (event.getCode() == KeyCode.ENTER && event.isControlDown())) {
                 textGoToRelise();
             }
         });
     }
 
     //функция отправки команд на обработку
-    private void textGoToRelise()
-    {
+    private void textGoToRelise() {
         //showTooltip(anchor3, tableView, "Мы работаем над этим...", null);
         /////////////////
         String text = textIn.getText();
@@ -181,20 +178,18 @@ public class Main extends Application implements Runnable {
             textOut.clear();
             text_start = true;
         }
-        SelectorRequest selectorRequest=new SelectorRequest(text,this);
-        Thread thread=new Thread(selectorRequest);
+        SelectorRequest selectorRequest = new SelectorRequest(text, this);
+        Thread thread = new Thread(selectorRequest);
         thread.start();
     }
 
     //функция вывода результатов работы библиотеки
-    public void outText(String text)
-    {
-        textOut.setText(text+"\n"+textOut.getText());
+    public void outText(String text) {
+        textOut.setText(text + "\n" + textOut.getText());
     }
 
     //из вне вызывать эту функцию без параметра (для неопознанных ошибок)
-    public void error()
-    {
+    public void error() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("ERROR");
         alert.setHeaderText(null);
@@ -203,8 +198,7 @@ public class Main extends Application implements Runnable {
     }
 
     //из вне вызывать эту функцию с входным параметром типа string
-    public void error(String text_error)
-    {
+    public void error(String text_error) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("ERROR");
         alert.setHeaderText("Упс, произошла ошибка!");
@@ -213,8 +207,7 @@ public class Main extends Application implements Runnable {
     }
 
     private static void showTooltip(AnchorPane owner, Control control, String tooltipText,
-                                    ImageView tooltipGraphic)
-    {
+                                    ImageView tooltipGraphic) {
         Point2D p = control.localToScene(350.0, 50.0);
         customTooltip.setText(tooltipText);
 
@@ -230,8 +223,7 @@ public class Main extends Application implements Runnable {
         launch("");
     }
 
-    private void loading()
-    {
+    private void loading() {
         //сюда надо анимацию загрузки
         //над этим надо ещё подумать, может и текущей анимации хватит
     }

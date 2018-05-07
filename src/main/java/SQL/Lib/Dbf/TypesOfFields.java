@@ -8,7 +8,7 @@ public enum TypesOfFields {
 
     public byte code;
 
-    private TypesOfFields(char code)
+    TypesOfFields(char code)
     {
         this.code=(byte)code;
     }

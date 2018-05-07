@@ -18,24 +18,24 @@ public class DataDbf {
 
     //region Constructors
 
-    public DataDbf(HeaderDbf headerDbf, ArrayList<FieldDbf> fieldDbf, ArrayList<RecordDbf> recordDbf){
-        this.headerDbf=headerDbf;
-        this.fieldsDbf=fieldDbf;
-        this.recordsDbf=recordDbf;
+    public DataDbf(HeaderDbf headerDbf, ArrayList<FieldDbf> fieldDbf, ArrayList<RecordDbf> recordDbf) {
+        this.headerDbf = headerDbf;
+        this.fieldsDbf = fieldDbf;
+        this.recordsDbf = recordDbf;
     }
 
-    public DataDbf(HeaderDbf headerDbf){
-        this.headerDbf=headerDbf;
-        this.fieldsDbf=new ArrayList<>();
-        this.recordsDbf=new ArrayList<>();
+    public DataDbf(HeaderDbf headerDbf) {
+        this.headerDbf = headerDbf;
+        this.fieldsDbf = new ArrayList<>();
+        this.recordsDbf = new ArrayList<>();
     }
 
-    public DataDbf(HeaderDbf headerDbf,ArrayList<FieldDbf> fieldDbf){
-        this.headerDbf=headerDbf;
-        this.fieldsDbf=fieldDbf;
+    public DataDbf(HeaderDbf headerDbf, ArrayList<FieldDbf> fieldDbf) {
+        this.headerDbf = headerDbf;
+        this.fieldsDbf = fieldDbf;
     }
 
-    public DataDbf(){
+    public DataDbf() {
 
     }
 
@@ -43,12 +43,12 @@ public class DataDbf {
 
     //region InterfaceMethods
 
-    public Column[] getAllColumns(){
-        ArrayList<Column> arrayList=new ArrayList<>();
-        String[][] table=new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
+    public Column[] getAllColumns() {
+        ArrayList<Column> arrayList = new ArrayList<>();
+        String[][] table = new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
         int start;
 
-        if(recordsDbf!=null) {
+        if (recordsDbf != null) {
             for (int i = 0; i < recordsDbf.size(); i++) {
                 start = 0;
                 for (int j = 0; j < fieldsDbf.size(); j++) {
@@ -59,21 +59,21 @@ public class DataDbf {
             for (int i = 0; i < fieldsDbf.size(); i++)
                 arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(), getPartOfRecord(fieldsDbf.get(i).getNameField()), table[i], fieldsDbf.get(i).getSizeField()));
 
-        }else {
+        } else {
             for (FieldDbf aFieldsDbf : fieldsDbf)
                 arrayList.add(new Column(aFieldsDbf.getTypeOfField(), getPartOfRecord(aFieldsDbf.getNameField()), aFieldsDbf.getSizeField()));
 
         }
 
-        Column[] columns=new Column[arrayList.size()];
-        columns=arrayList.toArray(columns);
+        Column[] columns = new Column[arrayList.size()];
+        columns = arrayList.toArray(columns);
 
         return columns;
     }
 
-    public Column[] getColumnsforShow(){
-        ArrayList<Column> arrayList=new ArrayList<>();
-        if(recordsDbf!=null) {
+    public Column[] getColumnsforShow() {
+        ArrayList<Column> arrayList = new ArrayList<>();
+        if (recordsDbf != null) {
             String[][] table = new String[fieldsDbf.size()][headerDbf.getNumberOfRecords()];
             int start;
 
@@ -88,21 +88,21 @@ public class DataDbf {
             for (int i = 0; i < fieldsDbf.size(); i++)
                 arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(), getPartOfRecord(fieldsDbf.get(i).getNameField()), table[i], fieldsDbf.get(i).getSizeField()));
 
-        }else{
+        } else {
             for (FieldDbf aFieldsDbf : fieldsDbf)
                 arrayList.add(new Column(aFieldsDbf.getTypeOfField(), getPartOfRecord(aFieldsDbf.getNameField()), aFieldsDbf.getSizeField()));
 
         }
 
-        Column[] columns=new Column[arrayList.size()];
-        columns=arrayList.toArray(columns);
+        Column[] columns = new Column[arrayList.size()];
+        columns = arrayList.toArray(columns);
 
         return columns;
     }
 
     public DataDbf selectColumns(String[] names) throws ParserException {
-        Column[] columns=getAllColumns();
-        ArrayList<Column> resultColumns=new ArrayList<>();
+        Column[] columns = getAllColumns();
+        ArrayList<Column> resultColumns = new ArrayList<>();
         boolean flag;
 
         for (String name : names) {
@@ -118,78 +118,78 @@ public class DataDbf {
                 throw new ParserException("Имя поля не найдено,проверьте имена");
         }
 
-        DataDbf result=new DataDbf(headerDbf,fieldsDbf,recordsDbf);
-        Column[] resultArrColumns=new Column[resultColumns.size()];
+        DataDbf result = new DataDbf(headerDbf, fieldsDbf, recordsDbf);
+        Column[] resultArrColumns = new Column[resultColumns.size()];
         resultColumns.toArray(resultArrColumns);
         result.setAllColumns(resultArrColumns);
 
         return result;
     }
 
-    public void setAllColumns(Column[] columns){
-        if(!(fieldsDbf==null)) {
+    public void setAllColumns(Column[] columns) {
+        if (!(fieldsDbf == null)) {
             fieldsDbf.clear();
             recordsDbf.clear();
         }
-        if(fieldsDbf==null) {
-            fieldsDbf=new ArrayList<>();
-            recordsDbf=new ArrayList<>();
+        if (fieldsDbf == null) {
+            fieldsDbf = new ArrayList<>();
+            recordsDbf = new ArrayList<>();
         }
 
-        short lentgthRecord=0;
+        short lentgthRecord = 0;
         for (Column column : columns) {
             for (int j = 0; j < column.data.length; j++) {
-                lentgthRecord+=column.size;
+                lentgthRecord += column.size;
                 if (column.data[j] == null)
                     column.data[j] = intitalizeNullString(column.size);
             }
         }
-        if(headerDbf==null)
-            headerDbf=new HeaderDbf();
+        if (headerDbf == null)
+            headerDbf = new HeaderDbf();
 
-            headerDbf.setLengthOfRecord(lentgthRecord);
-            headerDbf.setLengthOfTitle((short) (columns.length * 32));
-            headerDbf.setNumberOfRecords(columns[0].data.length);
+        headerDbf.setLengthOfRecord(lentgthRecord);
+        headerDbf.setLengthOfTitle((short) (columns.length * 32));
+        headerDbf.setNumberOfRecords(columns[0].data.length);
 
 
         FieldDbf fieldDbf;
-        String[][] buf=new String[columns.length][];
-        for(int i=0;i<columns.length;i++){
-            fieldDbf=new FieldDbf();
+        String[][] buf = new String[columns.length][];
+        for (int i = 0; i < columns.length; i++) {
+            fieldDbf = new FieldDbf();
             fieldDbf.setNameField(columns[i].title);
             fieldDbf.setTypeField(columns[i].type.code);
-            fieldDbf.setSizeField((byte)columns[i].size);//Размер поля в бинарном формате
-            fieldDbf.setNumberOfCh((byte)i);
+            fieldDbf.setSizeField((byte) columns[i].size);//Размер поля в бинарном формате
+            fieldDbf.setNumberOfCh((byte) i);
             fieldsDbf.add(fieldDbf);
-            buf[i]=columns[i].data;
+            buf[i] = columns[i].data;
         }
 
-        buf=transportMatrix(buf);
+        buf = transportMatrix(buf);
 
         writeRecords(buf);
 
     }
 
-    public void setAllColumns(ArrayList<Column> columns){
-        if(!(fieldsDbf==null)) {
+    public void setAllColumns(ArrayList<Column> columns) {
+        if (!(fieldsDbf == null)) {
             fieldsDbf.clear();
             recordsDbf.clear();
         }
-        if(fieldsDbf==null) {
-            fieldsDbf=new ArrayList<>();
-            recordsDbf=new ArrayList<>();
+        if (fieldsDbf == null) {
+            fieldsDbf = new ArrayList<>();
+            recordsDbf = new ArrayList<>();
         }
 
-        short lentgthRecord=0;
+        short lentgthRecord = 0;
         for (Column column : columns) {
             for (int j = 0; j < column.data.length; j++) {
-                lentgthRecord+=column.size;
+                lentgthRecord += column.size;
                 if (column.data[j] == null)
                     column.data[j] = intitalizeNullString(column.size);
             }
         }
-        if(headerDbf==null)
-            headerDbf=new HeaderDbf();
+        if (headerDbf == null)
+            headerDbf = new HeaderDbf();
 
         headerDbf.setLengthOfRecord(lentgthRecord);
         headerDbf.setLengthOfTitle((short) (columns.size() * 32));
@@ -197,18 +197,18 @@ public class DataDbf {
 
 
         FieldDbf fieldDbf;
-        String[][] buf=new String[columns.size()][];
-        for(int i=0;i<columns.size();i++){
-            fieldDbf=new FieldDbf();
+        String[][] buf = new String[columns.size()][];
+        for (int i = 0; i < columns.size(); i++) {
+            fieldDbf = new FieldDbf();
             fieldDbf.setNameField(columns.get(i).title);
             fieldDbf.setTypeField(columns.get(i).type.code);
-            fieldDbf.setSizeField((byte)columns.get(i).size);//Размер поля в бинарном формате
-            fieldDbf.setNumberOfCh((byte)i);
+            fieldDbf.setSizeField((byte) columns.get(i).size);//Размер поля в бинарном формате
+            fieldDbf.setNumberOfCh((byte) i);
             fieldsDbf.add(fieldDbf);
-            buf[i]=columns.get(i).data;
+            buf[i] = columns.get(i).data;
         }
 
-        buf=transportMatrix(buf);
+        buf = transportMatrix(buf);
 
         writeRecords(buf);
     }
@@ -224,9 +224,9 @@ public class DataDbf {
         return b;
     }
 
-    public int[] getPositions(String field){
-        int positionH=0;
-        int[] positions=new int[recordsDbf.size()];
+    public int[] getPositions(String field) {
+        int positionH = 0;
+        int[] positions = new int[recordsDbf.size()];
         for (FieldDbf aFieldsDbf : fieldsDbf) {
             positionH += aFieldsDbf.getSizeField();
             if (getPartOfRecord(aFieldsDbf.getNameField()).equals(field)) {
@@ -239,14 +239,14 @@ public class DataDbf {
         return null;
     }
 
-    public String getPartOfRecord(byte[] data){
+    public String getPartOfRecord(byte[] data) {
         int i;
-        for(i = 0;i<data.length;i++){
-            if(data[i]==0)
+        for (i = 0; i < data.length; i++) {
+            if (data[i] == 0)
                 break;
         }
-        byte[] result=new byte[i];
-        System.arraycopy(data,0,result,0,i);
+        byte[] result = new byte[i];
+        System.arraycopy(data, 0, result, 0, i);
 
         return new String(result);
     }
@@ -255,15 +255,15 @@ public class DataDbf {
 
     //region PrivateMethods
 
-    private short transferByteToUnsigned(byte b){
-        if(b<=0){
-            return (short)(127+(128+b));
+    private short transferByteToUnsigned(byte b) {
+        if (b <= 0) {
+            return (short) (127 + (128 + b));
         }
         return b;
     }
 
-    private int sizeBuffer(){
-        int sum=0;
+    private int sizeBuffer() {
+        int sum = 0;
 
         for (FieldDbf aFieldsDbf : fieldsDbf) {
             sum += transferByteToUnsigned(aFieldsDbf.getSizeField());
@@ -272,9 +272,9 @@ public class DataDbf {
         return sum;
     }
 
-    private String intitalizeNullString(int size){
-        StringBuilder result= new StringBuilder();
-        for(int i=0;i<size;i++){
+    private String intitalizeNullString(int size) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < size; i++) {
             result.append((char) 0);
         }
         return result.toString();

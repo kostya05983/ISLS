@@ -256,8 +256,8 @@ public class SelectorRequest implements Runnable {
     //region Select
 
     private void validateSelect(String command) throws IOException, ParserException {
-        if(command.toUpperCase().contains("WHERE"))
-        validateWhere(command.substring(command.toUpperCase().indexOf("WHERE") + 5));
+        if (command.toUpperCase().contains("WHERE"))
+            validateWhere(command.substring(command.toUpperCase().indexOf("WHERE") + 5));
 
         if (!command.contains("*"))
             if (command.toUpperCase().contains("WHERE"))
@@ -270,18 +270,18 @@ public class SelectorRequest implements Runnable {
     }
 
     private void checkLengthSelect(String command) throws ParserException {
-        command=command.substring(0,command.indexOf("FROM")).trim();
+        command = command.substring(0, command.indexOf("FROM")).trim();
         var buf = command.split("[,]");
 
         for (var str : buf) {
-            if (str.length()-1 > 10)
+            if (str.length() - 1 > 10)
                 throw new ParserException("Длина имени поля не должна превышать 10 символов");
         }
     }
 
     //endregion
 
-    private void validateDelete(String command) throws IOException,ParserException {
+    private void validateDelete(String command) throws IOException, ParserException {
         handlerRequest.delete(command);
     }
 
@@ -342,20 +342,20 @@ public class SelectorRequest implements Runnable {
         var buf = command.split("OR|XOR|AND");
 
         for (String aBuf : buf) {
-            if(aBuf.contains(">="))
-            checkLength(aBuf, ">=");
-            if(aBuf.contains("<="))
-            checkLength(aBuf, "<=");
-            if(aBuf.contains("<>"))
-            checkLength(aBuf, "<>");
-            if(aBuf.contains("="))
-            checkLength(aBuf, "=");
+            if (aBuf.contains(">="))
+                checkLength(aBuf, ">=");
+            if (aBuf.contains("<="))
+                checkLength(aBuf, "<=");
+            if (aBuf.contains("<>"))
+                checkLength(aBuf, "<>");
+            if (aBuf.contains("="))
+                checkLength(aBuf, "=");
         }
 
     }
 
     private void checkLength(String command, String sequence) throws ParserException {
-        if (command.contains(sequence) && command.substring(0, command.indexOf(sequence)).length()-1 > 10)
+        if (command.contains(sequence) && command.substring(0, command.indexOf(sequence)).length() - 1 > 10)
             throw new ParserException("Ошибка в названии поля,имя поля не может превышать 10 символов");
     }
 

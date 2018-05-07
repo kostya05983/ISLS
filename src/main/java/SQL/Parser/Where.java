@@ -24,7 +24,7 @@ class Where {
     ArrayList<Integer> getRecs(String request, DataDbf dataDbf) throws ParserException {
         List<String> expression = parse(request);
         if (flag) {
-            return calc(expression,dataDbf);
+            return calc(expression, dataDbf);
         } else {
             return null;
         }
@@ -123,7 +123,7 @@ class Where {
         return postfix;
     }
 
-    private  ArrayList<Integer> calc(List<String> postfix, DataDbf dataDbf) throws ParserException {
+    private ArrayList<Integer> calc(List<String> postfix, DataDbf dataDbf) throws ParserException {
         Deque<ArrayList<Integer>> stack = new ArrayDeque<>();
         for (String x : postfix) {
             switch (x) {
@@ -144,8 +144,8 @@ class Where {
                 }
                 case "!": {
                     ArrayList<Integer> arr1 = new ArrayList<>(stack.pop()), arr2 = new ArrayList<>();
-                    for(Integer i=0;i<dataDbf.recordsDbf.size();i++){
-                        if(!arr1.contains(i)) arr2.add(i);
+                    for (Integer i = 0; i < dataDbf.recordsDbf.size(); i++) {
+                        if (!arr1.contains(i)) arr2.add(i);
                     }
                     stack.push(arr2);
                 }
@@ -172,7 +172,7 @@ class Where {
         return stack.pop();
     }
 
-    private  ArrayList<Integer> searchRecords(String str, DataDbf dataDbf) throws ParserException {
+    private ArrayList<Integer> searchRecords(String str, DataDbf dataDbf) throws ParserException {
         ArrayList<Integer> records = new ArrayList<>();
         if (str.contains("<>")) {
             records = search(str, "<>", dataDbf);
@@ -205,8 +205,8 @@ class Where {
                                     result.add(i);
                             }
                             return result;
-                        }else
-                        throw new ParserException("После знаков сравнения,если поле типа character необходимо данные указывать в \"\"");
+                        } else
+                            throw new ParserException("После знаков сравнения,если поле типа character необходимо данные указывать в \"\"");
                     case Integer:
                         for (int i = 0; i < column.data.length; i++) {
                             if (checkInt(condition, column.data[i].trim(), operator))

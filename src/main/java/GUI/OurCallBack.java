@@ -10,9 +10,10 @@ import java.util.List;
 public class OurCallBack implements Callback<TableColumn.CellDataFeatures<List<String>, String>, ObservableValue<String>> {
     private int i;
 
-    public OurCallBack(int i){
-        this.i=i;
+    OurCallBack(int i) {
+        this.i = i;
     }
+
     @Override
     public ObservableValue<String> call(TableColumn.CellDataFeatures<List<String>, String> param) {
         return new ReadOnlyStringWrapper(param.getValue().get(i));

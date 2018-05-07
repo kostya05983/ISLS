@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public abstract class DataHandler {
-     RandomAccessFile randomAccessFile;
+    RandomAccessFile randomAccessFile;
 
-     public void close() throws IOException{
-             randomAccessFile.close();
-     }
+    public void close() throws IOException {
+        randomAccessFile.close();
+    }
 
-     short transferByteToUnsigned(byte b){
-        if(b<=0){
-            return (short)(127+(128+b));
+    short transferByteToUnsigned(byte b) {
+        if (b <= 0) {
+            return (short) (127 + (128 + b));
         }
         return b;
     }

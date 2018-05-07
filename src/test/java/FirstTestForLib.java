@@ -34,7 +34,7 @@ public class FirstTestForLib {
         fieldDbf.setTypeField(TypesOfFields.Character.code);
         fieldDbf.setSizeField((byte)10);
         fieldDbf.setNumberOfCh((byte)0);
-        fieldDbf.setIdentificator((byte)1);
+        fieldDbf.setIdentification((byte)1);
         fieldDbf.setFlagMdx((byte)0);
 
         arrayList.add(fieldDbf);
@@ -44,7 +44,7 @@ public class FirstTestForLib {
         fieldDbf1.setTypeField(TypesOfFields.Integer.code);
         fieldDbf1.setSizeField((byte)4);
         fieldDbf1.setNumberOfCh((byte)1);
-        fieldDbf1.setIdentificator((byte)1);
+        fieldDbf1.setIdentification((byte)1);
         fieldDbf1.setFlagMdx((byte)0);
 
         arrayList.add(fieldDbf1);

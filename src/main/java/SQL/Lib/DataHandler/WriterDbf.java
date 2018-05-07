@@ -4,7 +4,6 @@ package SQL.Lib.DataHandler;
 import SQL.Lib.Dbf.DataDbf;
 import SQL.Lib.Indexes.DataIdx;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;

@@ -9,7 +9,6 @@ import SQL.Lib.Indexes.DataIdx;
 import javafx.application.Platform;
 
 
-import javax.swing.text.html.parser.Parser;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -22,21 +21,21 @@ public class HandlerRequest {
         this.main = main;
     }
 
-    void select(String request) throws IOException,ParserException {
-        request=request.substring(request.toUpperCase().indexOf("SELECT")+7);
+    void select(String request) throws IOException, ParserException {
+        request = request.substring(request.toUpperCase().indexOf("SELECT") + 7);
         DataDbf dataDbf;
         ArrayList<RecordDbf> resultRecords;
 
-        if(request.contains("*")){
-            request=request.substring(request.toUpperCase().indexOf("FROM")+5);
+        if (request.contains("*")) {
+            request = request.substring(request.toUpperCase().indexOf("FROM") + 5);
             String tableName;
-            if(request.indexOf(" ")!=-1)
-                tableName=request.substring(0,request.indexOf(" ")).trim();
+            if (request.contains(" "))
+                tableName = request.substring(0, request.indexOf(" ")).trim();
             else
-                tableName=request.substring(0,request.indexOf(";")).trim();
-            var readerDbf=new ReaderDbf(tableName+".dbf");
-            dataDbf=readerDbf.read();
-            if(request.toUpperCase().contains("WHERE")) {
+                tableName = request.substring(0, request.indexOf(";")).trim();
+            var readerDbf = new ReaderDbf(tableName + ".dbf");
+            dataDbf = readerDbf.read();
+            if (request.toUpperCase().contains("WHERE")) {
                 request = request.substring(request.toUpperCase().indexOf("WHERE") + 6).replaceAll("[;]", "");
                 var where = new Where();
                 ArrayList<Integer> indexes = where.getRecs(request, dataDbf);
@@ -48,19 +47,19 @@ public class HandlerRequest {
                 dataDbf = new DataDbf(dataDbf.headerDbf, dataDbf.fieldsDbf, resultRecords);
             }
 
-        }else{
-            String[] namesColumns=request.substring(0,request.toUpperCase().indexOf("FROM")).trim().split("[,]");
-            request=request.substring(request.indexOf("FROM")+5).trim();
+        } else {
+            String[] namesColumns = request.substring(0, request.toUpperCase().indexOf("FROM")).trim().split("[,]");
+            request = request.substring(request.indexOf("FROM") + 5).trim();
             String tableName;
-            if(request.indexOf("WHERE")!=-1)
-            tableName=request.substring(0,request.indexOf("WHERE")).trim();
+            if (request.contains("WHERE"))
+                tableName = request.substring(0, request.indexOf("WHERE")).trim();
             else
-                tableName=request.substring(0,request.indexOf(";")).trim();
+                tableName = request.substring(0, request.indexOf(";")).trim();
 
-            var readerDbf=new ReaderDbf(tableName+".dbf");
-            dataDbf=readerDbf.read();
-            dataDbf=dataDbf.selectColumns(namesColumns);
-            if(request.toUpperCase().contains("WHERE")) {
+            var readerDbf = new ReaderDbf(tableName + ".dbf");
+            dataDbf = readerDbf.read();
+            dataDbf = dataDbf.selectColumns(namesColumns);
+            if (request.toUpperCase().contains("WHERE")) {
                 request = request.substring(request.indexOf("WHERE") + 6).replaceAll("[ ;]", "");
                 var where = new Where();
                 ArrayList<Integer> indexes = where.getRecs(request, dataDbf);
@@ -94,15 +93,15 @@ public class HandlerRequest {
         String type;
         request = request.trim();
         byte size;
-        String end="\\s*\\)\\s*;\\s*";
+        String end = "\\s*\\)\\s*;\\s*";
 
         while (!request.substring(request.indexOf(")")).matches(end)) {
             size = 0;
             fieldsNames.add(request.substring(0, request.indexOf(" ")));
             request = request.substring(request.indexOf(" ")).trim();
 
-            type = request.substring(0, request.indexOf(")")+1).trim();
-            request = request.substring(request.indexOf(")")+1).trim();
+            type = request.substring(0, request.indexOf(")") + 1).trim();
+            request = request.substring(request.indexOf(")") + 1).trim();
             if (type.contains(",")) {
                 String type_F = type.substring(type.indexOf("("), type.indexOf(","));
                 Platform.runLater(() ->
@@ -126,7 +125,7 @@ public class HandlerRequest {
                 types.add(TypesOfFields.Float);
             }
 
-            request=request.substring(request.indexOf(",")+1);
+            request = request.substring(request.indexOf(",") + 1);
             request = request.trim();
         }
 
@@ -152,7 +151,7 @@ public class HandlerRequest {
             fieldDbf.setTypeField(types.get(i).code);
             fieldDbf.setSizeField(sizes.get(i));
             fieldDbf.setNumberOfCh((byte) i);
-            fieldDbf.setIdentificator((byte) 0);
+            fieldDbf.setIdentification((byte) 0);
             fieldDbf.setFlagMdx((byte) 0);
             fieldDbfs.add(fieldDbf);
         }
@@ -170,7 +169,7 @@ public class HandlerRequest {
 
     }
 
-    void createIndex(String request) throws ParserException, IOException{
+    void createIndex(String request) throws ParserException, IOException {
         request = request.substring(request.toLowerCase().indexOf("index") + 6);
         String indexName = request.substring(0, request.indexOf(" "));
         request = request.substring(request.toLowerCase().indexOf("on") + 3);
@@ -208,24 +207,24 @@ public class HandlerRequest {
     void insertInto(String request) throws IOException {
 
         //берём данные команлды
-        request = request.substring(request.toUpperCase().indexOf("INSERT INTO")+11);
+        request = request.substring(request.toUpperCase().indexOf("INSERT INTO") + 11);
 
         //берём имя таблицы
-        String table_name = request.substring(0,request.toUpperCase().indexOf("(")).trim();
+        String table_name = request.substring(0, request.toUpperCase().indexOf("(")).trim();
 
         //названия полей
-        String[] name_pole = request.substring(request.toUpperCase().indexOf("(")+1,request.toUpperCase().indexOf(")")).trim().split("[,]");
+        String[] name_pole = request.substring(request.toUpperCase().indexOf("(") + 1, request.toUpperCase().indexOf(")")).trim().split("[,]");
 
-        request = request.substring(request.toUpperCase().indexOf("VALUE")+5).trim();
+        request = request.substring(request.toUpperCase().indexOf("VALUE") + 5).trim();
 
         //значения после value
-        String[] value = request.substring(request.toUpperCase().indexOf("(")+1,request.toUpperCase().indexOf(")")).trim().split("[,]");
+        String[] value = request.substring(request.toUpperCase().indexOf("(") + 1, request.toUpperCase().indexOf(")")).trim().split("[,]");
 
         DataDbf dataDbf;
 
         try {
             //открываем выбранную таблицу
-            var readerDbf = new ReaderDbf(table_name+".dbf");
+            var readerDbf = new ReaderDbf(table_name + ".dbf");
             dataDbf = readerDbf.read();
             //dataDbf=dataDbf.selectColumns(name_pole);
             readerDbf.close();
@@ -240,8 +239,7 @@ public class HandlerRequest {
 
             //в выбранной таблице определяем тип поля и преобразуем в него нужный value,
             //а потом в строку для хранения
-            for (Column column : columns)
-            {
+            for (Column column : columns) {
                 boolean existence = false;
                 int k;
 
@@ -318,8 +316,7 @@ public class HandlerRequest {
                     main.outText("INSERT INTO выполнилось успешно");
                 });
             }
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             Platform.runLater(() ->
                     main.error("Не удалось открыть таблицу"));
             main.outText("INSERT INTO Не успешно :(\n");
@@ -327,25 +324,25 @@ public class HandlerRequest {
 
     }
 
-    void update(String request) throws IOException,ParserException {
+    void update(String request) throws IOException, ParserException {
 
         //берём данные команлды
-        request=request.substring(request.toUpperCase().indexOf("UPDATE")+6);
+        request = request.substring(request.toUpperCase().indexOf("UPDATE") + 6);
 
         //берём имя таблицы
-        String table_name = request.substring(0,request.toUpperCase().indexOf("SET")).trim();
+        String table_name = request.substring(0, request.toUpperCase().indexOf("SET")).trim();
 
         //пары
-        String[] pairs = request.substring(request.toUpperCase().indexOf("SET")+3,request.toUpperCase().indexOf("WHERE")).trim().split("[,]");
+        String[] pairs = request.substring(request.toUpperCase().indexOf("SET") + 3, request.toUpperCase().indexOf("WHERE")).trim().split("[,]");
 
         var name_pole = new String[pairs.length];
-        for (int i = 0; i<pairs.length; i++) {
-            name_pole[i] = pairs[i].substring(0,pairs[i].indexOf("=")).trim();
-            pairs[i] = pairs[i].substring(pairs[0].toUpperCase().indexOf("=")+1).trim();
+        for (int i = 0; i < pairs.length; i++) {
+            name_pole[i] = pairs[i].substring(0, pairs[i].indexOf("=")).trim();
+            pairs[i] = pairs[i].substring(pairs[0].toUpperCase().indexOf("=") + 1).trim();
         }
 
         //значения после where (логическое выражение)
-        String logik = request.substring(request.toUpperCase().indexOf("WHERE")+5,request.toUpperCase().indexOf(";")).trim();
+        String logik = request.substring(request.toUpperCase().indexOf("WHERE") + 5, request.toUpperCase().indexOf(";")).trim();
 
         DataDbf dataDbf;
 
@@ -425,16 +422,14 @@ public class HandlerRequest {
                 main.setAllColumns(finalDBF.getColumnsforShow());
                 main.outText("UPDATE выполнилось успешно");
             });
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             Platform.runLater(() ->
                     main.error("Не удалось открыть таблицу"));
             main.outText("UPDATE Не успешно :(\n");
         }
     }
 
-    void delete(String request) throws IOException,ParserException {
+    void delete(String request) throws IOException, ParserException {
         String table_name = request.substring(request.indexOf(" FROM ") + 5).trim();
         table_name = table_name.substring(0, table_name.indexOf(" ")).trim();
         Where wh = new Where();
@@ -462,7 +457,7 @@ public class HandlerRequest {
         });
     }
 
-    void alterTable(String request) throws IOException{
+    void alterTable(String request) throws IOException {
         int type = -50;
         int size_data = 0;
         TypesOfFields Type_Column = TypesOfFields.Integer;
@@ -530,20 +525,19 @@ public class HandlerRequest {
                 if (!check) {
                     Column[] columns = dataDbf.getAllColumns();
                     int length = columns.length;
-                    Column[] newСolumns = new Column[length + 1];
-                    System.arraycopy(columns, 0, newСolumns, 0, length);
+                    Column[] buffer = new Column[length + 1];
+                    System.arraycopy(columns, 0, buffer, 0, length);
                     String[] data = new String[dataDbf.recordsDbf.size()];
                     Column column = new Column(Type_Column, Name_Column, data, size_data);
-                    newСolumns[length] = column;
-                    dataDbf.setAllColumns(newСolumns);
+                    buffer[length] = column;
+                    dataDbf.setAllColumns(buffer);
                 } else
                     Platform.runLater(() ->
                             main.error("Поле с таким именем уже\nсуществует"));
                 break;
             }
-            case 2:
-            {
-                var columns=new ArrayList<>(Arrays.asList(dataDbf.getAllColumns()));
+            case 2: {
+                var columns = new ArrayList<>(Arrays.asList(dataDbf.getAllColumns()));
                 int check = 0;
                 for (int i = 0; i < dataDbf.fieldsDbf.size(); i++) {
                     String namef = new String(dataDbf.fieldsDbf.get(i).getNameField());
@@ -563,8 +557,7 @@ public class HandlerRequest {
                             main.error("Не найдена колонка"));
                 break;
             }
-            case 3://TODO ДОбавить проверку на смену типа
-            {
+            case 3: {
                 Platform.runLater(() ->
                         main.outText("MODIFY"));
                 int check = 0;
@@ -599,7 +592,7 @@ public class HandlerRequest {
         });
     }
 
-    void truncate(String request) throws IOException{
+    void truncate(String request) throws IOException {
         String table_name;
         table_name = request.substring(request.indexOf(" TABLE ") + 6, request.indexOf(";")).trim();
         DataDbf dataDBF;
@@ -607,7 +600,7 @@ public class HandlerRequest {
         dataDBF = reader.read();
         reader.close();
 
-        for(int i=0; i < dataDBF.recordsDbf.size(); i++){
+        for (int i = 0; i < dataDBF.recordsDbf.size(); i++) {
             dataDBF.recordsDbf.remove(i);
         }
 
@@ -635,7 +628,7 @@ public class HandlerRequest {
         });
     }
 
-    void dropIndex(String request) throws IOException{
+    void dropIndex(String request) throws IOException {
         request = request.substring(request.toLowerCase().indexOf("index") + 6);
         String indexName = request.substring(0, request.indexOf(" "));
         request = request.substring(request.toLowerCase().indexOf("on") + 3).trim();
@@ -649,12 +642,13 @@ public class HandlerRequest {
         writerDbf.write(dataDbf);
         writerDbf.close();
 
-        //TODO добавить снятие флага с поля,когда будет готово чтение с ключами
         File file = new File(indexName + ".idx");
-        file.delete();
+        boolean delete = file.delete();
+
+        Platform.runLater(()->main.outText("Удалено:"+delete));
     }
 
-    private static void setDBF(DataDbf dataDBF, String table_name) throws IOException{
+    private static void setDBF(DataDbf dataDBF, String table_name) throws IOException {
         Date date = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(date);
