@@ -9,20 +9,20 @@ import java.util.regex.Pattern;
 
 public class SelectorRequest implements Runnable {
 
-    private Main main;
+    private final Main main;
     private Matcher check;
-    private Pattern Create_P = Pattern.compile("CREATE \\s*TABLE \\s*\\w* \\s*");//++
-    private Pattern Insert_P = Pattern.compile("(\\s*INSERT \\s*INTO\\s*)");//++
-    private Pattern Update_P = Pattern.compile("\\s*UPDATE \\s*\\w*\\s*SET \\s*");//
-    private Pattern Delete_P = Pattern.compile("\\s*DELETE\\s+FROM\\s+((\\w+)|\\*)\\s+WHERE\\s([\\w.<>=\\s\",]+)\\s*;\\s*");//готов
-    private Pattern Select_P = Pattern.compile("\\s*SELECT\\s+(((\\w+)|\\*)\\s*(,|\\s*)\\s*)+\\s+FROM\\s+((\\w+)(\\s+WHERE\\s+([\\w.<>=\\s,\"]+)|\\s*))\\s*;\\s*");//
-    private Pattern Drop_P = Pattern.compile("\\s*DROP\\s+TABLE\\s+(\\w+)\\s*;\\s*");//++
-    private Pattern Truncate_P = Pattern.compile("\\s*TRUNCATE\\s+TABLE\\s+(\\w+)\\s*;\\s*");//++
-    private Pattern CreateIn_P = Pattern.compile("\\s*CREATE \\s*INDEX \\s*\\w* \\s*ON \\s*\\w*\\s*;\\s*");//++
-    private Pattern DropIn_P = Pattern.compile("\\s*DROP\\s+INDEX\\s+((\\w+).(\\w+))\\s*;\\s*");//++
-    private Pattern Alter_P = Pattern.compile("\\s*ALTER\\s+TABLE\\s+(\\w+)\\s+((((ADD|MODIFY\\s+COLUMN)\\s+(\\w+))\\s+(((CHARACTER|INTEGER)\\s*\\(\\d+\\))|(FLOAT\\((\\d)+.(\\d)+\\))))|((DROP\\s+COLUMN)\\s+(\\w+)))\\s*;\\s*");
-    private String myStringFirst;
-    private HandlerRequest handlerRequest;
+    private final Pattern Create_P = Pattern.compile("CREATE \\s*TABLE \\s*\\w* \\s*");//++
+    private final Pattern Insert_P = Pattern.compile("(\\s*INSERT \\s*INTO\\s*)");//++
+    private final Pattern Update_P = Pattern.compile("\\s*UPDATE \\s*\\w*\\s*SET \\s*");//
+    private final Pattern Delete_P = Pattern.compile("\\s*DELETE\\s+FROM\\s+((\\w+)|\\*)\\s+WHERE\\s([\\w.<>=\\s\",]+)\\s*;\\s*");//готов
+    private final Pattern Select_P = Pattern.compile("\\s*SELECT\\s+(((\\w+)|\\*)\\s*(,|\\s*)\\s*)+\\s+FROM\\s+((\\w+)(\\s+WHERE\\s+([\\w.<>=\\s,\"]+)|\\s*))\\s*;\\s*");//
+    private final Pattern Drop_P = Pattern.compile("\\s*DROP\\s+TABLE\\s+(\\w+)\\s*;\\s*");//++
+    private final Pattern Truncate_P = Pattern.compile("\\s*TRUNCATE\\s+TABLE\\s+(\\w+)\\s*;\\s*");//++
+    private final Pattern CreateIn_P = Pattern.compile("\\s*CREATE \\s*INDEX \\s*\\w* \\s*ON \\s*\\w*\\s*;\\s*");//++
+    private final Pattern DropIn_P = Pattern.compile("\\s*DROP\\s+INDEX\\s+((\\w+).(\\w+))\\s*;\\s*");//++
+    private final Pattern Alter_P = Pattern.compile("\\s*ALTER\\s+TABLE\\s+(\\w+)\\s+((((ADD|MODIFY\\s+COLUMN)\\s+(\\w+))\\s+(((CHARACTER|INTEGER)\\s*\\(\\d+\\))|(FLOAT\\((\\d)+.(\\d)+\\))))|((DROP\\s+COLUMN)\\s+(\\w+)))\\s*;\\s*");
+    private final String myStringFirst;
+    private final HandlerRequest handlerRequest;
 
     public SelectorRequest(String mString, Main main) {
         this.main = main;

@@ -26,35 +26,15 @@ public class Column {
         this.size = size;
     }
 
-    public Column(TypesOfFields type, String title) {
-        this.type = type;
-        this.title = title;
-        this.data = new String[0];
-        this.size = 0;
-    }
-
     public Column(TypesOfFields type, String title, int size) {
         this.type = type;
         this.title = title;
         this.size = size;
     }
 
-    public Column(String title) {
-        this.title = title;
-    }
-
     //endregion
 
     //region InterfaceMethods
-
-    protected int max() {
-        int max = data[0].getBytes().length;
-        for (String aData : data) {
-            if (max < aData.length())
-                max = aData.getBytes().length;
-        }
-        return max;
-    }
 
     public void addRecord(String record) {
         var buffer = data;

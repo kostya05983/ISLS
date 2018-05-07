@@ -1,7 +1,7 @@
 package SQL.Parser;
 
 public class ParserException extends Exception {
-    private String message;
+    private final String message;
 
     public ParserException(String message) {
         super(message);

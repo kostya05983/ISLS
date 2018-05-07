@@ -6,7 +6,7 @@ public enum TypesOfFields {
     Float('F'),
     Character('C');
 
-    public byte code;
+    public final byte code;
 
     TypesOfFields(char code)
     {

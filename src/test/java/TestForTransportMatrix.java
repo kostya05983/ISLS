@@ -1,6 +1,6 @@
 import SQL.Lib.Dbf.DataDbf;
 
-public class TestForTransportMatrix {
+class TestForTransportMatrix {
 
     public static void main(String[] args) {
         DataDbf dataDbf=new DataDbf();
@@ -19,8 +19,8 @@ public class TestForTransportMatrix {
                 new String[]{"lol2","lol3"}
         };
 
-        str1=dataDbf.transportMatrix(str1);
-        str=dataDbf.transportMatrix(str);
-        str2=dataDbf.transportMatrix(str2);
+        dataDbf.transportMatrix(str1);
+        dataDbf.transportMatrix(str);
+        dataDbf.transportMatrix(str2);
     }
 }

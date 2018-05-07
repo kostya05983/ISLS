@@ -7,8 +7,8 @@ import javafx.util.Callback;
 
 import java.util.List;
 
-public class OurCallBack implements Callback<TableColumn.CellDataFeatures<List<String>, String>, ObservableValue<String>> {
-    private int i;
+class OurCallBack implements Callback<TableColumn.CellDataFeatures<List<String>, String>, ObservableValue<String>> {
+    private final int i;
 
     OurCallBack(int i) {
         this.i = i;

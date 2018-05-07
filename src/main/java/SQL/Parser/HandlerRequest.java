@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class HandlerRequest {
+class HandlerRequest {
 
     private Main main;
 

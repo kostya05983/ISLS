@@ -1,15 +1,13 @@
 import SQL.Lib.AdditionalInstruments.Column;
-import SQL.Lib.DataHandler.ReaderDbf;
 import SQL.Lib.DataHandler.WriterDbf;
 import SQL.Lib.Dbf.DataDbf;
 import SQL.Lib.Dbf.HeaderDbf;
 import SQL.Lib.Dbf.TypesOfFields;
-import SQL.Parser.HandlerRequest;
 import SQL.Parser.SelectorRequest;
 
 import java.io.IOException;
 
-public class TestSelect {
+class TestSelect {
 
     public static void main(String[] args) throws IOException {
         //Заголовок

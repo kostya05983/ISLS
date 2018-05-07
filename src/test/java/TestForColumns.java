@@ -7,7 +7,7 @@ import SQL.Lib.Dbf.TypesOfFields;
 
 import java.io.IOException;
 
-public class TestForColumns {
+class TestForColumns {
     public static void main(String[] args) throws IOException {
         DataDbf dataDbf=new DataDbf();
         Column[] buf=new Column[2];
@@ -16,12 +16,12 @@ public class TestForColumns {
         buf[0]=new Column();
         buf[0].size=5;
         buf[0].data=new String[2];
-        buf[0].title=new String("lol");
+        buf[0].title= "lol";
         buf[0].type=TypesOfFields.Character;
         buf[1]=new Column();
         buf[1].size=5;
         buf[1].type=TypesOfFields.Character;
-        buf[1].title=new String("lolo");
+        buf[1].title= "lolo";
         buf[1].data=new String[]{"11111","22222"};
 
         //Заголовок
@@ -49,11 +49,8 @@ public class TestForColumns {
 
         ReaderDbf readerDbf=new ReaderDbf("test.dbf");
 
-        DataDbf newdata=new DataDbf();
 
-        dataDbf=readerDbf.read();
 
-        Column[] columns=dataDbf.getAllColumns();
 
         readerDbf.close();
 

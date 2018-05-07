@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-public class FirstTestForLib {
+class FirstTestForLib {
 
     public static void main(String[] args) throws IOException {
         //Заголовок

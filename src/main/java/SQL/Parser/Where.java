@@ -13,8 +13,8 @@ class Where {
 
     //region Parameters
 
-    private static String operators = "&|!?";
-    private static String delimiters = "()" + operators;
+    private static final String operators = "&|!?";
+    private static final String delimiters = "()" + operators;
     private static boolean flag = true;
 
     //endregion

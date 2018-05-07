@@ -1,7 +1,7 @@
 import SQL.Lib.AdditionalInstruments.Column;
 import SQL.Lib.Dbf.TypesOfFields;
 
-public class TestForAddRecord {
+class TestForAddRecord {
 
     public static void main(String[] args) {
         Column column=new Column(TypesOfFields.Integer,"lol",new String[]{"lol","vasya"},54);
