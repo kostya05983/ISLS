@@ -57,11 +57,11 @@ public class DataDbf {
                 }
             }
             for (int i = 0; i < fieldsDbf.size(); i++)
-                arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(), getPartOfRecord(fieldsDbf.get(i).getNameField()), table[i], fieldsDbf.get(i).getSizeField()));
+                arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(), getPartOfRecord(fieldsDbf.get(i).getNameField()), table[i], transferByteToUnsigned(fieldsDbf.get(i).getSizeField())));
 
         } else {
             for (FieldDbf aFieldsDbf : fieldsDbf)
-                arrayList.add(new Column(aFieldsDbf.getTypeOfField(), getPartOfRecord(aFieldsDbf.getNameField()), aFieldsDbf.getSizeField()));
+                arrayList.add(new Column(aFieldsDbf.getTypeOfField(), getPartOfRecord(aFieldsDbf.getNameField()), transferByteToUnsigned(aFieldsDbf.getSizeField())));
 
         }
 
@@ -86,11 +86,11 @@ public class DataDbf {
                     }
             }
             for (int i = 0; i < fieldsDbf.size(); i++)
-                arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(), getPartOfRecord(fieldsDbf.get(i).getNameField()), table[i], fieldsDbf.get(i).getSizeField()));
+                arrayList.add(new Column(fieldsDbf.get(i).getTypeOfField(), getPartOfRecord(fieldsDbf.get(i).getNameField()), table[i], transferByteToUnsigned(fieldsDbf.get(i).getSizeField())));
 
         } else {
             for (FieldDbf aFieldsDbf : fieldsDbf)
-                arrayList.add(new Column(aFieldsDbf.getTypeOfField(), getPartOfRecord(aFieldsDbf.getNameField()), aFieldsDbf.getSizeField()));
+                arrayList.add(new Column(aFieldsDbf.getTypeOfField(), getPartOfRecord(aFieldsDbf.getNameField()), transferByteToUnsigned(aFieldsDbf.getSizeField())));
 
         }
 
@@ -257,10 +257,14 @@ public class DataDbf {
 
     private short transferByteToUnsigned(byte b) {
         if (b <= 0) {
-            return (short) (127 + (128 + b));
+            return (short) (256 + b);
         }
         return b;
     }
+
+//    private byte transferIntToByte(){
+//
+//    }
 
     private int sizeBuffer() {
         int sum = 0;
@@ -289,7 +293,7 @@ public class DataDbf {
             byteBuffer = ByteBuffer.allocate(sizeBuffer());
             for (int j = 0; j < aBuf.length; j++) {//Пишем запись
                 tmpByte = aBuf[j].getBytes();
-                for (int k = 0; k < fieldsDbf.get(j).getSizeField(); k++) {//пишем одну ячейку
+                for (int k = 0; k < transferByteToUnsigned(fieldsDbf.get(j).getSizeField()); k++) {//пишем одну ячейку
                     if (k < tmpByte.length)
                         byteBuffer.put(tmpByte[k]);
                     else

@@ -13,7 +13,7 @@ public abstract class DataHandler {
 
     short transferByteToUnsigned(byte b) {
         if (b <= 0) {
-            return (short) (127 + (128 + b));
+            return (short) (256 + b);
         }
         return b;
     }

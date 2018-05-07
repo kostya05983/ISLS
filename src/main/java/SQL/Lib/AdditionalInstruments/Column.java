@@ -42,7 +42,7 @@ public class Column {
 
         System.arraycopy(buffer, 0, data, 0, data.length - 1);
         data[data.length - 1] = record;
-        size += record.length();
+        //size += record.length();
     }
 
     //endregion
