@@ -256,6 +256,7 @@ public class SelectorRequest implements Runnable {
     //region Select
 
     private void validateSelect(String command) throws IOException, ParserException {
+        if(command.toUpperCase().contains("WHERE"))
         validateWhere(command.substring(command.toUpperCase().indexOf("WHERE") + 5));
 
         if (!command.contains("*"))
@@ -269,11 +270,11 @@ public class SelectorRequest implements Runnable {
     }
 
     private void checkLengthSelect(String command) throws ParserException {
-        command=command.substring(command.indexOf("FROM"));
+        command=command.substring(0,command.indexOf("FROM")).trim();
         var buf = command.split("[,]");
 
         for (var str : buf) {
-            if (str.length() > 10)
+            if (str.length()-1 > 10)
                 throw new ParserException("Длина имени поля не должна превышать 10 символов");
         }
     }
@@ -354,7 +355,7 @@ public class SelectorRequest implements Runnable {
     }
 
     private void checkLength(String command, String sequence) throws ParserException {
-        if (command.contains(sequence) && command.substring(0, command.indexOf(sequence)).length() > 10)
+        if (command.contains(sequence) && command.substring(0, command.indexOf(sequence)).length()-1 > 10)
             throw new ParserException("Ошибка в названии поля,имя поля не может превышать 10 символов");
     }
 

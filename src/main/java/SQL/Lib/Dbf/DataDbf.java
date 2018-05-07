@@ -103,15 +103,19 @@ public class DataDbf {
     public DataDbf selectColumns(String[] names) throws ParserException {
         Column[] columns=getAllColumns();
         ArrayList<Column> resultColumns=new ArrayList<>();
+        boolean flag;
 
-        for (Column column : columns) {
-            for (String name : names) {
+        for (String name : names) {
+            flag = false;
+            for (Column column : columns) {
                 if (column.title.equals(name)) {
                     resultColumns.add(column);
+                    flag = true;
                     break;
                 }
-                throw new ParserException("Имя поля не найдено,проверьте имена");
             }
+            if (!flag)
+                throw new ParserException("Имя поля не найдено,проверьте имена");
         }
 
         DataDbf result=new DataDbf(headerDbf,fieldsDbf,recordsDbf);

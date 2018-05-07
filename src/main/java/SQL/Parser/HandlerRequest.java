@@ -49,11 +49,13 @@ public class HandlerRequest {
             }
 
         }else{
-            request=request.replaceAll("[,]","");
-            String[] namesColumns=request.substring(0,request.toUpperCase().indexOf("FROM")).trim().split("[ ]");
+            String[] namesColumns=request.substring(0,request.toUpperCase().indexOf("FROM")).trim().split("[,]");
             request=request.substring(request.indexOf("FROM")+5).trim();
-            String tableName=request.substring(0,request.indexOf("WHERE")).trim();
-
+            String tableName;
+            if(request.indexOf("WHERE")!=-1)
+            tableName=request.substring(0,request.indexOf("WHERE")).trim();
+            else
+                tableName=request.substring(0,request.indexOf(";")).trim();
 
             var readerDbf=new ReaderDbf(tableName+".dbf");
             dataDbf=readerDbf.read();
