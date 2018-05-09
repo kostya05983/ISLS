@@ -457,7 +457,7 @@ class HandlerRequest {
         });
     }
 
-    void alterTable(String request) throws IOException {
+    void alterTable(String request) throws IOException, ParserException {
         int type = -50;
         int size_data = 0;
         TypesOfFields Type_Column = TypesOfFields.Integer;
@@ -568,9 +568,24 @@ class HandlerRequest {
                         check = 1;
                         Platform.runLater(() ->
                                 main.outText("FIND"));
-                        dataDbf.fieldsDbf.get(i).setTypeField(Type_Column.code);
-                        dataDbf.fieldsDbf.get(i).setSizeField((byte) size_data);
-                        break;
+                        if((int)dataDbf.fieldsDbf.get(i).getSizeField() <= size_data) {//увеличиваем размер поля только в большую сторону
+                            dataDbf.fieldsDbf.get(i).setSizeField((byte) size_data);
+                            if(dataDbf.fieldsDbf.get(i).getTypeOfField() != Type_Column)
+                            if(dataDbf.fieldsDbf.get(i).getTypeOfField() == TypesOfFields.Integer && Type_Column == TypesOfFields.Float ) {
+                                dataDbf.fieldsDbf.get(i).setTypeField(Type_Column.code);
+                                break;
+                            }
+                            else
+                            {
+                                throw new ParserException("Изменение типа возможно только из Integer в Float.");
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            throw new ParserException("Размер поля можно увеличивать только в большую сторону.");
+                        }
+
                     } else
                         check = 2;
                 }
