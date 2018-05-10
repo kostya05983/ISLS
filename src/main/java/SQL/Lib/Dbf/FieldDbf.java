@@ -92,7 +92,7 @@ public class FieldDbf {
         this.flagMdx = flagMdx;
     }
 
-    TypesOfFields getTypeOfField() {
+    public TypesOfFields getTypeOfField() {
         switch (typeField) {
             case 'C':
                 return TypesOfFields.Character;
