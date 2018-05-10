@@ -15,7 +15,7 @@ public class SelectorRequest implements Runnable {
     private final Pattern Insert_P = Pattern.compile("(\\s*INSERT \\s*INTO\\s*)");//++
     private final Pattern Update_P = Pattern.compile("\\s*UPDATE \\s*\\w*\\s*SET \\s*");//
     private final Pattern Delete_P = Pattern.compile("\\s*DELETE\\s+FROM\\s+((\\w+)|\\*)\\s+WHERE\\s([\\w.<>=\\s\",]+)\\s*;\\s*");//готов
-    private final Pattern Select_P = Pattern.compile("\\s*SELECT\\s+(((\\w+)|\\*)\\s*(,|\\s*)\\s*)+\\s+FROM\\s+((\\w+)(\\s+WHERE\\s+([\\w.<>=\\s,\"]+)|\\s*))\\s*;\\s*");//
+    private final Pattern Select_P = Pattern.compile("\\s*SELECT\\s+(((\\w+)|\\*)\\s*(,|\\s*)\\s*)+\\s+FROM\\s+((\\w+)(\\s+WHERE\\s+([\\w.<>=NOT\\s,\"]+)|\\s*))\\s*;\\s*");//
     private final Pattern Drop_P = Pattern.compile("\\s*DROP\\s+TABLE\\s+(\\w+)\\s*;\\s*");//++
     private final Pattern Truncate_P = Pattern.compile("\\s*TRUNCATE\\s+TABLE\\s+(\\w+)\\s*;\\s*");//++
     private final Pattern CreateIn_P = Pattern.compile("\\s*CREATE \\s*INDEX \\s*\\w* \\s*ON \\s*\\w*\\s* \\(\\s*\\w*\\s*\\)\\s*;\\s*");//++
