@@ -380,7 +380,7 @@ class HandlerRequest {
                                     try {
                                         column.data[f] = String.valueOf(Integer.valueOf(pairs[i].trim()));
                                     } catch (NumberFormatException e) {
-                                        Platform.runLater(() -> main.outText("Не удалось провести одно из изменений\n"));
+                                        Platform.runLater(() -> main.outText("Не удалось провести\n одно из изменений\n"));
                                     }
                                     break;
                                 }
@@ -388,7 +388,7 @@ class HandlerRequest {
                                     try {
                                         column.data[f] = String.valueOf(Float.valueOf(pairs[i].trim()));
                                     } catch (NumberFormatException e) {
-                                        Platform.runLater(() -> main.outText("Не удалось провести одно из изменений\n"));
+                                        Platform.runLater(() -> main.outText("Не удалось провести \nодно из изменений\n"));
                                     }
                                     break;
                                 }
@@ -396,7 +396,7 @@ class HandlerRequest {
                                     column.data[f] = pairs[i];
                                 }
                                 default: {
-                                    Platform.runLater(() -> main.outText("Не удалось провести одно из изменений\n"));
+                                    Platform.runLater(() -> main.outText("Не удалось провести\n одно из изменений\n"));
                                     break;
                                 }
                             }
@@ -577,13 +577,13 @@ class HandlerRequest {
                             }
                             else
                             {
-                                throw new ParserException("Изменение типа возможно только из Integer в Float.");
+                                throw new ParserException("Изменение типа возможно \nтолько из Integer в Float.");
                             }
                             break;
                         }
                         else
                         {
-                            throw new ParserException("Размер поля можно увеличивать только в большую сторону.");
+                            throw new ParserException("Размер поля можно увеличивать \nтолько в большую сторону.");
                         }
 
                     } else

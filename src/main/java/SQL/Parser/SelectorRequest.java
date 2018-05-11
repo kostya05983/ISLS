@@ -106,7 +106,7 @@ public class SelectorRequest implements Runnable {
                     main.error(e.getMessage()));
         } catch (IOException e) {
             Platform.runLater(() ->
-                    main.error("Что-то не так с файлом,проверьте имя таблицы"));
+                    main.error("Что-то не так с файлом, \nпроверьте имя таблицы"));
         }
     }
 
@@ -128,7 +128,7 @@ public class SelectorRequest implements Runnable {
 
     private void checkEnd(String command) throws ParserException {
         if (command.length() - 1 != command.indexOf(";"))
-            throw new ParserException("Комманда должна заканчиваться точкой с запятой");
+            throw new ParserException("Комманда должна заканчиваться \nточкой с запятой");
     }
 
     private void checkAmount(String command) throws ParserException {
@@ -136,7 +136,7 @@ public class SelectorRequest implements Runnable {
         command = command.substring(command.indexOf(")") + 1);
         String[] secondPart = command.substring(command.indexOf("(") + 1, command.indexOf(")")).split("[,]");
         if (firstPart.length != secondPart.length)
-            throw new ParserException("Колличество имен в названйи столбцов и в введенных значениях не совпадает");
+            throw new ParserException("Колличество имен в названйи столбцов \nи в введенных значениях не совпадает");
     }
 
     //endregion
@@ -171,7 +171,7 @@ public class SelectorRequest implements Runnable {
                     break;
                 }
             } else
-                throw new ParserException("Название столбца не должно превышать 10 символов");
+                throw new ParserException("Название столбца не должно \nпревышать 10 символов");
         }
     }
 
@@ -193,9 +193,9 @@ public class SelectorRequest implements Runnable {
                         command = command.substring(command.indexOf(")") + 1).trim();
                         return command;
                     } else
-                        throw new ParserException("Значение в скобках превышает допустимый диапозон 255");
+                        throw new ParserException("Значение в скобках превышает \nдопустимый диапозон 255");
                 } else
-                    throw new ParserException("Значения в скобках не соответствуют типу");
+                    throw new ParserException("Значения в скобках не \nсоответствуют типу");
             }
 
             if (command.substring(0, command.indexOf("(")).trim().matches("FLOAT")) {
@@ -210,13 +210,13 @@ public class SelectorRequest implements Runnable {
                         command = command.substring(command.indexOf(")") + 1);
                         return command;
                     } else
-                        throw new ParserException("Значения в скобках превышают допустимый диапозон");
+                        throw new ParserException("Значения в скобках превышают \nдопустимый диапозон");
                 } else {
-                    throw new ParserException("Значения в скобках не соответствуют типу");
+                    throw new ParserException("Значения в скобках \nне соответствуют типу");
                 }
             }
         } else
-            throw new ParserException("Не соответствуют типы, или не все запятые на своем месте");
+            throw new ParserException("Не соответствуют типы, или \nне все запятые на своем месте");
 
         return command;
     }
@@ -275,7 +275,7 @@ public class SelectorRequest implements Runnable {
 
         for (var str : buf) {
             if (str.length() - 1 > 10)
-                throw new ParserException("Длина имени поля не должна превышать 10 символов");
+                throw new ParserException("Длина имени поля не должна\n превышать 10 символов");
         }
     }
 
@@ -319,7 +319,7 @@ public class SelectorRequest implements Runnable {
         command = command.substring(0, command.indexOf(" "));
 
         if (command.length() > 10)
-            throw new ParserException("Размер имени поля не должен превышать 10 символов");
+            throw new ParserException("Размер имени поля не должен\n превышать 10 символов");
     }
 
     //endregion
@@ -356,15 +356,15 @@ public class SelectorRequest implements Runnable {
 
     private void checkLength(String command, String sequence) throws ParserException {
         if (command.contains(sequence) && command.substring(0, command.indexOf(sequence)).length() - 1 > 10)
-            throw new ParserException("Ошибка в названии поля,имя поля не может превышать 10 символов");
+            throw new ParserException("Ошибка в названии поля,имя поля\n не может превышать 10 символов");
     }
 
     private void checkBrackets(String command) throws ParserException {
         if (command.contains("[") || command.contains("]") || command.contains("{") || command.contains("}"))
-            throw new ParserException("Скобки должны быть круглыми ()");
+            throw new ParserException("Скобки должны быть\n круглыми ()");
 
         if (command.chars().filter(ch -> ch == '(').count() != command.chars().filter(ch -> ch == ')').count())
-            throw new ParserException("Несоответствие открывающих и закрывающих скобок");
+            throw new ParserException("Несоответствие открывающих \nи закрывающих скобок");
     }
 
     //endregion
@@ -374,7 +374,7 @@ public class SelectorRequest implements Runnable {
             checkCom();
         } catch (Exception e) {
             e.printStackTrace();
-            main.error("что-то пошло не так... Проверьте синтаксис команды");
+            main.error("что-то пошло не так...\nПроверьте синтаксис команды");
         }
     }
 

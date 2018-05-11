@@ -30,7 +30,7 @@ public class Main extends Application implements Runnable {
 
     private TableView tableView = new TableView();
     private TextArea textIn = new TextArea();
-    private Button button = new Button("ТЫК");
+    private Button button = new Button("ОК");
     private TextArea textOut = new TextArea("Здесь вывод действи библиотеки будет");
     private boolean text_start = false;
 
@@ -193,6 +193,7 @@ public class Main extends Application implements Runnable {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("ERROR");
         alert.setHeaderText(null);
+        alert.setWidth(180);
         alert.setContentText("Упс, что-то пошло не так! :(");
         alert.showAndWait();
     }
