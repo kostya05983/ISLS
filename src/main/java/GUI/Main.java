@@ -123,10 +123,12 @@ public class Main extends Application implements Runnable {
 
     public void clearTable() {
         //запуск анимации свёртывания таблицы
-        timeline_undo.play();
         int size = tableView.getColumns().size();
         for (int i = 0; i < size; i++)
             tableView.getColumns().remove(0);
+
+        tableView.setItems(null);
+        timeline_undo.play();
     }
 
     public void setAllColumns(Column[] columns) {

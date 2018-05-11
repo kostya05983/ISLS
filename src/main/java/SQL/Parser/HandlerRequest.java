@@ -491,13 +491,21 @@ class HandlerRequest {
             Name_Column = request.substring(0, request.indexOf(" ")).trim();
             request = request.substring(request.indexOf(" ") + 1).trim();
             Type_Data = request.substring(0, request.indexOf("(")).trim();
-            size_data = Integer.parseInt(request.substring(request.indexOf("(") + 1, request.indexOf(")")).trim());
-            if (Type_Data.toUpperCase().compareTo("CHARACTER") == 0)
+
+            if (Type_Data.toUpperCase().compareTo("CHARACTER") == 0) {
                 Type_Column = TypesOfFields.Character;
-            if (Type_Data.toUpperCase().compareTo("FLOAT") == 0)
+                size_data = Integer.parseInt(request.substring(request.indexOf("(") + 1, request.indexOf(")")).trim());
+            }
+            if (Type_Data.toUpperCase().compareTo("FLOAT") == 0) {
                 Type_Column = TypesOfFields.Float;
-            if (Type_Data.toUpperCase().compareTo("INTEGER") == 0)
+                size_data = Integer.parseInt(request.substring(request.indexOf("(") + 1, request.indexOf(".")).trim());
+                size_data+=Integer.parseInt(request.substring(request.indexOf(".")+1,request.indexOf(")")).trim());
+                size_data+=1;
+            }
+            if (Type_Data.toUpperCase().compareTo("INTEGER") == 0) {
                 Type_Column = TypesOfFields.Integer;
+                size_data = Integer.parseInt(request.substring(request.indexOf("(") + 1, request.indexOf(")")).trim());
+            }
         }
 
         ReaderDbf readerDbf = new ReaderDbf(Name_Table + ".dbf");
