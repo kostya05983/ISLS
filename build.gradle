@@ -8,6 +8,7 @@ apply plugin: 'idea'
 
 sourceCompatibility = 1.10
 
+mainClassName='GUI.Main'
 repositories {
     mavenCentral()
 }
@@ -16,6 +17,18 @@ dependencies {
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
+}
+
+jar{
+    archiveName = 'cursovaya.jar'
+
+    manifest {
+        attributes 'Main-Class': 'GUI.Main',
+                'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' '),
+                'Implementation-Version': project.version
+    }
+
+    from(configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }) {}
 }
 
 
