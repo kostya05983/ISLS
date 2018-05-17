@@ -136,7 +136,7 @@ public class SelectorRequest implements Runnable {
         command = command.substring(command.indexOf(")") + 1);
         String[] secondPart = command.substring(command.indexOf("(") + 1, command.indexOf(")")).split("[,]");
         if (firstPart.length != secondPart.length)
-            throw new ParserException("Колличество имен в названйи столбцов \nи в введенных значениях не совпадает");
+            throw new ParserException("Колличество имен в названйх\n столбцов и в введенных значениях\n не совпадает");
     }
 
     //endregion

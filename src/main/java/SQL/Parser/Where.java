@@ -206,7 +206,7 @@ class Where {
                             }
                             return result;
                         } else
-                            throw new ParserException("После знаков сравнения,если поле типа character необходимо данные указывать в \"\"");
+                            throw new ParserException("После знаков сравнения,\nесли поле типа character \nнеобходимо данные указывать в \"\"");
                     case Integer:
                         for (int i = 0; i < column.data.length; i++) {
                             if (checkInt(condition, column.data[i].trim(), operator))
@@ -224,7 +224,7 @@ class Where {
                 break;
             }
         }
-        throw new ParserException("Имя не найдено проверьте имена полей в WHERE");
+        throw new ParserException("Имя не найдено \nпроверьте имена полей в WHERE");
 
     }
 
